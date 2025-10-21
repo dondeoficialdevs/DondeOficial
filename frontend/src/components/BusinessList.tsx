@@ -1,6 +1,6 @@
 'use client';
 
-import { Business } from '@/types';
+import { Business } from '../types';
 import Link from 'next/link';
 
 interface BusinessListProps {
@@ -35,21 +35,21 @@ export default function BusinessList({ businesses }: BusinessListProps) {
             <div className="space-y-2">
               {business.address && (
                 <div className="flex items-start text-sm text-gray-500">
-                  <span className="mr-2">📍</span>
+                  <span className="mr-2 text-gray-400">Location:</span>
                   <span className="flex-1">{business.address}</span>
                 </div>
               )}
               
               {business.phone && (
                 <div className="flex items-center text-sm text-gray-500">
-                  <span className="mr-2">📞</span>
+                  <span className="mr-2 text-gray-400">Phone:</span>
                   <span>{business.phone}</span>
                 </div>
               )}
               
               {business.opening_hours && (
                 <div className="flex items-start text-sm text-gray-500">
-                  <span className="mr-2">🕒</span>
+                  <span className="mr-2 text-gray-400">Hours:</span>
                   <span className="flex-1">{business.opening_hours}</span>
                 </div>
               )}
@@ -66,7 +66,7 @@ export default function BusinessList({ businesses }: BusinessListProps) {
                       onClick={(e) => e.stopPropagation()}
                       className="text-blue-600 hover:text-blue-800 text-sm"
                     >
-                      🌐 Sitio web
+                      Website
                     </a>
                   )}
                   {business.email && (
@@ -75,7 +75,7 @@ export default function BusinessList({ businesses }: BusinessListProps) {
                       onClick={(e) => e.stopPropagation()}
                       className="text-blue-600 hover:text-blue-800 text-sm"
                     >
-                      ✉️ Email
+                      Email
                     </a>
                   )}
                 </div>

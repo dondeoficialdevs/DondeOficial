@@ -11,21 +11,21 @@ class Business {
     const values = [];
     let paramIndex = 1;
 
-    // Filter by category
+    // Filtrar por categoría
     if (params.category) {
       query += ` AND c.name ILIKE $${paramIndex}`;
       values.push(`%${params.category}%`);
       paramIndex++;
     }
 
-    // Filter by search term
+    // Filtrar por término de búsqueda
     if (params.search) {
       query += ` AND (b.name ILIKE $${paramIndex} OR b.description ILIKE $${paramIndex})`;
       values.push(`%${params.search}%`);
       paramIndex++;
     }
 
-    // Filter by location
+    // Filtrar por ubicación
     if (params.location) {
       query += ` AND b.address ILIKE $${paramIndex}`;
       values.push(`%${params.location}%`);
@@ -34,7 +34,7 @@ class Business {
 
     query += ` ORDER BY b.name ASC`;
 
-    // Add pagination
+    // Agregar paginación
     if (params.limit) {
       query += ` LIMIT $${paramIndex}`;
       values.push(params.limit);

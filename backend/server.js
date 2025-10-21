@@ -14,19 +14,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
+// Rutas
 const businessesRouter = require('./routes/businesses');
 const categoriesRouter = require('./routes/categories');
 
 app.use('/api/businesses', businessesRouter);
 app.use('/api/categories', categoriesRouter);
 
-// Health check endpoint
+// Endpoint de verificación de salud
 app.get('/api/health', (req, res) => {
   res.json({ message: 'API is running', status: 'OK' });
 });
 
-// Error handling middleware
+// Middleware de manejo de errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });

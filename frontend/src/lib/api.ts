@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 export const businessApi = {
-  // Get all businesses with optional filters
+  // Obtener todos los negocios con filtros opcionales
   getAll: async (filters?: BusinessFilters): Promise<Business[]> => {
     const params = new URLSearchParams();
     
@@ -25,44 +25,44 @@ export const businessApi = {
     return response.data.data;
   },
 
-  // Get business by ID
+  // Obtener negocio por ID
   getById: async (id: number): Promise<Business> => {
     const response = await api.get<ApiResponse<Business>>(`/businesses/${id}`);
     return response.data.data;
   },
 
-  // Create new business
+  // Crear nuevo negocio
   create: async (businessData: Partial<Business>): Promise<Business> => {
     const response = await api.post<ApiResponse<Business>>('/businesses', businessData);
     return response.data.data;
   },
 
-  // Update business
+  // Actualizar negocio
   update: async (id: number, businessData: Partial<Business>): Promise<Business> => {
     const response = await api.put<ApiResponse<Business>>(`/businesses/${id}`, businessData);
     return response.data.data;
   },
 
-  // Delete business
+  // Eliminar negocio
   delete: async (id: number): Promise<void> => {
     await api.delete(`/businesses/${id}`);
   },
 };
 
 export const categoryApi = {
-  // Get all categories
+  // Obtener todas las categorías
   getAll: async (): Promise<Category[]> => {
     const response = await api.get<ApiResponse<Category[]>>('/categories');
     return response.data.data;
   },
 
-  // Get category by ID
+  // Obtener categoría por ID
   getById: async (id: number): Promise<Category> => {
     const response = await api.get<ApiResponse<Category>>(`/categories/${id}`);
     return response.data.data;
   },
 
-  // Create new category
+  // Crear nueva categoría
   create: async (categoryData: Partial<Category>): Promise<Category> => {
     const response = await api.post<ApiResponse<Category>>('/categories', categoryData);
     return response.data.data;

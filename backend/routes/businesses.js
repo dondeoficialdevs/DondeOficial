@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Business = require('../models/Business');
 
-// GET /api/businesses - List all businesses with filters
+// GET /api/businesses - Listar todos los negocios con filtros
 router.get('/', async (req, res) => {
   try {
     const {
@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/businesses/:id - Get business by ID
+// GET /api/businesses/:id - Obtener negocio por ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,12 +63,12 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/businesses - Create new business
+// POST /api/businesses - Crear nuevo negocio
 router.post('/', async (req, res) => {
   try {
     const businessData = req.body;
 
-    // Basic validation
+    // Validación básica
     if (!businessData.name || !businessData.description) {
       return res.status(400).json({
         success: false,
@@ -93,7 +93,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/businesses/:id - Update business
+// PUT /api/businesses/:id - Actualizar negocio
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -123,7 +123,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/businesses/:id - Delete business
+// DELETE /api/businesses/:id - Eliminar negocio
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;

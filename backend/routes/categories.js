@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Category = require('../models/Category');
 
-// GET /api/categories - List all categories
+// GET /api/categories - Listar todas las categorías
 router.get('/', async (req, res) => {
   try {
     const categories = await Category.findAll();
@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/categories/:id - Get category by ID
+// GET /api/categories/:id - Obtener categoría por ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/categories - Create new category
+// POST /api/categories - Crear nueva categoría
 router.post('/', async (req, res) => {
   try {
     const { name, description } = req.body;

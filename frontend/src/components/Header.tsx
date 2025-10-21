@@ -19,11 +19,11 @@ export default function Header() {
             <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium">
               Home
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-blue-600 font-medium">
-              About us
-            </Link>
             <Link href="/listings" className="text-gray-700 hover:text-blue-600 font-medium">
               Listings
+            </Link>
+            <Link href="/add-listing" className="text-gray-700 hover:text-blue-600 font-medium">
+              Add Listing
             </Link>
             <Link href="/contact" className="text-gray-700 hover:text-blue-600 font-medium">
               Contact

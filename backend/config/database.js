@@ -8,7 +8,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || 'password',
 });
 
-// Test database connection
+// Probar conexión a la base de datos
 pool.on('connect', () => {
   console.log('Connected to PostgreSQL database');
 });
