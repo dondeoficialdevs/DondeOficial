@@ -87,7 +87,7 @@ export default function AddListingPage() {
             <div className="text-green-600 text-6xl mb-4">✓</div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Listing Submitted!</h1>
             <p className="text-gray-600 mb-8">
-              Thank you for submitting your business listing. We'll review it and publish it soon.
+              Thank you for submitting your business listing. We&apos;ll review it and publish it soon.
             </p>
             <button
               onClick={() => setSubmitted(false)}

@@ -28,7 +28,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
             <span className="block">Discover</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
-            People Don't Take Trips, Trips Take People
+            People Don&apos;t Take Trips, Trips Take People
           </p>
           <div className="flex justify-center items-center space-x-8 text-sm opacity-80">
             <div className="flex items-center space-x-2">

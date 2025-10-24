@@ -31,7 +31,7 @@ export default function FeaturedListings({ businesses, loading }: FeaturedListin
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Listings</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover amazing places around you. From restaurants to museums, find exactly what you're looking for.
+            Discover amazing places around you. From restaurants to museums, find exactly what you&apos;re looking for.
           </p>
         </div>
 
@@ -145,7 +145,7 @@ export default function FeaturedListings({ businesses, loading }: FeaturedListin
               </svg>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No listings found</h3>
               <p className="text-gray-500 mb-6">
-                We're working on adding more amazing places. Check back soon!
+                We&apos;re working on adding more amazing places. Check back soon!
               </p>
               <Link
                 href="/add-listing"

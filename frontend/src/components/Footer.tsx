@@ -18,7 +18,7 @@ export default function Footer() {
             </div>
             <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
               Your comprehensive directory platform to discover and explore the best businesses and destinations. 
-              Connect with verified local businesses and find exactly what you're looking for.
+              Connect with verified local businesses and find exactly what you&apos;re looking for.
             </p>
             
             {/* Social Media */}
