@@ -17,6 +17,7 @@ import VideoSection from '../components/VideoSection';
 import NewsletterSection from '../components/NewsletterSection';
 import BlogSection from '../components/BlogSection';
 import Footer from '../components/Footer';
+import PWAInstaller from '../components/PWAInstaller';
 
 export default function Home() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
@@ -108,6 +109,8 @@ export default function Home() {
         </main>
 
         <Footer />
+
+        <PWAInstaller />
       </div>
     </>
   );

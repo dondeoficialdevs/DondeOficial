@@ -71,7 +71,7 @@ export default function BusinessDetail() {
           <nav className="flex items-center space-x-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-blue-600 transition-colors">
               Inicio
-            </Link>
+          </Link>
             <span>/</span>
             <span className="text-gray-900">{business.name}</span>
           </nav>
@@ -93,30 +93,30 @@ export default function BusinessDetail() {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3">
-                {business.website && (
-                  <a
-                    href={business.website.startsWith('http') ? business.website : `https://${business.website}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  {business.website && (
+                    <a
+                      href={business.website.startsWith('http') ? business.website : `https://${business.website}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-all shadow-lg font-semibold"
-                  >
+                    >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l3-3m-3 3l-3-3m0 0l3-3m-3 3l3 3" />
                     </svg>
                     Visitar Web
-                  </a>
-                )}
-                {business.phone && (
-                  <a
-                    href={`tel:${business.phone}`}
+                    </a>
+                  )}
+                  {business.phone && (
+                    <a
+                      href={`tel:${business.phone}`}
                     className="inline-flex items-center justify-center px-6 py-3 bg-white text-green-600 rounded-lg hover:bg-gray-100 transition-all shadow-lg font-semibold"
-                  >
+                    >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                     Llamar
-                  </a>
-                )}
+                    </a>
+                  )}
               </div>
             </div>
           </div>
