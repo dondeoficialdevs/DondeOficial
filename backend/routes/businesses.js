@@ -1,43 +1,39 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Business = require('../models/Business');
+const Business = require("../models/Business");
+const { validate, businessSchema } = require("../middleware/validation");
+const { authenticateToken } = require("../middleware/auth");
 
-// GET /api/businesses - Listar todos los negocios con filtros
-router.get('/', async (req, res) => {
+// GET /api/businesses - Listar todos los negocios con filtros (público)
+router.get("/", async (req, res) => {
   try {
-    const {
-      search,
-      category,
-      location,
-      limit = 20,
-      offset = 0
-    } = req.query;
+    const { search, category, location, limit = 20, offset = 0 } = req.query;
 
     const businesses = await Business.findAll({
       search,
       category,
       location,
       limit: parseInt(limit),
-      offset: parseInt(offset)
+      offset: parseInt(offset),
     });
 
     res.json({
       success: true,
       data: businesses,
-      count: businesses.length
+      count: businesses.length,
     });
   } catch (error) {
-    console.error('Error fetching businesses:', error);
+    console.error("Error fetching businesses:", error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching businesses',
-      error: error.message
+      message: "Error fetching businesses",
+      error: error.message,
     });
   }
 });
 
-// GET /api/businesses/:id - Obtener negocio por ID
-router.get('/:id', async (req, res) => {
+// GET /api/businesses/:id - Obtener negocio por ID (público)
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const business = await Business.findById(id);
@@ -45,86 +41,107 @@ router.get('/:id', async (req, res) => {
     if (!business) {
       return res.status(404).json({
         success: false,
-        message: 'Business not found'
-      });
-    }
-
-    res.json({
-      success: true,
-      data: business
-    });
-  } catch (error) {
-    console.error('Error fetching business:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching business',
-      error: error.message
-    });
-  }
-});
-
-// POST /api/businesses - Crear nuevo negocio
-router.post('/', async (req, res) => {
-  try {
-    const businessData = req.body;
-
-    // Validación básica
-    if (!businessData.name || !businessData.description) {
-      return res.status(400).json({
-        success: false,
-        message: 'Name and description are required'
-      });
-    }
-
-    const business = await Business.create(businessData);
-
-    res.status(201).json({
-      success: true,
-      data: business,
-      message: 'Business created successfully'
-    });
-  } catch (error) {
-    console.error('Error creating business:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error creating business',
-      error: error.message
-    });
-  }
-});
-
-// PUT /api/businesses/:id - Actualizar negocio
-router.put('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const businessData = req.body;
-
-    const business = await Business.update(id, businessData);
-
-    if (!business) {
-      return res.status(404).json({
-        success: false,
-        message: 'Business not found'
+        message: "Business not found",
       });
     }
 
     res.json({
       success: true,
       data: business,
-      message: 'Business updated successfully'
     });
   } catch (error) {
-    console.error('Error updating business:', error);
+    console.error("Error fetching business:", error);
     res.status(500).json({
       success: false,
-      message: 'Error updating business',
-      error: error.message
+      message: "Error fetching business",
+      error: error.message,
     });
   }
 });
 
-// DELETE /api/businesses/:id - Eliminar negocio
-router.delete('/:id', async (req, res) => {
+// POST /api/businesses - Crear nuevo negocio (requiere autenticación)
+router.post(
+  "/",
+  authenticateToken,
+  validate(businessSchema),
+  async (req, res) => {
+    try {
+      const businessData = req.validatedData;
+
+      const business = await Business.create(businessData);
+
+      res.status(201).json({
+        success: true,
+        data: business,
+        message: "Business created successfully",
+      });
+    } catch (error) {
+      console.error("Error creating business:", error);
+
+      // Manejar error de duplicación
+      if (error.code === "23505") {
+        // Código de error de PostgreSQL para violación de UNIQUE constraint
+        return res.status(409).json({
+          success: false,
+          message: "A business with this name or email already exists",
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Error creating business",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// PUT /api/businesses/:id - Actualizar negocio (requiere autenticación)
+router.put(
+  "/:id",
+  authenticateToken,
+  validate(businessSchema),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const businessData = req.validatedData;
+
+      const business = await Business.update(id, businessData);
+
+      if (!business) {
+        return res.status(404).json({
+          success: false,
+          message: "Business not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: business,
+        message: "Business updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating business:", error);
+
+      // Manejar error de duplicación
+      if (error.code === "23505") {
+        return res.status(409).json({
+          success: false,
+          message: "A business with this name or email already exists",
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Error updating business",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// DELETE /api/businesses/:id - Eliminar negocio (requiere autenticación)
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const business = await Business.delete(id);
@@ -132,20 +149,20 @@ router.delete('/:id', async (req, res) => {
     if (!business) {
       return res.status(404).json({
         success: false,
-        message: 'Business not found'
+        message: "Business not found",
       });
     }
 
     res.json({
       success: true,
-      message: 'Business deleted successfully'
+      message: "Business deleted successfully",
     });
   } catch (error) {
-    console.error('Error deleting business:', error);
+    console.error("Error deleting business:", error);
     res.status(500).json({
       success: false,
-      message: 'Error deleting business',
-      error: error.message
+      message: "Error deleting business",
+      error: error.message,
     });
   }
 });

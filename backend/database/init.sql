@@ -1,5 +1,7 @@
 -- Database initialization script for DondeOficial MVP
 
+CREATE DATABASE IF NOT EXISTS dondeoficial_db;
+
 -- Create categories table
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
