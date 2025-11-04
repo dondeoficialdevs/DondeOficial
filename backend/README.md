@@ -73,75 +73,209 @@ npm start
 
 ## Deploy en Render
 
-### Configuración del Servicio Web
+### Paso 1: Crear Base de Datos PostgreSQL
 
-1. **Conectar repositorio:**
-   - Ir a [Render Dashboard](https://dashboard.render.com)
-   - Conectar tu repositorio de GitHub
+1. Ir a [Render Dashboard](https://dashboard.render.com)
+2. Click en **"New +"** → **"PostgreSQL"**
+3. Configurar:
+   - **Name:** `dondeoficial-db` (o el nombre que prefieras)
+   - **Database:** `dondeoficial` (se crea automáticamente)
+   - **User:** Se genera automáticamente
+   - **Region:** Elegir la más cercana
+   - **PostgreSQL Version:** La más reciente
+   - **Plan:** Free (o el plan que prefieras)
+4. Click en **"Create Database"**
+5. **IMPORTANTE:** Copiar y guardar estas credenciales:
+   - **Internal Database URL** (para conectar desde el mismo proyecto)
+   - **External Database URL** (para conectar desde fuera)
+   - O copiar individualmente:
+     - **Host:** `dpg-xxxxx-a.oregon-postgres.render.com`
+     - **Port:** `5432`
+     - **Database:** `dondeoficial`
+     - **User:** `dondeoficial_user`
+     - **Password:** `xxxxx` (generada automáticamente)
 
-2. **Configurar el servicio:**
+### Paso 2: Inicializar la Base de Datos
+
+1. Conectar a la base de datos usando un cliente:
+   - **Opción 1:** [DBeaver Cloud](https://dbeaver.io/cloud/) (gratis)
+   - **Opción 2:** pgAdmin
+   - **Opción 3:** VS Code con extensión PostgreSQL
+   - **Opción 4:** psql desde terminal
+
+2. Usar las credenciales copiadas del Paso 1
+
+3. Ejecutar el script completo `backend/database/init.sql`:
+   ```sql
+   -- Copiar y pegar todo el contenido de database/init.sql
+   ```
+
+4. Verificar que se crearon las tablas:
+   ```sql
+   SELECT table_name FROM information_schema.tables 
+   WHERE table_schema = 'public';
+   ```
+   Debe mostrar: `categories`, `businesses`, `leads`, `newsletter_subscribers`
+
+### Paso 3: Crear Servicio Web
+
+1. En Render Dashboard → **"New +"** → **"Web Service"**
+2. Conectar tu repositorio de GitHub
+3. Seleccionar el repositorio `DondeOficial` (o el nombre de tu repo)
+4. Configurar el servicio:
    - **Name:** `dondeoficial-backend`
    - **Environment:** `Node`
-   - **Build Command:** `cd backend && npm install`
-   - **Start Command:** `cd backend && npm start`
-   - **Root Directory:** `backend` (opcional, si tu estructura lo requiere)
+   - **Region:** Misma región que la base de datos
+   - **Branch:** `main` (o la rama principal)
+   - **Root Directory:** `backend` ⚠️ **IMPORTANTE - Debe estar configurado**
+   - **Build Command:** `npm install` ⚠️ **Sin `cd backend`, Render ya está en ese directorio**
+   - **Start Command:** `npm start` ⚠️ **Debe usar `npm start` que ejecuta `node server.js`**
+   - **Plan:** Free (o el plan que prefieras)
 
-### Variables de Entorno en Render
+⚠️ **NOTA CRÍTICA:** 
+- Si ves el error `No se puede encontrar el módulo '/opt/render/project/src/backend/index.js'`:
+  - Verifica que **Root Directory** esté configurado como `backend` (sin barra al final)
+  - Verifica que **Start Command** sea exactamente `npm start` (no `node index.js` ni `node server.js`)
+  - El `package.json` tiene `"main": "server.js"` y `"start": "node server.js"`, así que `npm start` funcionará correctamente
 
-Configurar las siguientes variables de entorno en Render:
+### Paso 4: Configurar Variables de Entorno
 
-```
+En la sección **"Environment"** del servicio Web, agregar estas variables:
+
+#### Variables OBLIGATORIAS:
+
+```bash
+# Puerto del servidor (Render lo asigna automáticamente, pero puedes dejarlo)
 PORT=5000
-DB_HOST=<tu_host_de_postgresql>
+
+# Credenciales de PostgreSQL
+# Si Render te proporciona una URL de conexión como:
+# postgresql://user:password@host/database
+# Extrae las credenciales así:
+DB_HOST=dpg-d4520oq4d50c73et6t40-a.oregon-postgres.render.com
 DB_PORT=5432
-DB_NAME=<tu_nombre_de_base_de_datos>
-DB_USER=<tu_usuario>
-DB_PASSWORD=<tu_password>
+DB_NAME=dbdondeoficial
+DB_USER=dbdondeoficial_user
+DB_PASSWORD=TT8oNR6OOr1T2Nb7LMUmlY9qtuHMP243
+
+# Ambiente
 NODE_ENV=production
+
+# URL del frontend (actualizar con tu URL real de Netlify)
 FRONTEND_URL=https://tu-frontend.netlify.app
-JWT_SECRET=<genera_una_clave_segura>
+
+# Secret para JWT (generar una clave segura)
+JWT_SECRET=356d746ba35a68bbd5fd2274b87cc679c9203bbc7155aef3c31de0aaa55d686cc4722b2aca063877915da68601229a5328a4e684ce59c15bc20c7b8306a4b7c8
 ```
 
-### Configuración de PostgreSQL en Render
+#### Cómo extraer credenciales de la URL de PostgreSQL:
 
-1. **Crear base de datos PostgreSQL:**
-   - En Render Dashboard, crear un nuevo servicio PostgreSQL
-   - Copiar las credenciales de conexión (Host, Database, User, Password, Port)
+Si Render te proporciona una URL de conexión como:
+```
+postgresql://dbdondeoficial_user:TT8oNR6OOr1T2Nb7LMUmlY9qtuHMP243@dpg-d4520oq4d50c73et6t40-a.oregon-postgres.render.com/dbdondeoficial
+```
 
-2. **Inicializar la base de datos:**
-   - Conectar a la base de datos usando un cliente (pgAdmin, DBeaver, DBeaver Cloud, etc.)
-   - Ejecutar el script `database/init.sql` completo
-   - Verificar que las tablas `categories`, `businesses`, `leads` y `newsletter_subscribers` se hayan creado correctamente
+El formato es: `postgresql://USER:PASSWORD@HOST/DATABASE`
 
-### Pasos de Despliegue en Render
+Extrae las credenciales así:
+- **DB_USER:** `dbdondeoficial_user` (después de `postgresql://`)
+- **DB_PASSWORD:** `TT8oNR6OOr1T2Nb7LMUmlY9qtuHMP243` (después de `:` y antes de `@`)
+- **DB_HOST:** `dpg-d4520oq4d50c73et6t40-a.oregon-postgres.render.com` (después de `@`)
+- **DB_NAME:** `dbdondeoficial` (después de `/`)
+- **DB_PORT:** `5432` (puerto por defecto de PostgreSQL)
 
-1. **Crear servicio PostgreSQL:**
-   - En Render Dashboard → New → PostgreSQL
-   - Configurar nombre y región
-   - Guardar las credenciales
+#### Generar JWT_SECRET:
 
-2. **Crear servicio Web:**
-   - En Render Dashboard → New → Web Service
-   - Conectar repositorio de GitHub
-   - Configurar:
-     - **Name:** `dondeoficial-backend`
-     - **Environment:** `Node`
-     - **Build Command:** `cd backend && npm install`
-     - **Start Command:** `cd backend && npm start`
-     - **Root Directory:** `backend` (opcional)
+Ejecutar en tu terminal local:
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
 
-3. **Configurar variables de entorno:**
-   - En la sección "Environment" del servicio Web
-   - Agregar todas las variables mencionadas arriba
-   - Usar las credenciales del servicio PostgreSQL creado
+Copiar el resultado y pegarlo como valor de `JWT_SECRET`.
 
-4. **Verificar despliegue:**
-   - Esperar a que el build termine exitosamente
-   - Verificar que el servicio esté "Live"
-   - Probar el endpoint: `https://tu-servicio.onrender.com/api/health`
+#### Ejemplo de Variables Configuradas (con tus credenciales):
+
+```bash
+PORT=5000
+DB_HOST=dpg-d4520oq4d50c73et6t40-a.oregon-postgres.render.com
+DB_PORT=5432
+DB_NAME=dbdondeoficial
+DB_USER=dbdondeoficial_user
+DB_PASSWORD=TT8oNR6OOr1T2Nb7LMUmlY9qtuHMP243
+NODE_ENV=production
+FRONTEND_URL=https://dondeoficial.netlify.app
+JWT_SECRET=356d746ba35a68bbd5fd2274b87cc679c9203bbc7155aef3c31de0aaa55d686cc4722b2aca063877915da68601229a5328a4e684ce59c15bc20c7b8306a4b7c8
+```
+
+### Paso 5: Desplegar y Verificar
+
+1. Click en **"Create Web Service"**
+2. Esperar a que el build termine (puede tardar 2-5 minutos)
+3. Verificar que el estado sea **"Live"** (verde)
+4. Probar el endpoint de salud:
+   ```
+   https://dondeoficial-backend.onrender.com/api/health
+   ```
+   Debe responder: `{"message":"API is running","status":"OK"}`
+
+### Paso 6: Verificar Conexión a Base de Datos
+
+1. Revisar los logs del servicio Web en Render
+2. Buscar el mensaje: `"Connected to PostgreSQL database"`
+3. Si hay errores de conexión, verificar que las variables de entorno estén correctas
+
+### Troubleshooting
+
+#### Error: "Cannot connect to database"
+- Verificar que todas las variables `DB_*` estén correctas
+- Verificar que la base de datos esté activa en Render
+- Verificar que el firewall permita conexiones desde el servicio Web
+
+#### Error: "JWT_SECRET is not defined"
+- Verificar que `JWT_SECRET` esté configurada en las variables de entorno
+- Regenerar el servicio Web después de agregar la variable
+
+#### El servicio tarda mucho en responder
+- El plan gratuito de Render pone los servicios en "sleep mode" después de inactividad
+- La primera petición puede tardar 30-60 segundos en "despertar"
+
+#### Error: "No se puede encontrar el módulo '/opt/render/project/src/backend/index.js'"
+**Causa:** Render está buscando `index.js` en lugar de `server.js`
+
+**Solución:**
+1. Ir a la configuración del servicio Web en Render
+2. Verificar que **Root Directory** esté configurado exactamente como `backend` (sin `/` al final, sin espacios)
+3. Verificar que **Start Command** sea exactamente `npm start` (no `node index.js`, no `node server.js`, no `cd backend && npm start`)
+4. Guardar los cambios y hacer un nuevo deploy
+
+**Configuración correcta:**
+```
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+```
+
+#### Error en Build Command
+- Verificar que `Root Directory` esté configurado como `backend`
+- Verificar que `Build Command` sea `npm install` (sin `cd backend`)
+
+### URLs y Endpoints
+
+Una vez desplegado, tu API estará disponible en:
+- **Base URL:** `https://dondeoficial-backend.onrender.com`
+- **Health Check:** `https://dondeoficial-backend.onrender.com/api/health`
+- **API Businesses:** `https://dondeoficial-backend.onrender.com/api/businesses`
+- **API Categories:** `https://dondeoficial-backend.onrender.com/api/categories`
+- **API Auth:** `https://dondeoficial-backend.onrender.com/api/auth`
+- **API Leads:** `https://dondeoficial-backend.onrender.com/api/leads`
+- **API Newsletter:** `https://dondeoficial-backend.onrender.com/api/newsletter`
 
 ### Notas Importantes
 
-- Render proporciona una URL gratuita con el formato: `https://dondeoficial-backend.onrender.com`
-- El servicio puede tardar unos minutos en iniciar si está en "sleep mode"
-- Asegúrate de que `FRONTEND_URL` apunte a tu frontend desplegado en Netlify
+⚠️ **IMPORTANTE:**
+- El servicio gratuito de Render entra en "sleep mode" después de 15 minutos de inactividad
+- La primera petición después del sleep puede tardar 30-60 segundos
+- Para producción, considera un plan pago que mantenga el servicio siempre activo
+- Actualiza `FRONTEND_URL` con la URL real de tu frontend desplegado en Netlify
+- Guarda las credenciales de la base de datos en un lugar seguro
+- `JWT_SECRET` debe ser única y no compartirse públicamente
