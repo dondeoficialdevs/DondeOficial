@@ -122,21 +122,55 @@ npm start
 1. En Render Dashboard → **"New +"** → **"Web Service"**
 2. Conectar tu repositorio de GitHub
 3. Seleccionar el repositorio `DondeOficial` (o el nombre de tu repo)
-4. Configurar el servicio:
-   - **Name:** `dondeoficial-backend`
-   - **Environment:** `Node`
-   - **Region:** Misma región que la base de datos
-   - **Branch:** `main` (o la rama principal)
-   - **Root Directory:** `backend` ⚠️ **IMPORTANTE - Debe estar configurado**
-   - **Build Command:** `npm install` ⚠️ **Sin `cd backend`, Render ya está en ese directorio**
-   - **Start Command:** `npm start` ⚠️ **Debe usar `npm start` que ejecuta `node server.js`**
-   - **Plan:** Free (o el plan que prefieras)
+4. Configurar el servicio con estos valores EXACTOS:
+
+   **Configuración del Servicio:**
+   ```
+   Name: dondeoficial-backend
+   Environment: Node
+   Region: <misma región que la base de datos>
+   Branch: main
+   Root Directory: backend
+   Build Command: npm install
+   Start Command: npm start
+   Plan: Free (o el plan que prefieras)
+   ```
+
+   ⚠️ **IMPORTANTE - Verificar cada campo:**
+   - **Root Directory:** Debe ser exactamente `backend` (sin `/`, sin espacios, sin comillas)
+   - **Build Command:** Debe ser exactamente `npm install` (sin `cd backend`, sin rutas adicionales)
+   - **Start Command:** Debe ser exactamente `npm start` (NO `node index.js`, NO `node server.js`, NO `cd backend && npm start`)
+
+### Checklist de Verificación Pre-Deploy
+
+Antes de desplegar, verifica que en Render tengas configurado:
+
+- [ ] **Root Directory:** `backend` (sin espacios, sin `/`)
+- [ ] **Build Command:** `npm install` (sin `cd backend`)
+- [ ] **Start Command:** `npm start` (NO `node index.js` o `node server.js`)
+- [ ] Todas las variables de entorno están configuradas (ver Paso 4)
+- [ ] El repositorio tiene el archivo `backend/server.js`
+- [ ] El repositorio tiene el archivo `backend/package.json` con `"main": "server.js"`
 
 ⚠️ **NOTA CRÍTICA:** 
-- Si ves el error `No se puede encontrar el módulo '/opt/render/project/src/backend/index.js'`:
-  - Verifica que **Root Directory** esté configurado como `backend` (sin barra al final)
-  - Verifica que **Start Command** sea exactamente `npm start` (no `node index.js` ni `node server.js`)
-  - El `package.json` tiene `"main": "server.js"` y `"start": "node server.js"`, así que `npm start` funcionará correctamente
+Si ves el error `No se puede encontrar el módulo '/opt/render/project/src/backend/index.js'`:
+
+1. **Verificar Root Directory:**
+   - Ir a Settings → Build & Deploy
+   - Verificar que "Root Directory" sea exactamente `backend` (sin `/`, sin espacios)
+   - Si está vacío o tiene otro valor, cambiarlo a `backend`
+   - Guardar los cambios
+
+2. **Verificar Start Command:**
+   - Ir a Settings → Build & Deploy
+   - Verificar que "Start Command" sea exactamente `npm start`
+   - Si dice `node index.js` o cualquier otra cosa, cambiarlo a `npm start`
+   - Guardar los cambios
+
+3. **Hacer Manual Deploy:**
+   - Ir a la pestaña "Manual Deploy"
+   - Click en "Deploy latest commit"
+   - Esperar a que termine el build
 
 ### Paso 4: Configurar Variables de Entorno
 
@@ -214,9 +248,11 @@ JWT_SECRET=356d746ba35a68bbd5fd2274b87cc679c9203bbc7155aef3c31de0aaa55d686cc4722
 3. Verificar que el estado sea **"Live"** (verde)
 4. Probar el endpoint de salud:
    ```
-   https://dondeoficial-backend.onrender.com/api/health
+   https://dondeoficial.onrender.com/api/health
    ```
    Debe responder: `{"message":"API is running","status":"OK"}`
+
+✅ **URL de Producción:** `https://dondeoficial.onrender.com`
 
 ### Paso 6: Verificar Conexión a Base de Datos
 
@@ -262,13 +298,13 @@ Start Command: npm start
 ### URLs y Endpoints
 
 Una vez desplegado, tu API estará disponible en:
-- **Base URL:** `https://dondeoficial-backend.onrender.com`
-- **Health Check:** `https://dondeoficial-backend.onrender.com/api/health`
-- **API Businesses:** `https://dondeoficial-backend.onrender.com/api/businesses`
-- **API Categories:** `https://dondeoficial-backend.onrender.com/api/categories`
-- **API Auth:** `https://dondeoficial-backend.onrender.com/api/auth`
-- **API Leads:** `https://dondeoficial-backend.onrender.com/api/leads`
-- **API Newsletter:** `https://dondeoficial-backend.onrender.com/api/newsletter`
+- **Base URL:** `https://dondeoficial.onrender.com`
+- **Health Check:** `https://dondeoficial.onrender.com/api/health`
+- **API Businesses:** `https://dondeoficial.onrender.com/api/businesses`
+- **API Categories:** `https://dondeoficial.onrender.com/api/categories`
+- **API Auth:** `https://dondeoficial.onrender.com/api/auth`
+- **API Leads:** `https://dondeoficial.onrender.com/api/leads`
+- **API Newsletter:** `https://dondeoficial.onrender.com/api/newsletter`
 
 ### Notas Importantes
 
