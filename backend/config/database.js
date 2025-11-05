@@ -6,6 +6,10 @@ const pool = new Pool({
   database: process.env.DB_NAME || "postgres",
   user: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "admin123",
+  // Configuración SSL para Render PostgreSQL
+  ssl: process.env.NODE_ENV === "production" ? {
+    rejectUnauthorized: false
+  } : false,
 });
 
 // Probar conexión a la base de datos

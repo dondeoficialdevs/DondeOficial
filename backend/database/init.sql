@@ -1,6 +1,6 @@
 -- Database initialization script for DondeOficial MVP
-
-CREATE DATABASE IF NOT EXISTS dondeoficial_db;
+-- Note: CREATE DATABASE must be executed separately before running this script
+-- Example: CREATE DATABASE dondeoficial_db;
 
 -- Create categories table
 CREATE TABLE IF NOT EXISTS categories (
