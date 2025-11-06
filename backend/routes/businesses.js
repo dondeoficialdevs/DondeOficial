@@ -59,10 +59,9 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/businesses - Crear nuevo negocio (requiere autenticación)
+// POST /api/businesses - Crear nuevo negocio (público)
 router.post(
   "/",
-  authenticateToken,
   validate(businessSchema),
   async (req, res) => {
     try {
