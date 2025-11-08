@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Lead = require("../models/Lead");
 const { validate, leadSchema } = require("../middleware/validation");
-const { authenticateToken } = require("../middleware/auth");
 
 // POST /api/leads - Crear nuevo lead (público)
 router.post("/", validate(leadSchema), async (req, res) => {
@@ -35,8 +34,8 @@ router.post("/", validate(leadSchema), async (req, res) => {
   }
 });
 
-// GET /api/leads - Listar todos los leads (requiere autenticación)
-router.get("/", authenticateToken, async (req, res) => {
+// GET /api/leads - Listar todos los leads (no requiere autenticación)
+router.get("/", async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
 
@@ -60,8 +59,8 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/leads/:id - Obtener lead por ID (requiere autenticación)
-router.get("/:id", authenticateToken, async (req, res) => {
+// GET /api/leads/:id - Obtener lead por ID (no requiere autenticación)
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const lead = await Lead.findById(id);

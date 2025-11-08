@@ -28,13 +28,11 @@ const businessesRouter = require("./routes/businesses");
 const categoriesRouter = require("./routes/categories");
 const leadsRouter = require("./routes/leads");
 const newsletterRouter = require("./routes/newsletter");
-const authRouter = require("./routes/auth"); // ← AGREGAR ESTA LÍNEA
 
 app.use("/api/businesses", businessesRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/newsletter", newsletterRouter);
-app.use("/api/auth", authRouter); // ← AGREGAR ESTA LÍNEA
 
 // Endpoint de verificación de salud
 app.get("/api/health", (req, res) => {
@@ -52,6 +50,6 @@ app.use("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
