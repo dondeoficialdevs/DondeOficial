@@ -8,7 +8,6 @@
 - **Express.js** 4.x como framework web
 - **PostgreSQL** 15 o superior como base de datos relacional
 - **JavaScript** (ES6+) - No TypeScript en esta versión
-- **jsonwebtoken** para autenticación JWT
 - **Joi** para validación de esquemas
 - **pg** (node-postgres) para conexión a PostgreSQL
 - **dotenv** para manejo de variables de entorno
@@ -40,7 +39,6 @@ backend/
 ├── config/
 │   └── database.js         # Configuración del pool de PostgreSQL
 ├── middleware/
-│   ├── auth.js             # Middleware de autenticación JWT
 │   └── validation.js       # Middleware de validación con Joi
 ├── models/
 │   ├── Business.js         # Modelo de negocios
@@ -48,7 +46,6 @@ backend/
 │   ├── Lead.js             # Modelo de leads (formulario de contacto)
 │   └── NewsletterSubscriber.js  # Modelo de suscriptores
 ├── routes/
-│   ├── auth.js             # Rutas de autenticación
 │   ├── businesses.js       # Rutas de negocios
 │   ├── categories.js       # Rutas de categorías
 │   ├── leads.js            # Rutas de leads
@@ -198,14 +195,7 @@ GET /api/businesses/1
 
 #### `POST /api/businesses` 🔒
 
-Crear un nuevo negocio. **Requiere autenticación.**
-
-**Headers:**
-
-```
-Authorization: Bearer <token>
-Content-Type: application/json
-```
+Crear un nuevo negocio.
 
 **Ejemplo de Request:**
 
@@ -272,14 +262,7 @@ Content-Type: application/json
 
 #### `PUT /api/businesses/:id` 🔒
 
-Actualizar un negocio existente. **Requiere autenticación.**
-
-**Headers:**
-
-```
-Authorization: Bearer <token>
-Content-Type: application/json
-```
+Actualizar un negocio existente.
 
 **Ejemplo de Request:**
 
@@ -446,13 +429,6 @@ Authorization: Bearer <token>
 - Usar librería Joi o Zod para esquemas de validación
 - Sanitizar strings para prevenir inyección SQL
 - Validar tipos de datos (number vs string)
-
-### Autenticación
-
-- Implementar JWT para endpoints protegidos (editar/eliminar negocios)
-- Tokens expiran en 24 horas
-- Refresh token para renovación automática
-- Passwords hasheados con bcrypt (cost: 10)
 
 ### Seguridad en Base de Datos
 
