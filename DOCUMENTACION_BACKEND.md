@@ -20,7 +20,6 @@
   "dependencies": {
     "express": "^4.18.2",
     "pg": "^8.11.0",
-    "jsonwebtoken": "^9.0.0",
     "joi": "^17.9.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3"
@@ -393,10 +392,6 @@ GET /api/categories
 #### `GET /api/leads/:id` 🔒
 
 **Ejemplo de Request:**
-
-```
-Authorization: Bearer <token>
-```
 
 **Ejemplo de Response (200 OK):**
 
