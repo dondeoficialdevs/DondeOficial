@@ -23,6 +23,8 @@ export default function AddListingPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
     loadCategories();
@@ -83,6 +85,62 @@ export default function AddListingPage() {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const fileArray = Array.from(files);
+
+    // Validar que no exceda 10 imágenes
+    if (images.length + fileArray.length > 10) {
+      alert('Máximo 10 imágenes permitidas');
+      return;
+    }
+
+    const validFiles: File[] = [];
+
+    // Validar cada archivo
+    fileArray.forEach((file) => {
+      // Validar tipo
+      if (!file.type.startsWith('image/')) {
+        alert(`${file.name} no es una imagen válida`);
+        return;
+      }
+
+      // Validar tamaño (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} es muy grande. Máximo 5MB`);
+        return;
+      }
+
+      validFiles.push(file);
+    });
+
+    // Leer todas las imágenes válidas
+    const previewPromises = validFiles.map((file) => {
+      return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          resolve(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Esperar a que todas las previews estén listas
+    Promise.all(previewPromises).then((previews) => {
+      setImages(prev => [...prev, ...validFiles]);
+      setImagePreviews(prev => [...prev, ...previews]);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImagePreviews(newPreviews);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -100,7 +158,7 @@ export default function AddListingPage() {
         longitude: formData.longitude ? parseFloat(formData.longitude) : undefined
       };
 
-      await businessApi.create(businessData);
+      await businessApi.create(businessData, images.length > 0 ? images : undefined);
       setSubmitted(true);
       setFormData({
         name: '',
@@ -114,6 +172,8 @@ export default function AddListingPage() {
         latitude: '',
         longitude: ''
       });
+      setImages([]);
+      setImagePreviews([]);
     } catch (error: unknown) {
       console.error('Error creating business:', error);
       const errorMessage = error instanceof Error 
@@ -360,6 +420,48 @@ export default function AddListingPage() {
                   placeholder="e.g., -74.0060"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-2">
+                Imágenes del Negocio (opcional, máximo 10)
+              </label>
+              <input
+                type="file"
+                id="images"
+                name="images"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Formatos: JPG, PNG. Máximo 5MB por imagen. Máximo 10 imágenes.
+              </p>
+
+              {/* Vista previa de imágenes */}
+              {imagePreviews.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-gray-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="pt-6">
