@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "dondeoficial/businesses", // Carpeta en Cloudinary
-    allowed_formats: ["jpg", "jpeg"], // Solo JPG y PNG
+    allowed_formats: ["jpg", "jpeg", "png"], // Solo JPG y PNG
     transformation: [
       { width: 1200, height: 800, crop: "limit" }, // Redimensionar si es muy grande
       { quality: "auto" }, // Optimización automática
