@@ -1,12 +1,16 @@
+-- ============================================
 -- Database initialization script for DondeOficial MVP
--- Note: CREATE DATABASE must be executed separately before running this script
--- Execute this script COMPLETELY from start to finish
-
 -- ============================================
--- STEP 1: CREATE ALL TABLES FIRST
+-- Este script crea todas las tablas, índices y datos iniciales
+-- Ejecutar COMPLETAMENTE desde el inicio hasta el final
 -- ============================================
 
--- Create categories table
+-- ============================================
+-- STEP 1: CREATE ALL TABLES
+-- ============================================
+
+-- Tabla: categories
+-- Almacena las categorías de negocios
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -15,7 +19,8 @@ CREATE TABLE IF NOT EXISTS categories (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create businesses table with UNIQUE constraints for name and email
+-- Tabla: businesses
+-- Almacena la información de los negocios
 CREATE TABLE IF NOT EXISTS businesses (
     id SERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
@@ -34,7 +39,8 @@ CREATE TABLE IF NOT EXISTS businesses (
     CONSTRAINT unique_business_email UNIQUE (email)
 );
 
--- Crear tabla para imágenes de negocios
+-- Tabla: business_images
+-- Almacena las imágenes de los negocios (integración con Cloudinary)
 CREATE TABLE IF NOT EXISTS business_images (
     id SERIAL PRIMARY KEY,
     business_id INTEGER NOT NULL REFERENCES businesses (id) ON DELETE CASCADE,
@@ -44,10 +50,8 @@ CREATE TABLE IF NOT EXISTS business_images (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear índice para búsquedas rápidas
-CREATE INDEX IF NOT EXISTS idx_business_images_business_id ON business_images (business_id);
-
--- Create leads table with UNIQUE constraint for combined email and full_name
+-- Tabla: leads
+-- Almacena los leads del formulario de contacto
 CREATE TABLE IF NOT EXISTS leads (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(200) NOT NULL,
@@ -58,7 +62,8 @@ CREATE TABLE IF NOT EXISTS leads (
     CONSTRAINT unique_lead_email_fullname UNIQUE (email, full_name)
 );
 
--- Create newsletter_subscribers table with UNIQUE constraint for email
+-- Tabla: newsletter_subscribers
+-- Almacena los suscriptores del newsletter
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (
     id SERIAL PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -69,17 +74,25 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 -- STEP 2: CREATE INDEXES
 -- ============================================
 
+-- Índices para mejorar el rendimiento de las consultas
+
+-- Índice para búsquedas por categoría
 CREATE INDEX IF NOT EXISTS idx_businesses_category ON businesses (category_id);
 
+-- Índice para búsquedas por nombre
 CREATE INDEX IF NOT EXISTS idx_businesses_name ON businesses (name);
 
+-- Índice para búsquedas por ubicación (geolocalización)
 CREATE INDEX IF NOT EXISTS idx_businesses_location ON businesses (latitude, longitude);
 
+-- Índice para búsquedas de imágenes por negocio
+CREATE INDEX IF NOT EXISTS idx_business_images_business_id ON business_images (business_id);
+
 -- ============================================
--- STEP 3: INSERT DATA
+-- STEP 3: INSERT SAMPLE DATA
 -- ============================================
 
--- Insert sample categories matching the original site
+-- Insertar categorías de ejemplo
 INSERT INTO
     categories (name, description)
 VALUES (
@@ -107,7 +120,7 @@ VALUES (
         'Gyms and fitness centers'
     ) ON CONFLICT (name) DO NOTHING;
 
--- Insert sample businesses matching the original site style
+-- Insertar negocios de ejemplo
 INSERT INTO
     businesses (
         name,
@@ -210,7 +223,7 @@ VALUES (
         'Open'
     ) ON CONFLICT DO NOTHING;
 
--- Insert sample leads (contact form submissions)
+-- Insertar leads de ejemplo (formulario de contacto)
 INSERT INTO
     leads (
         full_name,
@@ -237,9 +250,17 @@ VALUES (
         'Me interesa una colaboración con DondeOficial. Por favor, contáctenme.'
     ) ON CONFLICT ON CONSTRAINT unique_lead_email_fullname DO NOTHING;
 
--- Insert sample newsletter subscribers
+-- Insertar suscriptores de newsletter de ejemplo
 INSERT INTO
     newsletter_subscribers (email)
 VALUES ('sofia.mendez@email.com'),
     ('rob.robles@email.com'),
     ('patricia.gomez@email.com') ON CONFLICT (email) DO NOTHING;
+
+-- ============================================
+-- SCRIPT COMPLETADO
+-- ============================================
+-- Verificar que todas las tablas se crearon correctamente:
+-- SELECT table_name FROM information_schema.tables 
+-- WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
+-- ============================================
