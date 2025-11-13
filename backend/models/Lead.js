@@ -26,6 +26,9 @@ class Lead {
     const values = [];
     let paramIndex = 1;
 
+    // ORDER BY debe ir antes de LIMIT y OFFSET
+    query += " ORDER BY created_at DESC";
+
     // Agregar paginación
     if (params.limit) {
       query += ` LIMIT $${paramIndex}`;
@@ -37,8 +40,6 @@ class Lead {
       query += ` OFFSET $${paramIndex}`;
       values.push(params.offset);
     }
-
-    query += " ORDER BY created_at DESC";
 
     try {
       const result = await pool.query(query, values);
