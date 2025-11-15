@@ -25,10 +25,26 @@ router.get("/", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching businesses:", error);
+    console.error("Error code:", error.code);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+    });
+    
+    // Mensajes más específicos según el tipo de error
+    let errorMessage = "Error fetching businesses";
+    if (error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT") {
+      errorMessage = "No se pudo conectar a la base de datos. Verifica la configuración.";
+    } else if (error.code === "28P01") {
+      errorMessage = "Error de autenticación con la base de datos.";
+    } else if (error.code === "3D000") {
+      errorMessage = "La base de datos no existe.";
+    }
+    
     res.status(500).json({
       success: false,
-      message: "Error fetching businesses",
-      error: error.message,
+      message: errorMessage,
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 });
