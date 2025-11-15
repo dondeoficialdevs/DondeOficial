@@ -1,26 +1,73 @@
 const pool = require("../config/database");
 
+// Cache para verificar si la tabla business_images existe (se verifica una sola vez)
+let hasBusinessImagesTable = null;
+
+async function checkBusinessImagesTable() {
+  if (hasBusinessImagesTable !== null) {
+    return hasBusinessImagesTable;
+  }
+  
+  try {
+    const checkTableQuery = `
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'business_images'
+      );
+    `;
+    const tableCheck = await pool.query(checkTableQuery);
+    hasBusinessImagesTable = tableCheck.rows[0].exists;
+    if (!hasBusinessImagesTable) {
+      console.warn("⚠️  Tabla 'business_images' no existe. Los negocios se devolverán sin imágenes.");
+    }
+    return hasBusinessImagesTable;
+  } catch (error) {
+    console.warn("Could not check for business_images table:", error.message);
+    hasBusinessImagesTable = false;
+    return false;
+  }
+}
+
 class Business {
   static async findAll(params = {}) {
-    let query = `
-      SELECT 
-        b.*, 
-        c.name as category_name,
-        COALESCE(
-          json_agg(
-            json_build_object(
-              'id', bi.id,
-              'image_url', bi.image_url,
-              'is_primary', bi.is_primary
-            ) ORDER BY bi.is_primary DESC, bi.created_at ASC
-          ) FILTER (WHERE bi.id IS NOT NULL), 
-          '[]'
-        ) as images
-      FROM businesses b 
-      LEFT JOIN categories c ON b.category_id = c.id
-      LEFT JOIN business_images bi ON b.id = bi.business_id
-      WHERE 1=1
-    `;
+    // Verificar si la tabla business_images existe (solo una vez)
+    const hasTable = await checkBusinessImagesTable();
+
+    // Construir la consulta según si la tabla existe o no
+    let query;
+    if (hasTable) {
+      query = `
+        SELECT 
+          b.*, 
+          c.name as category_name,
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'id', bi.id,
+                'image_url', bi.image_url,
+                'is_primary', bi.is_primary
+              ) ORDER BY bi.is_primary DESC, bi.created_at ASC
+            ) FILTER (WHERE bi.id IS NOT NULL), 
+            '[]'
+          ) as images
+        FROM businesses b 
+        LEFT JOIN categories c ON b.category_id = c.id
+        LEFT JOIN business_images bi ON b.id = bi.business_id
+        WHERE 1=1
+      `;
+    } else {
+      // Si la tabla no existe, devolver array vacío para images
+      query = `
+        SELECT 
+          b.*, 
+          c.name as category_name,
+          '[]'::json as images
+        FROM businesses b 
+        LEFT JOIN categories c ON b.category_id = c.id
+        WHERE 1=1
+      `;
+    }
     const values = [];
     let paramIndex = 1;
 
@@ -73,26 +120,42 @@ class Business {
   }
 
   static async findById(id) {
-    const query = `
-      SELECT 
-        b.*, 
-        c.name as category_name,
-        COALESCE(
-          json_agg(
-            json_build_object(
-              'id', bi.id,
-              'image_url', bi.image_url,
-              'is_primary', bi.is_primary
-            ) ORDER BY bi.is_primary DESC, bi.created_at ASC
-          ) FILTER (WHERE bi.id IS NOT NULL), 
-          '[]'
-        ) as images
-      FROM businesses b 
-      LEFT JOIN categories c ON b.category_id = c.id
-      LEFT JOIN business_images bi ON b.id = bi.business_id
-      WHERE b.id = $1
-      GROUP BY b.id, c.name
-    `;
+    // Verificar si la tabla business_images existe (solo una vez)
+    const hasTable = await checkBusinessImagesTable();
+
+    let query;
+    if (hasTable) {
+      query = `
+        SELECT 
+          b.*, 
+          c.name as category_name,
+          COALESCE(
+            json_agg(
+              json_build_object(
+                'id', bi.id,
+                'image_url', bi.image_url,
+                'is_primary', bi.is_primary
+              ) ORDER BY bi.is_primary DESC, bi.created_at ASC
+            ) FILTER (WHERE bi.id IS NOT NULL), 
+            '[]'
+          ) as images
+        FROM businesses b 
+        LEFT JOIN categories c ON b.category_id = c.id
+        LEFT JOIN business_images bi ON b.id = bi.business_id
+        WHERE b.id = $1
+        GROUP BY b.id, c.name
+      `;
+    } else {
+      query = `
+        SELECT 
+          b.*, 
+          c.name as category_name,
+          '[]'::json as images
+        FROM businesses b 
+        LEFT JOIN categories c ON b.category_id = c.id
+        WHERE b.id = $1
+      `;
+    }
 
     try {
       const result = await pool.query(query, [id]);
