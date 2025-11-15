@@ -24,12 +24,10 @@ router.get("/", async (req, res) => {
       count: businesses.length,
     });
   } catch (error) {
-    console.error("Error fetching businesses:", error);
+    console.error("❌ Error fetching businesses:", error);
     console.error("Error code:", error.code);
-    console.error("Error details:", {
-      message: error.message,
-      stack: error.stack,
-    });
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
     
     // Mensajes más específicos según el tipo de error
     let errorMessage = "Error fetching businesses";
@@ -39,12 +37,22 @@ router.get("/", async (req, res) => {
       errorMessage = "Error de autenticación con la base de datos.";
     } else if (error.code === "3D000") {
       errorMessage = "La base de datos no existe.";
+    } else if (error.code === "42P01") {
+      errorMessage = "Una tabla no existe en la base de datos.";
+    } else if (error.code === "42703") {
+      errorMessage = "Una columna no existe en la base de datos.";
     }
     
     res.status(500).json({
       success: false,
       message: errorMessage,
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      error: error.message, // Mostrar siempre el mensaje de error para diagnóstico
+      code: error.code, // Código de error de PostgreSQL si existe
+      // En desarrollo, mostrar más detalles
+      ...(process.env.NODE_ENV === "development" && {
+        stack: error.stack,
+        query: error.query
+      })
     });
   }
 });

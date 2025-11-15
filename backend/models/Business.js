@@ -64,6 +64,10 @@ class Business {
       return result.rows;
     } catch (error) {
       console.error("Error finding businesses:", error);
+      console.error("SQL Query:", query);
+      console.error("Query Values:", values);
+      console.error("Error Code:", error.code);
+      console.error("Error Message:", error.message);
       throw error;
     }
   }
