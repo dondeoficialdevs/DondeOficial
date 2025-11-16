@@ -89,10 +89,49 @@ const validate = (schema) => {
   };
 };
 
+// Validación para login
+const loginSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    "string.empty": "Email is required",
+    "string.email": "Email must be a valid email address",
+    "any.required": "Email is required",
+  }),
+  password: Joi.string().min(6).required().messages({
+    "string.empty": "Password is required",
+    "string.min": "Password must be at least 6 characters",
+    "any.required": "Password is required",
+  }),
+});
+
+// Validación para cambiar contraseña
+const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required().messages({
+    "string.empty": "Current password is required",
+    "any.required": "Current password is required",
+  }),
+  newPassword: Joi.string().min(6).required().messages({
+    "string.empty": "New password is required",
+    "string.min": "New password must be at least 6 characters",
+    "any.required": "New password is required",
+  }),
+});
+
+// Validación para refresh token
+const refreshTokenSchema = Joi.object({
+  refreshToken: Joi.string().required().messages({
+    "string.empty": "Refresh token is required",
+    "any.required": "Refresh token is required",
+  }),
+});
+
 module.exports = {
+  validate,
   validate,
   leadSchema,
   newsletterSchema,
   businessSchema,
   categorySchema,
+  loginSchema,
+  changePasswordSchema,
+  refreshTokenSchema,
 };

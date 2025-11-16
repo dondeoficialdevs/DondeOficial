@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Lead = require("../models/Lead");
 const { validate, leadSchema } = require("../middleware/validation");
+const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
 
 // POST /api/leads - Crear nuevo lead (público)
 router.post("/", validate(leadSchema), async (req, res) => {
   try {
     const { full_name, email, subject, message } = req.validatedData;
 
-    // Verificar duplicado
     const existingLead = await Lead.checkDuplicate(email, full_name);
     if (existingLead) {
       return res.status(409).json({
@@ -34,8 +34,8 @@ router.post("/", validate(leadSchema), async (req, res) => {
   }
 });
 
-// GET /api/leads - Listar todos los leads (no requiere autenticación)
-router.get("/", async (req, res) => {
+// GET /api/leads - Listar todos los leads (PROTEGIDO) ← CAMBIADO
+router.get("/", authenticateToken, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
 
@@ -59,8 +59,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/leads/:id - Obtener lead por ID (no requiere autenticación)
-router.get("/:id", async (req, res) => {
+// GET /api/leads/:id - Obtener lead por ID (PROTEGIDO) ← CAMBIADO
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const lead = await Lead.findById(id);

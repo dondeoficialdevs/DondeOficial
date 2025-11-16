@@ -27,7 +27,9 @@ const corsOptions = {
         callback(null, true);
       } else {
         // En desarrollo, también permitir otros orígenes para facilitar pruebas
-        console.log(`⚠️  CORS: Permitiendo origen no estándar en desarrollo: ${origin}`);
+        console.log(
+          `⚠️  CORS: Permitiendo origen no estándar en desarrollo: ${origin}`
+        );
         callback(null, true);
       }
     } else {
@@ -36,7 +38,9 @@ const corsOptions = {
       if (!allowedOrigin || origin === allowedOrigin || !origin) {
         callback(null, true);
       } else {
-        console.warn(`⚠️  CORS: Origin ${origin} not in allowed list. Expected: ${allowedOrigin}`);
+        console.warn(
+          `⚠️  CORS: Origin ${origin} not in allowed list. Expected: ${allowedOrigin}`
+        );
         // En producción, ser más estricto pero aún permitir si no hay origin (peticiones directas)
         callback(null, true);
       }
@@ -55,11 +59,13 @@ const businessesRouter = require("./routes/businesses");
 const categoriesRouter = require("./routes/categories");
 const leadsRouter = require("./routes/leads");
 const newsletterRouter = require("./routes/newsletter");
+const authRouter = require("./routes/auth");
 
 app.use("/api/businesses", businessesRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/newsletter", newsletterRouter);
+app.use("/api/auth", authRouter);
 
 // Endpoint de verificación de salud
 app.get("/api/health", (req, res) => {
@@ -82,11 +88,15 @@ async function startServer() {
   // Verificar conexión a la base de datos antes de iniciar
   console.log("\n=== Verificando conexión a base de datos ===");
   const dbConnected = await testConnection();
-  
+
   if (!dbConnected) {
     console.error("\n⚠️  ADVERTENCIA: No se pudo conectar a la base de datos");
-    console.error("   El servidor se iniciará pero las peticiones a la BD fallarán");
-    console.error("   Verifica tu archivo .env y las credenciales de la base de datos\n");
+    console.error(
+      "   El servidor se iniciará pero las peticiones a la BD fallarán"
+    );
+    console.error(
+      "   Verifica tu archivo .env y las credenciales de la base de datos\n"
+    );
   }
 
   app.listen(PORT, "0.0.0.0", () => {

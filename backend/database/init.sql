@@ -9,6 +9,38 @@
 -- STEP 1: CREATE ALL TABLES
 -- ============================================
 
+-- Create users table for authentication
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(200) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create refresh_tokens table for managing refresh tokens
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens (user_id);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens (token);
+
+-- Insert default admin user
+-- Password: admin123 (IMPORTANTE: Cambiar en producción)
+INSERT INTO
+    users (email, password, full_name)
+VALUES (
+        'admin@dondeoficial.com',
+        '$2a$12$girc3Yd2Y9eC9mQLrSVkje5qWLNkDlQat26AhqlbYygkTlQr2056i', -- hashed password for 'admin123*'
+        'Karen Zarate'
+    ) ON CONFLICT (email) DO NOTHING;
+
 -- Tabla: categories
 -- Almacena las categorías de negocios
 CREATE TABLE IF NOT EXISTS categories (
@@ -261,6 +293,6 @@ VALUES ('sofia.mendez@email.com'),
 -- SCRIPT COMPLETADO
 -- ============================================
 -- Verificar que todas las tablas se crearon correctamente:
--- SELECT table_name FROM information_schema.tables 
+-- SELECT table_name FROM information_schema.tables
 -- WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
 -- ============================================

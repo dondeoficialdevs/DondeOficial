@@ -1,31 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Category = require('../models/Category');
+const Category = require("../models/Category");
+const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
 
-// GET /api/categories - Listar todas las categorías
-router.get('/', async (req, res) => {
+// GET /api/categories - Listar todas las categorías (público)
+router.get("/", async (req, res) => {
   try {
     const categories = await Category.findAll();
 
     res.json({
       success: true,
       data: categories,
-      count: categories.length
+      count: categories.length,
     });
   } catch (error) {
-    console.error('Error fetching categories:', error);
-    console.error('Error code:', error.code);
-    
-    // Mensajes más específicos según el tipo de error
-    let errorMessage = 'Error fetching categories';
+    console.error("Error fetching categories:", error);
+    console.error("Error code:", error.code);
+
+    let errorMessage = "Error fetching categories";
     if (error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT") {
-      errorMessage = "No se pudo conectar a la base de datos. Verifica la configuración.";
+      errorMessage =
+        "No se pudo conectar a la base de datos. Verifica la configuración.";
     } else if (error.code === "28P01") {
       errorMessage = "Error de autenticación con la base de datos.";
     } else if (error.code === "3D000") {
       errorMessage = "La base de datos no existe.";
     }
-    
+
     res.status(500).json({
       success: false,
       message: errorMessage,
@@ -34,8 +35,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/categories/:id - Obtener categoría por ID
-router.get('/:id', async (req, res) => {
+// GET /api/categories/:id - Obtener categoría por ID (público)
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const category = await Category.findById(id);
@@ -43,33 +44,33 @@ router.get('/:id', async (req, res) => {
     if (!category) {
       return res.status(404).json({
         success: false,
-        message: 'Category not found'
+        message: "Category not found",
       });
     }
 
     res.json({
       success: true,
-      data: category
+      data: category,
     });
   } catch (error) {
-    console.error('Error fetching category:', error);
+    console.error("Error fetching category:", error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching category',
-      error: error.message
+      message: "Error fetching category",
+      error: error.message,
     });
   }
 });
 
-// POST /api/categories - Crear nueva categoría
-router.post('/', async (req, res) => {
+// POST /api/categories - Crear nueva categoría (público)
+router.post("/", async (req, res) => {
   try {
     const { name, description } = req.body;
 
     if (!name) {
       return res.status(400).json({
         success: false,
-        message: 'Name is required'
+        message: "Name is required",
       });
     }
 
@@ -78,14 +79,14 @@ router.post('/', async (req, res) => {
     res.status(201).json({
       success: true,
       data: category,
-      message: 'Category created successfully'
+      message: "Category created successfully",
     });
   } catch (error) {
-    console.error('Error creating category:', error);
+    console.error("Error creating category:", error);
     res.status(500).json({
       success: false,
-      message: 'Error creating category',
-      error: error.message
+      message: "Error creating category",
+      error: error.message,
     });
   }
 });

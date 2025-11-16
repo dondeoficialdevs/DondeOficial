@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const NewsletterSubscriber = require("../models/NewsletterSubscriber");
 const { validate, newsletterSchema } = require("../middleware/validation");
+const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
 
 // POST /api/newsletter/subscribe - Suscribirse al newsletter (público)
 router.post("/subscribe", validate(newsletterSchema), async (req, res) => {
   try {
     const { email } = req.validatedData;
 
-    // Verificar si el email ya está suscrito
     const existingSubscriber = await NewsletterSubscriber.findByEmail(email);
     if (existingSubscriber) {
       return res.status(409).json({
@@ -34,8 +34,8 @@ router.post("/subscribe", validate(newsletterSchema), async (req, res) => {
   }
 });
 
-// GET /api/newsletter/subscribers - Listar todos los suscriptores (no requiere autenticación)
-router.get("/subscribers", async (req, res) => {
+// GET /api/newsletter/subscribers - Listar todos los suscriptores (PROTEGIDO) ← CAMBIADO
+router.get("/subscribers", authenticateToken, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
 
@@ -59,8 +59,8 @@ router.get("/subscribers", async (req, res) => {
   }
 });
 
-// DELETE /api/newsletter/subscribers/:id - Eliminar suscriptor (requiere autenticación)
-router.delete("/subscribers/:id", async (req, res) => {
+// DELETE /api/newsletter/subscribers/:id - Eliminar suscriptor (PROTEGIDO) ← YA ESTABA
+router.delete("/subscribers/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const subscriber = await NewsletterSubscriber.delete(id);
