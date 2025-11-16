@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { businessApi, categoryApi } from '../lib/api';
 import { Business, Category } from '../types';
 import LoadingScreen from '../components/LoadingScreen';
 import Header from '../components/Header';
-import HeroSection from '../components/HeroSection';
 import ActionCards from '../components/ActionCards';
 import FeaturedListings from '../components/FeaturedListings';
 import FeaturesSection from '../components/FeaturesSection';
@@ -16,7 +16,10 @@ import VideoSection from '../components/VideoSection';
 import NewsletterSection from '../components/NewsletterSection';
 import BlogSection from '../components/BlogSection';
 import Footer from '../components/Footer';
-import PWAInstaller from '../components/PWAInstaller';
+
+// Importar componentes que requieren APIs del navegador solo en el cliente
+const GoogleMapsSection = dynamic(() => import('../components/GoogleMapsSection'), { ssr: false });
+const PWAInstaller = dynamic(() => import('../components/PWAInstaller'), { ssr: false });
 
 export default function Home() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
@@ -111,7 +114,7 @@ export default function Home() {
         <main>
           <ActionCards />
           
-          <HeroSection onSearch={handleSearch} />
+          <GoogleMapsSection businesses={businesses} onSearch={handleSearch} />
           
           {error && (
             <div className="container mx-auto px-4 py-8">
