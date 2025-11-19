@@ -94,6 +94,22 @@ CREATE TABLE IF NOT EXISTS leads (
     CONSTRAINT unique_lead_email_fullname UNIQUE (email, full_name)
 );
 
+-- Tabla: reviews
+-- Almacena las calificaciones y comentarios de los negocios
+CREATE TABLE IF NOT EXISTS reviews (
+    id SERIAL PRIMARY KEY,
+    business_id INTEGER NOT NULL REFERENCES businesses (id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    user_name VARCHAR(200),
+    user_email VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_reviews_business_id ON reviews (business_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_created_at ON reviews (created_at DESC);
+
 -- Tabla: newsletter_subscribers
 -- Almacena los suscriptores del newsletter
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (

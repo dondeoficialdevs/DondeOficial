@@ -60,12 +60,14 @@ const categoriesRouter = require("./routes/categories");
 const leadsRouter = require("./routes/leads");
 const newsletterRouter = require("./routes/newsletter");
 const authRouter = require("./routes/auth");
+const reviewsRouter = require("./routes/reviews");
 
 app.use("/api/businesses", businessesRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/leads", leadsRouter);
 app.use("/api/newsletter", newsletterRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/reviews", reviewsRouter);
 
 // Endpoint de verificación de salud
 app.get("/api/health", (req, res) => {
