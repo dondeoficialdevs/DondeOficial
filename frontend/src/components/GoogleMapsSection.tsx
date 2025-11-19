@@ -291,141 +291,148 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
         <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 map-container" style={{ height: '600px' }}>
           {/* Buscador overlay que aparece encima del mapa */}
           {showSearchBar && (
-            <div className="absolute top-4 left-4 right-4 z-[1000] search-bar-container">
-              <div className="bg-blue-900 rounded-lg p-4 shadow-2xl">
-                <div className="flex items-center gap-2">
-                {/* Botón Categorías */}
-                <div className="relative category-dropdown">
-                  <button
-                    onClick={() => {
-                      setShowCategoryDropdown(!showCategoryDropdown);
-                      setShowMenuDropdown(false);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium text-sm"
-                  >
-                    <span className="font-semibold">Categorías</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  {showCategoryDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
-                      {categories.length > 0 ? (
-                        categories.map((category) => (
-                          <button
-                            key={category.id}
-                            onClick={() => {
-                              setSelectedCategory(category.name);
-                              setShowCategoryDropdown(false);
-                            }}
-                            className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors text-sm font-medium text-gray-900"
-                          >
-                            {category.name}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="px-4 py-2 text-sm text-gray-500">Cargando categorías...</div>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Campo de búsqueda */}
-                <form onSubmit={handleSearchSubmit} className="flex-1 flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="¿Qué estas buscando?"
-                    className="flex-1 px-4 py-2.5 bg-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
-                  />
-
-                  {/* Filtro de ubicación */}
-                  {location && (
-                    <div className="flex items-center gap-2 px-3 py-2.5 bg-white rounded-lg">
-                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-[1000] search-bar-container">
+              <div className="bg-blue-900 rounded-lg p-2 sm:p-4 shadow-2xl">
+                {/* Primera fila: Categorías, Búsqueda, Menú y Cerrar */}
+                <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-0">
+                  {/* Botón Categorías */}
+                  <div className="relative category-dropdown flex-shrink-0">
+                    <button
+                      onClick={() => {
+                        setShowCategoryDropdown(!showCategoryDropdown);
+                        setShowMenuDropdown(false);
+                      }}
+                      className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 sm:py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium text-xs sm:text-sm"
+                    >
+                      <span className="font-semibold hidden sm:inline">Categorías</span>
+                      <span className="font-semibold sm:hidden">Cat.</span>
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
-                      <span className="text-sm text-gray-900 font-semibold">{location}</span>
-                      <button
-                        type="button"
-                        onClick={handleClearLocation}
-                        className="text-gray-600 hover:text-gray-900"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
+                    </button>
+                    
+                    {showCategoryDropdown && (
+                      <div className="absolute top-full left-0 mt-2 w-56 sm:w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-80 sm:max-h-96 overflow-y-auto">
+                        {categories.length > 0 ? (
+                          categories.map((category) => (
+                            <button
+                              key={category.id}
+                              onClick={() => {
+                                setSelectedCategory(category.name);
+                                setShowCategoryDropdown(false);
+                              }}
+                              className="w-full text-left px-3 sm:px-4 py-2 hover:bg-gray-100 transition-colors text-xs sm:text-sm font-medium text-gray-900"
+                            >
+                              {category.name}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-500">Cargando categorías...</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                  {/* Botón de búsqueda */}
-                  <button
-                    type="submit"
-                    className="px-4 py-2.5 bg-blue-800 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </button>
-                </form>
+                  {/* Campo de búsqueda */}
+                  <form onSubmit={handleSearchSubmit} className="flex-1 min-w-[120px] flex items-center gap-1 sm:gap-2">
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder="¿Qué buscas?"
+                      className="flex-1 px-2 sm:px-4 py-2 sm:py-2.5 bg-gray-200 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-xs sm:text-sm"
+                    />
 
-                {/* Botón con menú desplegable */}
-                <div className="relative menu-dropdown">
+                    {/* Botón de búsqueda */}
+                    <button
+                      type="submit"
+                      className="px-2 sm:px-4 py-2 sm:py-2.5 bg-blue-800 text-white rounded-lg hover:bg-blue-700 transition-colors flex-shrink-0"
+                      aria-label="Buscar"
+                    >
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </button>
+                  </form>
+
+                  {/* Botón con menú desplegable */}
+                  <div className="relative menu-dropdown flex-shrink-0">
+                    <button
+                      onClick={() => {
+                        setShowMenuDropdown(!showMenuDropdown);
+                        setShowCategoryDropdown(false);
+                      }}
+                      className="px-2 sm:px-4 py-2 sm:py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium text-xs sm:text-sm"
+                      aria-label="Menú"
+                    >
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                    </button>
+                    
+                    {showMenuDropdown && (
+                      <div className="absolute top-full right-0 mt-2 w-56 sm:w-64 bg-teal-600 rounded-lg shadow-xl z-50">
+                        <div className="py-2">
+                          <Link href="/add-listing" className="block px-3 sm:px-4 py-2 text-white hover:bg-teal-700 transition-colors font-semibold text-xs sm:text-sm" onClick={() => setShowMenuDropdown(false)}>
+                            ANUNCIA TU NEGOCIO
+                          </Link>
+                          <div className="border-t border-teal-500 my-1"></div>
+                          <Link href="#" className="block px-3 sm:px-4 py-2 text-white hover:bg-teal-700 transition-colors font-medium text-xs sm:text-sm" onClick={() => setShowMenuDropdown(false)}>
+                            HAZ CRECER TU NEGOCIO
+                          </Link>
+                          <Link href="/admin/login" className="block px-3 sm:px-4 py-2 text-white hover:bg-teal-700 transition-colors font-medium text-xs sm:text-sm" onClick={() => setShowMenuDropdown(false)}>
+                            INICIAR SESIÓN
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Botón para cerrar el buscador */}
                   <button
                     onClick={() => {
-                      setShowMenuDropdown(!showMenuDropdown);
-                      setShowCategoryDropdown(false);
+                      setShowSearchBar(false);
+                      setSearchTerm('');
+                      setSelectedCategory('');
+                      setLocation('Cerca de mí');
                     }}
-                    className="px-4 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium text-sm"
+                    className="px-2 sm:px-3 py-2 sm:py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex-shrink-0"
+                    title="Cerrar buscador"
+                    aria-label="Cerrar buscador"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
-                  
-                  {showMenuDropdown && (
-                    <div className="absolute top-full right-0 mt-2 w-64 bg-teal-600 rounded-lg shadow-xl z-50">
-                      <div className="py-2">
-                        <Link href="/add-listing" className="block px-4 py-2 text-white hover:bg-teal-700 transition-colors font-semibold" onClick={() => setShowMenuDropdown(false)}>
-                          ANUNCIA TU NEGOCIO
-                        </Link>
-                        <div className="border-t border-teal-500 my-1"></div>
-                        <Link href="#" className="block px-4 py-2 text-white hover:bg-teal-700 transition-colors font-medium" onClick={() => setShowMenuDropdown(false)}>
-                          HAZ CRECER TU NEGOCIO
-                        </Link>
-                        <Link href="/admin/login" className="block px-4 py-2 text-white hover:bg-teal-700 transition-colors font-medium" onClick={() => setShowMenuDropdown(false)}>
-                          INICIAR SESIÓN
-                        </Link>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
-                {/* Botón para cerrar el buscador */}
-                <button
-                  onClick={() => {
-                    setShowSearchBar(false);
-                    setSearchTerm('');
-                    setSelectedCategory('');
-                    setLocation('Cerca de mí');
-                  }}
-                  className="px-3 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                  title="Cerrar buscador"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+                {/* Segunda fila: Filtro de ubicación (solo en móvil cuando hay espacio, o siempre visible) */}
+                {location && (
+                  <div className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2.5 bg-white rounded-lg mt-2 sm:mt-0 sm:inline-flex">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="text-xs sm:text-sm text-gray-900 font-semibold truncate flex-1">{location}</span>
+                    <button
+                      type="button"
+                      onClick={handleClearLocation}
+                      className="text-gray-600 hover:text-gray-900 flex-shrink-0"
+                      aria-label="Limpiar ubicación"
+                    >
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Lista de negocios encontrados */}
               {(searchTerm || selectedCategory) && filteredBusinesses.length > 0 && (
-                <div className="mt-4 bg-white rounded-lg shadow-lg max-h-96 overflow-y-auto">
-                  <div className="p-3 border-b border-gray-200">
-                    <h3 className="text-sm font-bold text-gray-900">
+                <div className="mt-2 sm:mt-4 bg-white rounded-lg shadow-lg max-h-64 sm:max-h-96 overflow-y-auto">
+                  <div className="p-2 sm:p-3 border-b border-gray-200 sticky top-0 bg-white z-10">
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-900">
                       {filteredBusinesses.length} {filteredBusinesses.length === 1 ? 'negocio encontrado' : 'negocios encontrados'}
                     </h3>
                   </div>
@@ -437,17 +444,17 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                           handleMarkerClick(business);
                           setShowSearchBar(false);
                         }}
-                        className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="p-2 sm:p-3 hover:bg-gray-50 cursor-pointer transition-colors"
                       >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-gray-900 mb-1 line-clamp-1">{business.name}</h4>
+                            <h4 className="font-semibold text-sm sm:text-base text-gray-900 mb-1 line-clamp-1">{business.name}</h4>
                             {business.category_name && (
                               <span className="inline-block text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded mb-1">
                                 {business.category_name}
@@ -466,8 +473,8 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
 
               {/* Mensaje cuando no hay resultados */}
               {(searchTerm || selectedCategory) && filteredBusinesses.length === 0 && (
-                <div className="mt-4 bg-white rounded-lg shadow-lg p-4">
-                  <p className="text-sm text-gray-600 text-center">
+                <div className="mt-2 sm:mt-4 bg-white rounded-lg shadow-lg p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm text-gray-600 text-center">
                     No se encontraron negocios con los criterios de búsqueda
                   </p>
                 </div>
@@ -529,36 +536,61 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                   click: () => handleMarkerClick(business),
                 }}
               >
-                <Popup>
-                  <div className="p-2 max-w-xs">
-                    <h3 className="font-bold text-lg text-gray-900 mb-2">
+                <Popup className="custom-popup" maxWidth={400}>
+                  <div className="p-4 min-w-[320px] max-w-[400px]">
+                    <h3 className="font-bold text-xl text-gray-900 mb-3">
                       {business.name}
                     </h3>
+                    
                     {business.category_name && (
-                      <p className="text-sm text-blue-600 mb-2">
-                        {business.category_name}
-                      </p>
+                      <div className="mb-3">
+                        <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                          {business.category_name}
+                        </span>
+                      </div>
                     )}
-                    {business.address && (
-                      <p className="text-sm text-gray-600 mb-2">
-                        📍 {business.address}
-                      </p>
-                    )}
-                    {business.phone && (
-                      <p className="text-sm text-gray-600 mb-2">
-                        📞 {business.phone}
-                      </p>
-                    )}
+
                     {business.description && (
-                      <p className="text-sm text-gray-700 mb-3 line-clamp-2">
+                      <p className="text-sm text-gray-700 mb-4 leading-relaxed">
                         {business.description}
                       </p>
                     )}
-                    <div className="flex flex-col gap-2 mt-3">
+
+                    <div className="space-y-2 mb-4 border-t border-gray-200 pt-3">
+                      {business.address && (
+                        <div className="flex items-start gap-2 text-sm text-gray-600">
+                          <svg className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="flex-1">{business.address}</span>
+                        </div>
+                      )}
+                      
+                      {business.phone && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                          <span className="font-medium">{business.phone}</span>
+                        </div>
+                      )}
+
+                      {business.opening_hours && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <svg className="w-4 h-4 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{business.opening_hours}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-2 mt-4 pt-3 border-t border-gray-200">
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleGetDirectionsFromCurrentLocation(business)}
-                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md hover:shadow-lg"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -567,7 +599,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                         </button>
                         <button
                           onClick={() => handleGetDirections(business)}
-                          className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -577,7 +609,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                       </div>
                       <a
                         href={`/businesses/${business.id}`}
-                        className="text-center text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        className="block text-center px-4 py-2.5 bg-gray-100 text-blue-600 hover:bg-gray-200 text-sm font-semibold rounded-lg transition-colors"
                       >
                         Ver más detalles →
                       </a>
@@ -650,6 +682,30 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
         
         .business-list-container::-webkit-scrollbar-thumb:hover {
           background: #94a3b8;
+        }
+        
+        /* Estilos personalizados para popup del mapa */
+        :global(.leaflet-popup-content-wrapper) {
+          border-radius: 12px !important;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+          max-width: 400px !important;
+          min-width: 320px !important;
+        }
+        
+        :global(.leaflet-popup-content) {
+          margin: 0 !important;
+          width: 100% !important;
+          min-width: 320px !important;
+        }
+        
+        :global(.custom-popup) {
+          max-width: 400px !important;
+          min-width: 320px !important;
+        }
+        
+        :global(.leaflet-popup-tip) {
+          background: white !important;
+          box-shadow: 0 3px 14px rgba(0, 0, 0, 0.15) !important;
         }
       `}</style>
     </section>
