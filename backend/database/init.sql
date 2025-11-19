@@ -145,30 +145,30 @@ INSERT INTO
     categories (name, description)
 VALUES (
         'Restaurant',
-        'Popular restaurants in your area'
+        'Restaurantes populares en Tunja'
     ),
     (
         'Museums',
-        'Museums and cultural attractions'
+        'Museos y atracciones culturales en Tunja'
     ),
     (
         'Game Field',
-        'Sports and gaming venues'
+        'Campos deportivos y lugares de entretenimiento'
     ),
     (
         'Job & Feed',
-        'Professional services and agencies'
+        'Servicios profesionales y agencias en Tunja'
     ),
     (
         'Party Center',
-        'Event and party venues'
+        'Salones de eventos y celebraciones'
     ),
     (
         'Fitness Zone',
-        'Gyms and fitness centers'
+        'Gimnasios y centros de acondicionamiento físico'
     ) ON CONFLICT (name) DO NOTHING;
 
--- Insertar negocios de ejemplo
+-- Insertar negocios de ejemplo en Tunja, Colombia
 INSERT INTO
     businesses (
         name,
@@ -178,97 +178,129 @@ INSERT INTO
         email,
         website,
         category_id,
-        opening_hours
+        opening_hours,
+        latitude,
+        longitude
     )
 VALUES (
-        'Food Corner',
-        'Popular restaurant in california serving delicious meals and great ambiance',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@foodcorner.com',
-        'https://foodcorner.com',
+        'Asadero Moscovita',
+        'Restaurante especializado en carnes asadas y comida típica colombiana. Ambiente acogedor y servicio de calidad',
+        'Avenida Norte 54-72, Barrio La Granja, Tunja, Boyacá',
+        '+57 310 123 4567',
+        'contacto@moscovita.com',
+        'https://moscovita.com',
         1,
-        'Open'
+        'Lun-Dom: 11:00 AM - 10:00 PM',
+        5.5423,
+        -73.3615
     ),
     (
-        'Central History',
-        'Experience the rich history and culture at our central history museum',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@centralhistory.com',
-        'https://centralhistory.com',
+        'Museo Casa del Fundador Gonzalo Suárez Rendón',
+        'Museo histórico que expone la rica historia colonial de Tunja y la región boyacense',
+        'Carrera 9 #19-56, Centro Histórico, Tunja, Boyacá',
+        '+57 8 742 0100',
+        'museo@tunja.gov.co',
+        'https://tunja.gov.co/museo',
         2,
-        'Open'
+        'Mar-Dom: 9:00 AM - 5:00 PM',
+        5.5331,
+        -73.3683
     ),
     (
-        'Xtream Gym',
-        'Modern fitness center with state-of-the-art equipment and professional trainers',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@xtreamgym.com',
-        'https://xtreamgym.com',
+        'Xtream Gym Tunja',
+        'Centro de acondicionamiento físico moderno con equipos de última generación y entrenadores profesionales',
+        'Carrera 11 #22-45, Centro, Tunja, Boyacá',
+        '+57 310 987 6543',
+        'info@xtreamgymtunja.com',
+        'https://xtreamgymtunja.com',
         6,
-        'Close'
+        'Lun-Sab: 5:00 AM - 10:00 PM, Dom: 8:00 AM - 6:00 PM',
+        5.5367,
+        -73.3645
     ),
     (
-        'Mega Agency',
-        'Professional recruitment agency connecting talent with opportunities',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@megaagency.com',
-        'https://megaagency.com',
+        'Agencia de Empleo Boyacá',
+        'Agencia profesional de recursos humanos conectando talento con oportunidades laborales en la región',
+        'Carrera 8 #21-67, Local 2, Edificio Centro K, Tunja, Boyacá',
+        '+57 8 742 5566',
+        'info@empleoboyaca.com',
+        'https://empleoboyaca.com',
         4,
-        'Open'
+        'Lun-Vie: 8:00 AM - 6:00 PM',
+        5.5355,
+        -73.3677
     ),
     (
-        'Central Plaza',
-        'Shopping and entertainment center in the heart of the city',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@centralplaza.com',
-        'https://centralplaza.com',
+        'Salón de Eventos La Candelaria',
+        'Elegante salón para eventos sociales y corporativos en el corazón de Tunja',
+        'Carrera 10 #18-30, Centro Histórico, Tunja, Boyacá',
+        '+57 310 555 8899',
+        'eventos@candelaria.com',
+        'https://saloncandelaria.com',
         5,
-        'Close'
+        'Lun-Dom: 10:00 AM - 11:00 PM',
+        5.5342,
+        -73.3689
     ),
     (
-        'National Art',
-        'Contemporary art gallery showcasing local and international artists',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@nationalart.com',
-        'https://nationalart.com',
+        'Galería de Arte Contemporáneo Boyacá',
+        'Galería de arte que exhibe obras de artistas locales e internacionales',
+        'Carrera 16 #34-45, Portal de San Gabriel, Barrio Gaitán, Tunja, Boyacá',
+        '+57 320 777 2233',
+        'info@galeriaboyaca.com',
+        'https://galeriaboyaca.com',
         2,
-        'Open'
+        'Mar-Sab: 10:00 AM - 7:00 PM',
+        5.5289,
+        -73.3543
     ),
     (
-        'Gym Ground',
-        'Professional sports facility offering various fitness activities',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@gymground.com',
-        'https://gymground.com',
-        6,
-        'Close'
+        'Campo Deportivo El Libertador',
+        'Instalaciones deportivas profesionales con canchas múltiples y espacios para entrenamiento',
+        'Avenida Universitaria, Barrio La Glorieta, Tunja, Boyacá',
+        '+57 310 444 7788',
+        'contacto@campolibertador.com',
+        'https://campolibertador.com',
+        3,
+        'Lun-Dom: 6:00 AM - 8:00 PM',
+        5.5476,
+        -73.3712
     ),
     (
-        'City Palace',
-        'Elegant venue for special events and celebrations',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@citypalace.com',
-        'https://citypalace.com',
+        'Salón de Fiestas Los Portales',
+        'Salón de eventos familiares y sociales con capacidad para grandes celebraciones',
+        'Diagonal 38 #37-265, Barrio La María, Tunja, Boyacá',
+        '+57 310 888 1122',
+        'reservas@losportales.com',
+        'https://losportales.com',
         5,
-        'Open'
+        'Lun-Dom: 12:00 PM - 12:00 AM',
+        5.5134,
+        -73.3821
     ),
     (
-        'Pizza Recipe',
-        'Authentic Italian pizzeria with traditional recipes and fresh ingredients',
-        'California, USA',
-        '+98 (265) 3652 - 05',
-        'info@pizzarecipe.com',
-        'https://pizzarecipe.com',
+        'Pizzería La Tradición',
+        'Pizzería artesanal con recetas tradicionales italianas e ingredientes frescos',
+        'Carrera 9 #23-45, Centro, Tunja, Boyacá',
+        '+57 310 666 3344',
+        'pedidos@latradicion.com',
+        'https://latradicion.com',
         1,
-        'Open'
+        'Lun-Dom: 12:00 PM - 11:00 PM',
+        5.5353,
+        -73.3677
+    ),
+    (
+        'Gimnasio FitZone Tunja',
+        'Centro de fitness completo con áreas de cardio, pesas, clases grupales y entrenamiento personalizado',
+        'Carrera 11 #19-85, Centro, Tunja, Boyacá',
+        '+57 320 999 4455',
+        'info@fitzonetunja.com',
+        'https://fitzonetunja.com',
+        6,
+        'Lun-Vie: 5:00 AM - 11:00 PM, Sab-Dom: 7:00 AM - 9:00 PM',
+        5.5362,
+        -73.3664
     ) ON CONFLICT DO NOTHING;
 
 -- Insertar leads de ejemplo (formulario de contacto)
