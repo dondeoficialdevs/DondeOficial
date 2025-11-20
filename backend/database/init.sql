@@ -144,27 +144,27 @@ CREATE INDEX IF NOT EXISTS idx_business_images_business_id ON business_images (b
 INSERT INTO
     categories (name, description)
 VALUES (
-        'Restaurant',
+        'Restaurante',
         'Restaurantes populares en Tunja'
     ),
     (
-        'Museums',
+        'Museos',
         'Museos y atracciones culturales en Tunja'
     ),
     (
-        'Game Field',
+        'Campo Deportivo',
         'Campos deportivos y lugares de entretenimiento'
     ),
     (
-        'Job & Feed',
+        'Servicios Profesionales',
         'Servicios profesionales y agencias en Tunja'
     ),
     (
-        'Party Center',
+        'Salón de Eventos',
         'Salones de eventos y celebraciones'
     ),
     (
-        'Fitness Zone',
+        'Gimnasio',
         'Gimnasios y centros de acondicionamiento físico'
     ) ON CONFLICT (name) DO NOTHING;
 
