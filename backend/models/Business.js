@@ -128,12 +128,16 @@ class Business {
       opening_hours,
       latitude,
       longitude,
+      facebook_url,
+      instagram_url,
+      tiktok_url,
+      whatsapp_url,
       status = 'pending', // Por defecto, los nuevos negocios están pendientes
     } = businessData;
 
     const query = `
-      INSERT INTO businesses (name, description, address, phone, email, website, category_id, opening_hours, latitude, longitude, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      INSERT INTO businesses (name, description, address, phone, email, website, category_id, opening_hours, latitude, longitude, facebook_url, instagram_url, tiktok_url, whatsapp_url, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
       RETURNING *
     `;
 
@@ -148,6 +152,10 @@ class Business {
       opening_hours,
       latitude,
       longitude,
+      facebook_url || null,
+      instagram_url || null,
+      tiktok_url || null,
+      whatsapp_url || null,
       status,
     ];
 

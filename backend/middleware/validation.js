@@ -54,6 +54,10 @@ const businessSchema = Joi.object({
   opening_hours: Joi.string().allow("", null).optional(),
   latitude: Joi.number().min(-90).max(90).allow(null).optional(),
   longitude: Joi.number().min(-180).max(180).allow(null).optional(),
+  facebook_url: Joi.string().uri().max(255).allow("", null).optional(),
+  instagram_url: Joi.string().uri().max(255).allow("", null).optional(),
+  tiktok_url: Joi.string().uri().max(255).allow("", null).optional(),
+  whatsapp_url: Joi.string().max(255).allow("", null).optional(),
 });
 
 // Validación para categories
