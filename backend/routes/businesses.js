@@ -57,11 +57,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/businesses/:id - Obtener negocio por ID (público)
+// GET /api/businesses/:id - Obtener negocio por ID (público - solo aprobados)
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const business = await Business.findById(id);
+    const business = await Business.findById(id, false); // false = no incluir pendientes
 
     if (!business) {
       return res.status(404).json({
@@ -283,5 +283,112 @@ router.delete(
     }
   }
 );
+
+// GET /api/businesses/admin/all - Obtener todos los negocios incluyendo pendientes y rechazados (PROTEGIDO - solo admin)
+router.get("/admin/all", authenticateToken, async (req, res) => {
+  try {
+    const { search, category, location, limit = 1000, offset = 0 } = req.query;
+
+    const businesses = await Business.findAll({
+      search,
+      category,
+      location,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      includePending: true, // Incluir todos los estados
+    });
+
+    res.json({
+      success: true,
+      data: businesses,
+      count: businesses.length,
+    });
+  } catch (error) {
+    console.error("Error fetching all businesses for admin:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching businesses",
+      error: error.message,
+    });
+  }
+});
+
+// GET /api/businesses/pending/all - Obtener negocios pendientes de verificación (PROTEGIDO - solo admin)
+router.get("/pending/all", authenticateToken, async (req, res) => {
+  try {
+    const pendingBusinesses = await Business.findPending();
+
+    res.json({
+      success: true,
+      data: pendingBusinesses,
+      count: pendingBusinesses.length,
+    });
+  } catch (error) {
+    console.error("Error fetching pending businesses:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching pending businesses",
+      error: error.message,
+    });
+  }
+});
+
+// PATCH /api/businesses/:id/approve - Aprobar negocio (PROTEGIDO - solo admin)
+router.patch("/:id/approve", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const business = await Business.updateStatus(id, 'approved');
+
+    if (!business) {
+      return res.status(404).json({
+        success: false,
+        message: "Business not found",
+      });
+    }
+
+    const businessWithImages = await Business.findById(id, true);
+
+    res.json({
+      success: true,
+      data: businessWithImages,
+      message: "Business approved successfully",
+    });
+  } catch (error) {
+    console.error("Error approving business:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error approving business",
+      error: error.message,
+    });
+  }
+});
+
+// PATCH /api/businesses/:id/reject - Rechazar negocio (PROTEGIDO - solo admin)
+router.patch("/:id/reject", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const business = await Business.updateStatus(id, 'rejected');
+
+    if (!business) {
+      return res.status(404).json({
+        success: false,
+        message: "Business not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: business,
+      message: "Business rejected successfully",
+    });
+  } catch (error) {
+    console.error("Error rejecting business:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error rejecting business",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router;

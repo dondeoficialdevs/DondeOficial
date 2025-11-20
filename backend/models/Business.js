@@ -24,6 +24,16 @@ class Business {
     const values = [];
     let paramIndex = 1;
 
+    // Filtrar por status (por defecto solo aprobados para consultas públicas)
+    if (params.status !== undefined) {
+      query += ` AND b.status = $${paramIndex}`;
+      values.push(params.status);
+      paramIndex++;
+    } else if (!params.includePending) {
+      // Por defecto, solo mostrar negocios aprobados en consultas públicas
+      query += ` AND b.status = 'approved'`;
+    }
+
     // Filtrar por categoría
     if (params.category) {
       query += ` AND c.name ILIKE $${paramIndex}`;
@@ -69,8 +79,8 @@ class Business {
     }
   }
 
-  static async findById(id) {
-    const query = `
+  static async findById(id, includePending = false) {
+    let query = `
       SELECT 
         b.*, 
         c.name as category_name,
@@ -88,8 +98,14 @@ class Business {
       LEFT JOIN categories c ON b.category_id = c.id
       LEFT JOIN business_images bi ON b.id = bi.business_id
       WHERE b.id = $1
-      GROUP BY b.id, c.name
     `;
+    
+    // Si no se incluyen pendientes, solo mostrar aprobados
+    if (!includePending) {
+      query += ` AND b.status = 'approved'`;
+    }
+    
+    query += ` GROUP BY b.id, c.name`;
 
     try {
       const result = await pool.query(query, [id]);
@@ -112,11 +128,12 @@ class Business {
       opening_hours,
       latitude,
       longitude,
+      status = 'pending', // Por defecto, los nuevos negocios están pendientes
     } = businessData;
 
     const query = `
-      INSERT INTO businesses (name, description, address, phone, email, website, category_id, opening_hours, latitude, longitude)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO businesses (name, description, address, phone, email, website, category_id, opening_hours, latitude, longitude, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *
     `;
 
@@ -131,6 +148,7 @@ class Business {
       opening_hours,
       latitude,
       longitude,
+      status,
     ];
 
     try {
@@ -184,6 +202,61 @@ class Business {
       return result.rows[0];
     } catch (error) {
       console.error("Error deleting business:", error);
+      throw error;
+    }
+  }
+
+  // Actualizar status de un negocio (aprobado/rechazado)
+  static async updateStatus(id, status) {
+    if (!['pending', 'approved', 'rejected'].includes(status)) {
+      throw new Error('Invalid status. Must be pending, approved, or rejected');
+    }
+
+    const query = `
+      UPDATE businesses 
+      SET status = $1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2
+      RETURNING *
+    `;
+
+    try {
+      const result = await pool.query(query, [status, id]);
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error updating business status:", error);
+      throw error;
+    }
+  }
+
+  // Obtener negocios pendientes de verificación
+  static async findPending() {
+    const query = `
+      SELECT 
+        b.*, 
+        c.name as category_name,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'id', bi.id,
+              'image_url', bi.image_url,
+              'is_primary', bi.is_primary
+            ) ORDER BY bi.is_primary DESC, bi.created_at ASC
+          ) FILTER (WHERE bi.id IS NOT NULL), 
+          '[]'
+        ) as images
+      FROM businesses b 
+      LEFT JOIN categories c ON b.category_id = c.id
+      LEFT JOIN business_images bi ON b.id = bi.business_id
+      WHERE b.status = 'pending'
+      GROUP BY b.id, c.name
+      ORDER BY b.created_at DESC
+    `;
+
+    try {
+      const result = await pool.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error("Error finding pending businesses:", error);
       throw error;
     }
   }
