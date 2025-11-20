@@ -15,10 +15,13 @@ class Business {
             ) ORDER BY bi.is_primary DESC, bi.created_at ASC
           ) FILTER (WHERE bi.id IS NOT NULL), 
           '[]'
-        ) as images
+        ) as images,
+        COALESCE(COUNT(DISTINCT r.id), 0) as total_reviews,
+        COALESCE(ROUND(AVG(r.rating), 1), 0) as average_rating
       FROM businesses b 
       LEFT JOIN categories c ON b.category_id = c.id
       LEFT JOIN business_images bi ON b.id = bi.business_id
+      LEFT JOIN reviews r ON b.id = r.business_id
       WHERE 1=1
     `;
     const values = [];
@@ -72,7 +75,15 @@ class Business {
 
     try {
       const result = await pool.query(query, values);
-      return result.rows;
+      // Convertir valores numéricos de reseñas a números y asegurar tipos correctos
+      return result.rows.map(row => ({
+        ...row,
+        total_reviews: parseInt(row.total_reviews) || 0,
+        average_rating: parseFloat(row.average_rating) || 0,
+        price: row.price ? parseFloat(row.price) : null,
+        offer_price: row.offer_price ? parseFloat(row.offer_price) : null,
+        has_offer: row.has_offer === true || row.has_offer === 'true' || row.has_offer === 1 || false
+      }));
     } catch (error) {
       console.error("Error finding businesses:", error);
       throw error;
@@ -109,7 +120,18 @@ class Business {
 
     try {
       const result = await pool.query(query, [id]);
-      return result.rows[0];
+      if (!result.rows[0]) return null;
+      
+      // Convertir tipos correctamente
+      const business = result.rows[0];
+      return {
+        ...business,
+        price: business.price ? parseFloat(business.price) : null,
+        offer_price: business.offer_price ? parseFloat(business.offer_price) : null,
+        has_offer: business.has_offer === true || business.has_offer === 't' || business.has_offer === 'true' || business.has_offer === 1 || false,
+        total_reviews: parseInt(business.total_reviews) || 0,
+        average_rating: parseFloat(business.average_rating) || 0
+      };
     } catch (error) {
       console.error("Error finding business by ID:", error);
       throw error;
@@ -132,12 +154,16 @@ class Business {
       instagram_url,
       tiktok_url,
       whatsapp_url,
+      price,
+      offer_price,
+      has_offer,
+      offer_description,
       status = 'pending', // Por defecto, los nuevos negocios están pendientes
     } = businessData;
 
     const query = `
-      INSERT INTO businesses (name, description, address, phone, email, website, category_id, opening_hours, latitude, longitude, facebook_url, instagram_url, tiktok_url, whatsapp_url, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      INSERT INTO businesses (name, description, address, phone, email, website, category_id, opening_hours, latitude, longitude, facebook_url, instagram_url, tiktok_url, whatsapp_url, price, offer_price, has_offer, offer_description, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
       RETURNING *
     `;
 
@@ -156,6 +182,10 @@ class Business {
       instagram_url || null,
       tiktok_url || null,
       whatsapp_url || null,
+      price || null,
+      offer_price || null,
+      has_offer || false,
+      offer_description || null,
       status,
     ];
 

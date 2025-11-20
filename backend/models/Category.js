@@ -42,6 +42,32 @@ class Category {
       throw error;
     }
   }
+
+  // Obtener conteos de negocios por categoría (solo aprobados)
+  static async getCountsByCategory() {
+    const query = `
+      SELECT 
+        c.id,
+        c.name,
+        COUNT(b.id) as business_count
+      FROM categories c
+      LEFT JOIN businesses b ON c.id = b.category_id AND b.status = 'approved'
+      GROUP BY c.id, c.name
+      ORDER BY c.name ASC
+    `;
+    
+    try {
+      const result = await pool.query(query);
+      return result.rows.map(row => ({
+        id: row.id,
+        name: row.name,
+        count: parseInt(row.business_count) || 0
+      }));
+    } catch (error) {
+      console.error('Error getting category counts:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = Category;

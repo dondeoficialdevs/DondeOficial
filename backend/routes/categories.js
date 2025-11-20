@@ -35,6 +35,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /api/categories/counts - Obtener conteos de negocios por categoría (público)
+// IMPORTANTE: Esta ruta debe ir ANTES de /:id para que no sea interceptada
+router.get("/counts", async (req, res) => {
+  try {
+    const categoryCounts = await Category.getCountsByCategory();
+
+    res.json({
+      success: true,
+      data: categoryCounts,
+    });
+  } catch (error) {
+    console.error("Error fetching category counts:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching category counts",
+      error: error.message,
+    });
+  }
+});
+
 // GET /api/categories/:id - Obtener categoría por ID (público)
 router.get("/:id", async (req, res) => {
   try {

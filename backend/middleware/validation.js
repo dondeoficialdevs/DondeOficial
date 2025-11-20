@@ -58,6 +58,10 @@ const businessSchema = Joi.object({
   instagram_url: Joi.string().uri().max(255).allow("", null).optional(),
   tiktok_url: Joi.string().uri().max(255).allow("", null).optional(),
   whatsapp_url: Joi.string().max(255).allow("", null).optional(),
+  price: Joi.number().min(0).allow(null).optional(),
+  offer_price: Joi.number().min(0).allow(null).optional(),
+  has_offer: Joi.boolean().optional(),
+  offer_description: Joi.string().max(500).allow("", null).optional(),
 });
 
 // Validación para categories
