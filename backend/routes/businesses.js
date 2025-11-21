@@ -285,6 +285,7 @@ router.delete(
 );
 
 // GET /api/businesses/admin/all - Obtener todos los negocios incluyendo pendientes y rechazados (PROTEGIDO - solo admin)
+// IMPORTANTE: Esta ruta debe ir ANTES de /admin/:id para que se evalúe primero
 router.get("/admin/all", authenticateToken, async (req, res) => {
   try {
     const { search, category, location, limit = 1000, offset = 0 } = req.query;
@@ -308,6 +309,34 @@ router.get("/admin/all", authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching businesses",
+      error: error.message,
+    });
+  }
+});
+
+// GET /api/businesses/admin/:id - Obtener negocio por ID incluyendo pendientes (PROTEGIDO - solo admin)
+// IMPORTANTE: Esta ruta debe ir DESPUÉS de /admin/all para que no capture "all" como id
+router.get("/admin/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const business = await Business.findById(id, true); // true = incluir pendientes
+
+    if (!business) {
+      return res.status(404).json({
+        success: false,
+        message: "Business not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: business,
+    });
+  } catch (error) {
+    console.error("Error fetching business for admin:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching business",
       error: error.message,
     });
   }
