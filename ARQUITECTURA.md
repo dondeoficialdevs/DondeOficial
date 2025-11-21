@@ -1,4 +1,6 @@
-# Documentación de Arquitectura - DondeOficial
+# Arquitectura del Sistema - DirectorioComercial
+
+Documentación de arquitectura del sistema de directorio comercial. Para documentación técnica detallada, consultar [DOCUMENTACION_TECNICA.md](DOCUMENTACION_TECNICA.md).
 
 ## Tabla de Contenidos
 
@@ -12,12 +14,18 @@
 8. [Variables de Entorno](#variables-de-entorno)
 9. [Seguridad](#seguridad)
 10. [PWA (Progressive Web App)](#pwa-progressive-web-app)
+11. [Referencias](#referencias)
 
 ---
 
 ## Visión General
 
-**DondeOficial** es una aplicación web de directorio comercial que permite a los usuarios buscar, explorar y gestionar negocios locales. El proyecto está construido con una arquitectura de **separación de frontend y backend**, siguiendo el patrón **REST API**.
+**DirectorioComercial** es una aplicación web de directorio comercial que permite a los usuarios buscar, explorar y gestionar negocios locales. El proyecto está construido con una arquitectura de **separación de frontend y backend**, siguiendo el patrón **REST API**.
+
+### Documentación Relacionada
+
+- **[README.md](README.md)**: Guía de inicio rápido y descripción general
+- **[DOCUMENTACION_TECNICA.md](DOCUMENTACION_TECNICA.md)**: Documentación técnica detallada de implementación
 
 ### Stack Tecnológico Principal
 
@@ -747,8 +755,15 @@ Todas las respuestas API siguen este formato:
 7. **Notificaciones Push**: Para PWA
 8. **Búsqueda Avanzada**: Elasticsearch o Algolia
 
+## Referencias
+
+Para información detallada sobre implementación y escalabilidad:
+
+- **README.md**: Instalación y configuración del proyecto
+- **DOCUMENTACION_TECNICA.md**: Documentación técnica completa, esquema de base de datos, endpoints API, guía de escalabilidad
+
 ---
 
-**Última actualización**: Diciembre 2024
+**Última actualización**: Diciembre 2024  
 **Versión del documento**: 1.0
 

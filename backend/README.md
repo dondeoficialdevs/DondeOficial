@@ -1,6 +1,6 @@
-# DondeOficial - Backend
+# Backend - DirectorioComercial
 
-API REST para DondeOficial construido con Node.js, Express y PostgreSQL.
+API REST construida con Node.js, Express.js y PostgreSQL. Para documentación completa del proyecto, consultar [README.md](../README.md) y [DOCUMENTACION_TECNICA.md](../DOCUMENTACION_TECNICA.md).
 
 ## Configuración
 
