@@ -74,6 +74,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Configuración de webpack para Leaflet (necesario para SSR)
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

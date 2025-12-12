@@ -16,14 +16,14 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center group">
-              <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
                 <Image
-                  src="/images/logo/Logo_Dondel.png"
+                  src="/images/logo/Logo_Dondel.svg"
                   alt="DondeOficial Logo"
                   fill
-                  className="object-contain"
+                  className="object-contain scale-[1.8]"
                   priority
-                  sizes="(max-width: 640px) 32px, (max-width: 768px) 40px, 48px"
+                  sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, (max-width: 1024px) 128px, 144px"
                   unoptimized={true}
                 />
                 {/* Fallback text si la imagen no carga */}

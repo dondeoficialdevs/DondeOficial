@@ -57,9 +57,9 @@ export default function LoginPage() {
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 border border-white/20">
             {/* Logo y Header Mejorado */}
             <div className="text-center mb-8">
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mx-auto mb-6 flex items-center justify-center">
+              <div className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 mx-auto mb-6 flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-3xl shadow-2xl transform rotate-6 opacity-20"></div>
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                   <div className="relative w-full h-full flex items-center justify-center">
                     <Image
                       src="/images/logo/Logo_Dondel.png"
@@ -67,7 +67,7 @@ export default function LoginPage() {
                       fill
                       className="object-contain drop-shadow-lg"
                       priority
-                      sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, 96px"
+                      sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 128px"
                       unoptimized={true}
                     />
                   </div>

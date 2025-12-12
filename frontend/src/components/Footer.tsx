@@ -39,13 +39,13 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 lg:col-span-2">
             <div className="flex items-center space-x-2 sm:space-x-3 mb-6">
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex-shrink-0">
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0">
                 <Image
-                  src="/images/logo/Logo_Dondel.png"
+                  src="/images/logo/Logo_Donde_Footer.svg"
                   alt="DondeOficial Logo"
                   fill
                   className="object-contain"
-                  sizes="(max-width: 640px) 40px, (max-width: 768px) 48px, 56px"
+                  sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, 96px"
                   unoptimized={true}
                 />
               </div>

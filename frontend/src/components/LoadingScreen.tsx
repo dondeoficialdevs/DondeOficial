@@ -53,7 +53,7 @@ export default function LoadingScreen() {
     // Mostrar loading por 2 segundos
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 2000);
+    }, 99999999); 
 
     return () => {
       clearTimeout(timer);
@@ -81,32 +81,10 @@ export default function LoadingScreen() {
         }}
       ></div>
 
-      {/* Efecto de ondas concéntricas mejoradas - Responsive */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-        {[0, 1, 2, 3].map((i) => {
-          // Usar unidades viewport para hacer las ondas responsive
-          const baseSize = 30; // 30vw como base
-          const sizeMultiplier = baseSize + (i * 10); // Incremento de 10vw por cada onda
-          return (
-            <div 
-              key={i}
-              className="absolute rounded-full border"
-              style={{
-                width: `min(${sizeMultiplier}vw, ${sizeMultiplier}vh)`,
-                height: `min(${sizeMultiplier}vw, ${sizeMultiplier}vh)`,
-                borderColor: '#FF5A00',
-                opacity: 0.15 - (i * 0.03),
-                animation: `pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.4}s`,
-                boxShadow: `0 0 ${sizeMultiplier / 2}px rgba(255, 90, 0, 0.1)`,
-              }}
-            ></div>
-          );
-        })}
-      </div>
 
       {/* Partículas flotantes animadas - Responsive */}
       {isMounted && (
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden z-0">
           {particles.map((particle, i) => (
             <div
               key={i}
@@ -127,17 +105,39 @@ export default function LoadingScreen() {
       )}
 
       {/* Contenido principal - Responsive */}
-      <div className="text-center relative z-10 animate-fade-in px-4 py-4 sm:py-8 md:py-12 lg:py-16 max-w-7xl mx-auto w-full flex flex-col items-center justify-center">
+      <div className="text-center relative z-10 animate-fade-in px-4 sm:px-6 md:px-8 max-w-7xl mx-auto w-full h-full flex flex-col items-center justify-start pt-16 sm:pt-20 md:pt-24 lg:pt-32">
         {/* Logo con efecto de entrada */}
-        <div className="mb-4 sm:mb-6 md:mb-8 w-full">
-          <div className="flex justify-center mb-4 sm:mb-6">
+        <div className="mb-8 sm:mb-12 md:mb-16 w-full flex justify-center items-center">
+          <div className="flex justify-center items-center mb-4 sm:mb-6 mx-auto">
             <div 
-              className="relative animate-scale-in"
+              className="relative animate-scale-in mx-auto"
               style={{
                 animation: 'scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
               }}
             >
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 xl:w-40 xl:h-40 2xl:w-44 2xl:h-44">
+              {/* Círculos concéntricos tipo ondas alrededor del logo */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {[0, 1, 2, 3].map((i) => {
+                  const baseSize = 100; // Tamaño base en porcentaje
+                  const sizeMultiplier = baseSize + (i * 15); // Incremento por cada onda
+                  return (
+                    <div 
+                      key={i}
+                      className="absolute rounded-full border-2"
+                      style={{
+                        width: `${sizeMultiplier}%`,
+                        height: `${sizeMultiplier}%`,
+                        borderColor: '#FF5A00',
+                        opacity: 0.5 - (i * 0.1),
+                        animation: `pulse-ring 3s cubic-bezier(0.4, 0, 0.6, 1) infinite ${i * 0.4}s`,
+                        boxShadow: `0 0 ${sizeMultiplier / 3}px rgba(255, 90, 0, 0.4)`,
+                      }}
+                    ></div>
+                  );
+                })}
+              </div>
+              
+              <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-96 xl:h-96 2xl:w-96 2xl:h-96 z-10">
                 {/* Glow effect alrededor del logo */}
                 <div 
                   className="absolute inset-0 rounded-full blur-2xl sm:blur-3xl opacity-30 animate-pulse"
@@ -146,9 +146,9 @@ export default function LoadingScreen() {
                     transform: 'scale(1.15)',
                   }}
                 ></div>
-                <div className="relative w-full h-full flex items-center justify-center z-10">
+                <div className="relative w-full h-full flex items-center justify-center z-10 mx-auto">
                   <Image
-                    src="/images/logo/Logo_Dondel.png"
+                    src="/images/logo/Logo_Donde_Footer.svg"
                     alt="DondeOficial Logo"
                     fill
                     className="object-contain drop-shadow-2xl"
@@ -160,17 +160,6 @@ export default function LoadingScreen() {
               </div>
             </div>
           </div>
-          
-          {/* Subtítulo con efecto de escritura */}
-          <p 
-            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-light tracking-wide px-2 sm:px-4 animate-slide-up"
-            style={{ 
-              color: '#f1f1f1',
-              animation: 'slideUp 0.8s ease-out 0.3s both',
-            }}
-          >
-            Encuentra negocios cerca de ti
-          </p>
         </div>
 
         {/* Barra de progreso mejorada con diseño moderno - Responsive */}
@@ -216,6 +205,17 @@ export default function LoadingScreen() {
             {progress}%
           </p>
         </div>
+
+        {/* Subtítulo con efecto de escritura */}
+        <p 
+          className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-light tracking-wide px-2 sm:px-4 animate-slide-up mb-4 sm:mb-6"
+          style={{ 
+            color: '#f1f1f1',
+            animation: 'slideUp 0.8s ease-out 0.3s both',
+          }}
+        >
+          Encuentra negocios cerca de ti
+        </p>
 
         {/* Localizador animado - Diseño limpio */}
         <div className="flex justify-center mb-4 sm:mb-6">
