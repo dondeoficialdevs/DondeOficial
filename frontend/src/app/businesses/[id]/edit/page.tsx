@@ -637,7 +637,7 @@ export default function EditBusinessPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-orange flex-1 py-3 px-6 rounded-md focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? 'Guardando...' : 'Guardar Cambios'}
               </button>

@@ -8,7 +8,7 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
   database: process.env.DB_NAME || "postgres",
   user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "admin123",
+  password: process.env.DB_PASSWORD,
   // Configuración SSL para Render PostgreSQL (requiere SSL siempre)
   ssl: (process.env.NODE_ENV === "production" || isRenderDB) ? {
     rejectUnauthorized: false

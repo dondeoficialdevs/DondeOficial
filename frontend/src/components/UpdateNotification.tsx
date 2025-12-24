@@ -42,7 +42,7 @@ export default function UpdateNotification() {
                   setShowNotification(false);
                 }}
                 disabled={isUpdating}
-                className="flex-1 bg-blue-600 text-white text-xs font-semibold px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-orange flex-1 text-white text-xs font-semibold px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isUpdating ? 'Actualizando...' : 'Actualizar ahora'}
               </button>

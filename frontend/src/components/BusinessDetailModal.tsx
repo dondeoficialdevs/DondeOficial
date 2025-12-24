@@ -470,7 +470,7 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
                         onClick={() => business && toggleFavorite(business)}
                         className={`w-full flex items-center justify-center px-4 py-3 rounded-lg transition-all font-bold text-sm ${
                           business && isFavorite(business.id)
-                            ? 'bg-red-500 text-white hover:bg-red-600'
+                            ? 'btn-orange text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-gray-300'
                         }`}
                         title={business && isFavorite(business.id) ? 'Eliminar de favoritos' : 'Agregar a favoritos'}
@@ -539,7 +539,7 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
                           href={business.website.startsWith('http') ? business.website : `https://${business.website}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-bold text-sm w-full"
+                          className="btn-orange flex items-center justify-center px-4 py-2 text-white rounded-lg font-bold text-sm w-full"
                         >
                           Visitar Sitio Web
                         </a>

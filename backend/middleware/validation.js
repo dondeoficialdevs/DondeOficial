@@ -18,9 +18,9 @@ const leadSchema = Joi.object({
     "string.max": "Subject must not exceed 200 characters",
     "any.required": "Subject is required",
   }),
-  message: Joi.string().max(200).required().messages({
+  message: Joi.string().max(2000).required().messages({
     "string.empty": "Message is required",
-    "string.max": "Message must not exceed 200 characters",
+    "string.max": "Message must not exceed 2000 characters",
     "any.required": "Message is required",
   }),
 });
@@ -132,8 +132,28 @@ const refreshTokenSchema = Joi.object({
   }),
 });
 
+// Validación para reviews
+const reviewSchema = Joi.object({
+  business_id: Joi.number().integer().required().messages({
+    "number.base": "business_id must be a number",
+    "number.integer": "business_id must be an integer",
+    "any.required": "business_id is required",
+  }),
+  rating: Joi.number().integer().min(1).max(5).required().messages({
+    "number.base": "rating must be a number",
+    "number.integer": "rating must be an integer",
+    "number.min": "rating must be between 1 and 5",
+    "number.max": "rating must be between 1 and 5",
+    "any.required": "rating is required",
+  }),
+  comment: Joi.string().max(2000).allow("", null).optional(),
+  user_name: Joi.string().max(200).allow("", null).optional(),
+  user_email: Joi.string().email().max(200).allow("", null).optional().messages({
+    "string.email": "user_email must be a valid email address",
+  }),
+});
+
 module.exports = {
-  validate,
   validate,
   leadSchema,
   newsletterSchema,
@@ -142,4 +162,5 @@ module.exports = {
   loginSchema,
   changePasswordSchema,
   refreshTokenSchema,
+  reviewSchema,
 };

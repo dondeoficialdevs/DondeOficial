@@ -96,29 +96,30 @@ router.post("/refresh", validate(refreshTokenSchema), async (req, res) => {
       });
     }
 
-    // Verificar el token JWT
-    jwt.verify(refreshToken, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.status(403).json({
-          success: false,
-          message: "Invalid or expired refresh token",
-        });
-      }
-
-      // Generar nuevo access token
-      const newAccessToken = generateAccessToken({
-        id: user.id,
-        email: tokenData.email,
-        full_name: tokenData.full_name,
+    // Verificar el token JWT usando promesa
+    let user;
+    try {
+      user = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid or expired refresh token",
       });
+    }
 
-      res.json({
-        success: true,
-        data: {
-          accessToken: newAccessToken,
-        },
-        message: "Token refreshed successfully",
-      });
+    // Generar nuevo access token
+    const newAccessToken = generateAccessToken({
+      id: user.id,
+      email: tokenData.email,
+      full_name: tokenData.full_name,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        accessToken: newAccessToken,
+      },
+      message: "Token refreshed successfully",
     });
   } catch (error) {
     console.error("Error refreshing token:", error);

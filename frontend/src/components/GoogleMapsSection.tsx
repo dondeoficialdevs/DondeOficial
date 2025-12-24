@@ -378,30 +378,11 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
   };
 
   return (
-    <section className="relative bg-gray-50 py-12">
+    <section className="relative bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Mensaje informativo */}
-        {!showSearchBar && showHint && (
-          <div className="mb-4 bg-gray-100 border border-gray-300 p-3 rounded-lg">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-700 font-medium">
-                Haz clic en el mapa para abrir el buscador
-              </p>
-              <button
-                onClick={() => setShowHint(false)}
-                className="flex-shrink-0 text-gray-500 hover:text-gray-700 transition-colors ml-4"
-                aria-label="Cerrar mensaje"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Mapa */}
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 map-container" style={{ height: '600px' }}>
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 map-container" style={{ height: '400px' }}>
           {/* Buscador overlay que aparece encima del mapa */}
           {showSearchBar && (
             <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-[1000] search-bar-container">
@@ -571,7 +552,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                       setSelectedCategory('');
                       setLocation('Cerca de mí');
                     }}
-                    className="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 bg-red-600 md:bg-red-500 text-white rounded-lg md:rounded-xl hover:bg-red-700 md:hover:bg-red-600 transition-colors flex-shrink-0 shadow-sm md:shadow"
+                    className="btn-orange px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-white rounded-lg md:rounded-xl flex-shrink-0"
                     title="Cerrar buscador"
                     aria-label="Cerrar buscador"
                   >
@@ -587,7 +568,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                         setShowMenuDropdown(!showMenuDropdown);
                         setShowCategoryDropdown(false);
                       }}
-                      className="px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 bg-teal-600 md:bg-teal-500 text-white rounded-lg md:rounded-xl hover:bg-teal-700 md:hover:bg-teal-600 transition-colors font-medium text-xs sm:text-sm md:text-base shadow-sm md:shadow"
+                      className="btn-orange px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 text-white rounded-lg md:rounded-xl font-medium text-xs sm:text-sm md:text-base"
                       aria-label="Menú"
                     >
                       <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -617,7 +598,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                       const locationToUse = location === 'Cerca de mí' ? '' : location;
                       onSearch(searchTerm, selectedCategory || undefined, locationToUse);
                     }}
-                    className="px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 bg-blue-800 md:bg-blue-700 text-white rounded-lg md:rounded-xl hover:bg-blue-700 md:hover:bg-blue-600 transition-colors flex-shrink-0 shadow-sm md:shadow"
+                    className="btn-orange px-2 sm:px-3 md:px-4 py-2 sm:py-2.5 md:py-3 text-white rounded-lg md:rounded-xl flex-shrink-0"
                     aria-label="Buscar"
                   >
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -889,7 +870,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleGetDirectionsFromCurrentLocation(business)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md hover:shadow-lg"
+                          className="btn-orange flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-white text-sm font-semibold rounded-lg"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -898,7 +879,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                         </button>
                         <button
                           onClick={() => handleGetDirections(business)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+                          className="btn-orange flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-white text-sm font-semibold rounded-lg"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />

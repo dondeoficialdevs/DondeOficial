@@ -244,7 +244,7 @@ export default function BusinessDetail() {
           <p className="text-gray-600 mb-8">El negocio que buscas no existe o ha sido eliminado.</p>
           <Link
             href="/"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="btn-orange inline-flex items-center px-6 py-3 rounded-lg font-semibold shadow-lg transform hover:-translate-y-0.5"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -406,7 +406,7 @@ export default function BusinessDetail() {
                 {isAuthenticated && (
                   <button
                     onClick={() => setShowAddImages(!showAddImages)}
-                    className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-lg hover:shadow-xl"
+                    className="btn-orange inline-flex items-center px-5 py-2.5 rounded-xl font-semibold shadow-lg"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -464,7 +464,7 @@ export default function BusinessDetail() {
                     <button
                       onClick={handleUploadImages}
                       disabled={uploadingImages}
-                      className="w-full px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="btn-orange w-full px-6 py-3 rounded-xl font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {uploadingImages ? 'Subiendo...' : `Subir ${newImages.length} imagen${newImages.length > 1 ? 'es' : ''}`}
                     </button>

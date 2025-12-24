@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Lead = require("../models/Lead");
 const { validate, leadSchema } = require("../middleware/validation");
-const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
+const { authenticateToken } = require("../middleware/auth");
 
 // POST /api/leads - Crear nuevo lead (público)
 router.post("/", validate(leadSchema), async (req, res) => {
@@ -34,7 +34,7 @@ router.post("/", validate(leadSchema), async (req, res) => {
   }
 });
 
-// GET /api/leads - Listar todos los leads (PROTEGIDO) ← CAMBIADO
+// GET /api/leads - Listar todos los leads (PROTEGIDO)
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
@@ -59,7 +59,7 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/leads/:id - Obtener lead por ID (PROTEGIDO) ← CAMBIADO
+// GET /api/leads/:id - Obtener lead por ID (PROTEGIDO)
 router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;

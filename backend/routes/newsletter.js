@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const NewsletterSubscriber = require("../models/NewsletterSubscriber");
 const { validate, newsletterSchema } = require("../middleware/validation");
-const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
+const { authenticateToken } = require("../middleware/auth");
 
 // POST /api/newsletter/subscribe - Suscribirse al newsletter (público)
 router.post("/subscribe", validate(newsletterSchema), async (req, res) => {
@@ -34,7 +34,7 @@ router.post("/subscribe", validate(newsletterSchema), async (req, res) => {
   }
 });
 
-// GET /api/newsletter/subscribers - Listar todos los suscriptores (PROTEGIDO) ← CAMBIADO
+// GET /api/newsletter/subscribers - Listar todos los suscriptores (PROTEGIDO)
 router.get("/subscribers", authenticateToken, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
@@ -59,7 +59,7 @@ router.get("/subscribers", authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE /api/newsletter/subscribers/:id - Eliminar suscriptor (PROTEGIDO) ← YA ESTABA
+// DELETE /api/newsletter/subscribers/:id - Eliminar suscriptor (PROTEGIDO)
 router.delete("/subscribers/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;

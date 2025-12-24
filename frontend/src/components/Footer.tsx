@@ -101,7 +101,7 @@ export default function Footer() {
               <h4 className="font-semibold mb-2">Mantente Actualizado</h4>
               <p className="text-gray-300 text-sm mb-3">Recibe las últimas ofertas y listados de negocios</p>
               {submitted ? (
-                <div className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-medium text-center">
+                <div className="btn-orange text-white px-3 py-2 rounded-lg text-sm font-medium text-center">
                   ✓ ¡Suscrito!
                 </div>
               ) : (
@@ -124,7 +124,7 @@ export default function Footer() {
                     <button 
                       type="submit"
                       disabled={loading}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="btn-orange px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? '...' : 'Suscribirse'}
                     </button>

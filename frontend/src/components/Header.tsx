@@ -34,17 +34,17 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 ml-8">
-            <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group py-2">
+            <Link href="/" className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200 relative group py-2">
               Inicio
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link href="/listings" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group py-2">
+            <Link href="/listings" className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200 relative group py-2">
               Directorio
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group py-2">
+            <Link href="/contact" className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200 relative group py-2">
               Contacto
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
           </nav>
 
@@ -77,7 +77,7 @@ export default function Header() {
             </Link>
             <Link 
               href="/add-listing" 
-              className="bg-linear-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              className="btn-orange px-6 py-2.5 rounded-lg font-medium shadow-md transform hover:-translate-y-0.5"
             >
               Agregar Negocio
             </Link>
@@ -85,7 +85,7 @@ export default function Header() {
 
           {/* Mobile menu button */}
           <button 
-            className="lg:hidden text-gray-700 hover:text-blue-600 transition-colors duration-200" 
+            className="lg:hidden text-gray-700 hover:text-purple-600 transition-colors duration-200" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             title="Menú móvil"
           >
@@ -101,21 +101,21 @@ export default function Header() {
             <nav className="flex flex-col space-y-4">
               <Link 
                 href="/" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Inicio
               </Link>
               <Link 
                 href="/listings" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Directorio
               </Link>
               <Link 
                 href="/contact" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contacto

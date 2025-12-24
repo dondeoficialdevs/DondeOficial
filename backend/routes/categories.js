@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Category = require("../models/Category");
-const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
+const { authenticateToken } = require("../middleware/auth");
+const { validate, categorySchema } = require("../middleware/validation");
 
 // GET /api/categories - Listar todas las categorías (público)
 router.get("/", async (req, res) => {
@@ -83,16 +84,9 @@ router.get("/:id", async (req, res) => {
 });
 
 // POST /api/categories - Crear nueva categoría (público)
-router.post("/", async (req, res) => {
+router.post("/", validate(categorySchema), async (req, res) => {
   try {
-    const { name, description } = req.body;
-
-    if (!name) {
-      return res.status(400).json({
-        success: false,
-        message: "Name is required",
-      });
-    }
+    const { name, description } = req.validatedData;
 
     const category = await Category.create({ name, description });
 

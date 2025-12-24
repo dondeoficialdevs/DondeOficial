@@ -68,7 +68,7 @@ export default function ContactPage() {
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
+              className="btn-orange px-6 py-3 rounded-md"
             >
               Enviar Otro Mensaje
             </button>
@@ -206,7 +206,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-orange w-full py-3 px-6 rounded-md focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Enviando...' : 'Enviar Mensaje'}
                 </button>

@@ -4,7 +4,7 @@ const Business = require("../models/Business");
 const BusinessImage = require("../models/BusinessImage");
 const { validate, businessSchema } = require("../middleware/validation");
 const { upload } = require("../config/cloudinary");
-const { authenticateToken } = require("../middleware/auth"); // ← AGREGAR
+const { authenticateToken } = require("../middleware/auth");
 
 // GET /api/businesses - Listar todos los negocios con filtros (público)
 router.get("/", async (req, res) => {
@@ -179,7 +179,7 @@ router.post("/:id/images", upload.array("images", 10), async (req, res) => {
   }
 });
 
-// PUT /api/businesses/:id - Actualizar negocio (PROTEGIDO) ← CAMBIADO
+// PUT /api/businesses/:id - Actualizar negocio (PROTEGIDO)
 router.put(
   "/:id",
   authenticateToken,
@@ -222,7 +222,7 @@ router.put(
   }
 );
 
-// DELETE /api/businesses/:id - Eliminar negocio (PROTEGIDO) ← CAMBIADO
+// DELETE /api/businesses/:id - Eliminar negocio (PROTEGIDO)
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -252,7 +252,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE /api/businesses/:businessId/images/:imageId - Eliminar imagen (PROTEGIDO) ← CAMBIADO
+// DELETE /api/businesses/:businessId/images/:imageId - Eliminar imagen (PROTEGIDO)
 router.delete(
   "/:businessId/images/:imageId",
   authenticateToken,

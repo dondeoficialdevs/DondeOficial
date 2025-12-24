@@ -186,16 +186,32 @@ cd frontend
 npm install
 
 # Crear archivo de variables de entorno
+# OPCIÓN 1: Si tienes el backend corriendo localmente
 echo "NEXT_PUBLIC_API_URL=http://localhost:5000/api" > .env.local
+echo "NEXT_PUBLIC_SITE_URL=http://localhost:3000" >> .env.local
+
+# OPCIÓN 2: Si quieres usar el backend en Render (producción)
+echo "NEXT_PUBLIC_API_URL=https://dondeoficial.onrender.com/api" > .env.local
 echo "NEXT_PUBLIC_SITE_URL=http://localhost:3000" >> .env.local
 ```
 
 **Variables de entorno requeridas para frontend** (`.env.local`):
 
 ```env
+# Para desarrollo local con backend local
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# O para desarrollo local con backend en Render
+NEXT_PUBLIC_API_URL=https://dondeoficial.onrender.com/api
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+⚠️ **IMPORTANTE PARA PRODUCCIÓN (Netlify):**
+- El archivo `.env.local` NO se sube a Git (está en `.gitignore`)
+- Las variables de entorno DEBEN estar configuradas en el dashboard de Netlify
+- Ve a: Netlify Dashboard → Tu Sitio → Site settings → Environment variables
+- Configura: `NEXT_PUBLIC_API_URL=https://dondeoficial.onrender.com/api`
 
 ## Ejecución en Desarrollo
 
@@ -203,7 +219,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 ```bash
 cd backend
-npm run dev
+ npm run dev
 ```
 
 El servidor backend estará disponible en `http://localhost:5000`. La API estará en `http://localhost:5000/api`.

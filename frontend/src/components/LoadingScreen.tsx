@@ -53,7 +53,7 @@ export default function LoadingScreen() {
     // Mostrar loading por 2 segundos
     const timer = setTimeout(() => {
       setIsVisible(false);
-    }, 99999999); 
+    }, 2000); 
 
     return () => {
       clearTimeout(timer);

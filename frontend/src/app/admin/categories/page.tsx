@@ -122,7 +122,7 @@ export default function CategoriesPage() {
           <p className="text-red-800">{error}</p>
           <button
             onClick={loadCategories}
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            className="btn-orange mt-4 px-4 py-2 rounded-md"
           >
             Reintentar
           </button>
@@ -142,7 +142,7 @@ export default function CategoriesPage() {
         </div>
         <button
           onClick={() => setShowCreateForm(!showCreateForm)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium whitespace-nowrap"
+          className="btn-orange px-4 py-2 rounded-md font-medium whitespace-nowrap"
         >
           {showCreateForm ? 'Cancelar' : '+ Nueva Categoría'}
         </button>
@@ -193,7 +193,7 @@ export default function CategoriesPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-orange px-4 py-2 rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? 'Creando...' : 'Crear Categoría'}
               </button>

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Review = require("../models/Review");
+const { validate, reviewSchema } = require("../middleware/validation");
+const { authenticateToken } = require("../middleware/auth");
 
 // GET /api/reviews/business/:businessId - Obtener todas las reseñas de un negocio
 router.get("/business/:businessId", async (req, res) => {
@@ -44,24 +46,9 @@ router.get("/business/:businessId/rating", async (req, res) => {
 });
 
 // POST /api/reviews - Crear nueva reseña
-router.post("/", async (req, res) => {
+router.post("/", validate(reviewSchema), async (req, res) => {
   try {
-    const { business_id, rating, comment, user_name, user_email } = req.body;
-
-    // Validaciones
-    if (!business_id || !rating) {
-      return res.status(400).json({
-        success: false,
-        message: "business_id and rating are required",
-      });
-    }
-
-    if (rating < 1 || rating > 5) {
-      return res.status(400).json({
-        success: false,
-        message: "Rating must be between 1 and 5",
-      });
-    }
+    const { business_id, rating, comment, user_name, user_email } = req.validatedData;
 
     const review = await Review.create({
       business_id: parseInt(business_id),
@@ -87,7 +74,7 @@ router.post("/", async (req, res) => {
 });
 
 // DELETE /api/reviews/:id - Eliminar reseña (opcional, para moderación)
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const review = await Review.delete(id);

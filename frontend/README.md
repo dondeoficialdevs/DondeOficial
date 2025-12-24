@@ -51,8 +51,14 @@ npm install
 2. Configurar variables de entorno:
 ```bash
 # Crear archivo .env.local
+# OPCIÓN 1: Backend local
 echo NEXT_PUBLIC_API_URL=http://localhost:5000/api > .env.local
+
+# OPCIÓN 2: Backend en Render (producción)
+echo NEXT_PUBLIC_API_URL=https://dondeoficial.onrender.com/api > .env.local
 ```
+
+⚠️ **IMPORTANTE:** Para producción en Netlify, las variables deben estar configuradas en el dashboard de Netlify (no solo en `.env.local`)
 
 3. Ejecutar en modo desarrollo:
 ```bash
