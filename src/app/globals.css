@@ -226,4 +226,12 @@ body {
 .map-container {
   height: 500px;
 }
+/* Slider Progress Animation */
+@keyframes slider-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
 
+.animate-slider-progress {
+  animation: slider-progress 5s linear infinite;
+}

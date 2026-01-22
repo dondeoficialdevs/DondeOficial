@@ -586,3 +586,63 @@ export const authApi = {
     return sessionStorage.getItem('user') !== null;
   },
 };
+
+export const promotionApi = {
+  // Obtener todas las promociones
+  getAll: async (): Promise<Promotion[]> => {
+    const { data, error } = await supabase
+      .from('promotions')
+      .select('*')
+      .order('priority', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Obtener promociones activas
+  getActive: async (): Promise<Promotion[]> => {
+    const { data, error } = await supabase
+      .from('promotions')
+      .select('*')
+      .eq('active', true)
+      .order('priority', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Crear nueva promoción
+  create: async (promotionData: Partial<Promotion>): Promise<Promotion> => {
+    const { data, error } = await supabase
+      .from('promotions')
+      .insert([promotionData])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Actualizar promoción
+  update: async (id: number, promotionData: Partial<Promotion>): Promise<Promotion> => {
+    const { data, error } = await supabase
+      .from('promotions')
+      .update(promotionData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Eliminar promoción
+  delete: async (id: number): Promise<void> => {
+    const { error } = await supabase
+      .from('promotions')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  },
+};

@@ -64,8 +64,8 @@ export default function AdminLayout({
   };
 
   const navItems = [
-    { 
-      href: '/admin/verification', 
+    {
+      href: '/admin/verification',
       label: 'Verificación',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,8 +73,8 @@ export default function AdminLayout({
         </svg>
       )
     },
-    { 
-      href: '/admin/businesses', 
+    {
+      href: '/admin/businesses',
       label: 'Directorios',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,8 +82,8 @@ export default function AdminLayout({
         </svg>
       )
     },
-    { 
-      href: '/admin/leads', 
+    {
+      href: '/admin/leads',
       label: 'Leads',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,8 +91,8 @@ export default function AdminLayout({
         </svg>
       )
     },
-    { 
-      href: '/admin/newsletter', 
+    {
+      href: '/admin/newsletter',
       label: 'Newsletter',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,8 +100,8 @@ export default function AdminLayout({
         </svg>
       )
     },
-    { 
-      href: '/admin/categories', 
+    {
+      href: '/admin/categories',
       label: 'Categorías',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,17 @@ export default function AdminLayout({
         </svg>
       )
     },
+    {
+      href: '/admin/promotions',
+      label: 'Promociones',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0h4l1 3H7l1-3h4z" />
+        </svg>
+      )
+    },
   ];
+
 
   // Si estamos en login, no mostrar el layout de admin
   if (pathname === '/admin/login') {
@@ -131,7 +141,7 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20">
       <Header />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header mejorado */}
         <div className="mb-6">
@@ -186,11 +196,10 @@ export default function AdminLayout({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
-                      isActive
+                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${isActive
                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
                         : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     {item.icon}
                     <span>{item.label}</span>

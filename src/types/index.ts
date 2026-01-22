@@ -105,3 +105,15 @@ export interface ReviewRating {
   averageRating: number;
   totalReviews: number;
 }
+
+export interface Promotion {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  button_text?: string;
+  button_link?: string;
+  active: boolean;
+  priority: number;
+  created_at: string;
+}

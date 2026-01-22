@@ -12,6 +12,8 @@ import CategorySection from '../components/CategorySection';
 import StatsSection from '../components/StatsSection';
 import Footer from '../components/Footer';
 import BusinessDetailModal from '../components/BusinessDetailModal';
+import PromotionsSlider from '../components/PromotionsSlider';
+
 
 // Importar componentes que requieren APIs del navegador solo en el cliente
 const GoogleMapsSection = dynamic(() => import('../components/GoogleMapsSection'), { ssr: false });
@@ -108,10 +110,13 @@ export default function Home() {
         <Header />
 
         <main>
+          <PromotionsSlider />
+
           <CategorySection
             categories={categories}
             onCategorySelect={(categoryName) => handleSearch('', categoryName)}
           />
+
 
           <GoogleMapsSection businesses={businesses} onSearch={handleSearch} />
 
