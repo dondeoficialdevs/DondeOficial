@@ -1,14 +1,16 @@
 import { supabase } from './supabase';
 import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating } from '@/types';
 
-// Utility to handle Supabase responses
-const handleSupabaseResponse = <T>(data: T | null, error: any): ApiResponse<T> => {
+// Utility to handle Supabase responses (Not currently used but kept for potential future use)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleSupabaseResponse = <T>(data: T | null, error: unknown): ApiResponse<T> => {
   if (error) {
     console.error('❌ Supabase error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error occurred during database operation';
     return {
       success: false,
       data: null as unknown as T,
-      message: error.message || 'Error occurred during database operation'
+      message: errorMessage
     };
   }
   return {
@@ -50,7 +52,12 @@ export const businessApi = {
     const { data, error } = await query;
     if (error) throw error;
 
-    return (data || []).map((b: any) => ({
+    interface BusinessWithRelations extends Business {
+      categories: { name: string } | null;
+      business_images: BusinessImage[];
+    }
+
+    return ((data as unknown as BusinessWithRelations[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
       images: b.business_images
@@ -104,7 +111,8 @@ export const businessApi = {
 
   // Actualizar negocio
   update: async (id: number, businessData: Partial<Business>): Promise<Business> => {
-    const { category_name, images, ...updateData } = businessData as any;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { category_name, images, ...updateData } = businessData as Record<string, unknown>;
     const { data, error } = await supabase
       .from('businesses')
       .update(updateData)
@@ -222,7 +230,12 @@ export const businessApi = {
 
     if (error) throw error;
 
-    return (data || []).map((b: any) => ({
+    interface AdminBusiness extends Business {
+      categories: { name: string } | null;
+      business_images: BusinessImage[];
+    }
+
+    return ((data as unknown as AdminBusiness[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
       images: b.business_images
@@ -242,7 +255,12 @@ export const businessApi = {
 
     if (error) throw error;
 
-    return (data || []).map((b: any) => ({
+    interface PendingBusiness extends Business {
+      categories: { name: string } | null;
+      business_images: BusinessImage[];
+    }
+
+    return ((data as unknown as PendingBusiness[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
       images: b.business_images
@@ -296,7 +314,13 @@ export const categoryApi = {
 
     if (error) throw error;
 
-    return (data || []).map((c: any) => ({
+    interface CategoryWithCount {
+      id: number;
+      name: string;
+      businesses: Array<{ count: number }>;
+    }
+
+    return ((data as unknown as CategoryWithCount[]) || []).map((c) => ({
       id: c.id,
       name: c.name,
       count: c.businesses ? (c.businesses[0]?.count || 0) : 0
@@ -478,7 +502,7 @@ export const newsletterApi = {
 export const healthApi = {
   // Verificar estado del API
   check: async (): Promise<{ message: string; status: string }> => {
-    const { data, error } = await supabase.from('categories').select('id').limit(1);
+    const { error } = await supabase.from('categories').select('id').limit(1);
     if (error) return { message: 'Database connection error', status: 'DOWN' };
     return { message: 'Supabase connection is OK', status: 'OK' };
   },
@@ -496,7 +520,7 @@ export const authApi = {
     if (error) throw error;
 
     const user: User = {
-      id: data.user?.id as any,
+      id: (data.user?.id as unknown as number), // UUID mapping to number for legacy compatibility
       email: data.user?.email || '',
       full_name: data.user?.user_metadata?.full_name || email.split('@')[0],
     };
@@ -535,7 +559,7 @@ export const authApi = {
     if (error || !user) throw new Error('Not authenticated');
 
     return {
-      id: user.id as any,
+      id: (user.id as unknown as number),
       email: user.email || '',
       full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
     };
