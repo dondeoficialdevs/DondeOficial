@@ -64,11 +64,9 @@ bubblewrap build
 npm run build
 
 # 2. Generar TWA
-cd frontend
 bubblewrap build
 
-# 3. El archivo .aab estará en:
-# frontend/app-release.aab
+# 3. El archivo .aab estará en el directorio raíz.
 
 # 4. Sube ese archivo a Play Store Console
 ```

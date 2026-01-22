@@ -3,25 +3,15 @@
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_VERSION = "9"
+  NODE_VERSION = "20"
+  NPM_VERSION = "10"
 
 # Next.js specific settings
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Asegurar que los archivos estáticos se sirvan correctamente (debe ir ANTES de la regla catch-all)
-[[redirects]]
-  from = "/images/*"
-  to = "/images/:splat"
-  status = 200
-  force = true
-
-# Redirect rules for SPA behavior (solo para rutas que no sean archivos estáticos)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Netlify handles Next.js routing automatically. 
+# Only add specific redirects here if necessary.
 
 # Headers for security and performance
 [[headers]]

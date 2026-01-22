@@ -9,8 +9,8 @@ Has migrado con éxito la lógica del frontend para usar Supabase. Sigue estos p
 ## 2. Configurar la Base de Datos
 1. En el Dashboard de Supabase, ve a la sección **SQL Editor**.
 2. Crea una nueva consulta ("New Query").
-3. Copia y pega el contenido de tu archivo local `backend/database/init.sql`.
-4. Ejecuta la consulta para crear las tablas y cargar los datos de ejemplo.
+3. Utiliza la estructura de tablas que ya has configurado en Supabase.
+4. Asegúrate de que las 8 tablas estén presentes y funcionales.
 
 ## 3. Configurar la Autenticación
 1. En Supabase, ve a **Authentication** > **Providers**.
@@ -21,7 +21,7 @@ Has migrado con éxito la lógica del frontend para usar Supabase. Sigue estos p
 ## 4. Configurar Variables de Entorno
 Copia las credenciales de tu proyecto desde **Project Settings** > **API**:
 
-Actualiza tu archivo `frontend/.env.local`:
+Actualiza tu archivo `.env.local`:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
