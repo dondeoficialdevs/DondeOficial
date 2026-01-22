@@ -41,9 +41,8 @@ export default function Home() {
   const loadInitialData = async () => {
     try {
       setError(null);
-      console.log('🔍 Cargando datos iniciales...');
-      console.log('📍 API URL:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
-      
+      console.log('🔍 Cargando datos iniciales desde Supabase...');
+
       const [businessesData, categoriesData] = await Promise.all([
         businessApi.getAll({ limit: 12 }).catch((err) => {
           console.error('❌ Error loading businesses:', err);
@@ -56,15 +55,15 @@ export default function Home() {
           return [];
         })
       ]);
-      
+
       console.log('✅ Datos cargados:', {
         businesses: businessesData.length,
         categories: categoriesData.length
       });
-      
+
       setBusinesses(businessesData);
       setCategories(categoriesData);
-      
+
       // Si ambos arrays están vacíos, podría ser un error de conexión
       if (businessesData.length === 0 && categoriesData.length === 0) {
         setError('No se pudieron cargar los datos. Verifica la conexión con el servidor. Revisa la consola para más detalles.');
@@ -103,10 +102,9 @@ export default function Home() {
   return (
     <>
       {showLoadingScreen && <LoadingScreen />}
-      
-      <div className={`min-h-screen bg-white transition-opacity duration-500 ${
-        showLoadingScreen ? 'opacity-0' : 'opacity-100'
-      }`}>
+
+      <div className={`min-h-screen bg-white transition-opacity duration-500 ${showLoadingScreen ? 'opacity-0' : 'opacity-100'
+        }`}>
         <Header />
 
         <main>
@@ -114,11 +112,11 @@ export default function Home() {
             categories={categories}
             onCategorySelect={(categoryName) => handleSearch('', categoryName)}
           />
-          
+
           <GoogleMapsSection businesses={businesses} onSearch={handleSearch} />
-          
+
           <ActionCards />
-          
+
           {error && (
             <div className="container mx-auto px-4 py-8">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
@@ -132,15 +130,15 @@ export default function Home() {
               </div>
             </div>
           )}
-          <FeaturedListings 
-            businesses={businesses} 
+          <FeaturedListings
+            businesses={businesses}
             loading={loading || searching}
             onBusinessClick={(businessId) => {
               setSelectedBusinessId(businessId);
               setIsModalOpen(true);
             }}
           />
-          
+
           <StatsSection />
         </main>
 

@@ -1,8 +1,0 @@
-warning: in the working copy of 'frontend/src/app/page.tsx', LF will be replaced by CRLF the next time Git touches it
-backend/config/database.js
-backend/routes/businesses.js
-backend/routes/categories.js
-backend/server.js
-frontend/src/app/listings/page.tsx
-frontend/src/app/page.tsx
-frontend/src/lib/api.ts

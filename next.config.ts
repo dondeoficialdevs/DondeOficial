@@ -3,17 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Variables de entorno
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   },
 
   // Optimizaciones para producción
   compress: true,
   poweredByHeader: false,
-  
+
   // Configuración de imágenes
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'ejwtglrctieeyecyrsta.supabase.co'],
     unoptimized: false,
   },
 

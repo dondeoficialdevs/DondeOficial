@@ -1,379 +1,163 @@
-# DirectorioComercial - Sistema de Directorio Comercial
+# Frontend - DirectorioComercial
 
-Aplicación web full-stack para gestión de directorio comercial con funcionalidades de búsqueda, categorización, reseñas y administración.
+Aplicación frontend construida con Next.js 15, React 19, TypeScript y Tailwind CSS. Para documentación completa del proyecto, consultar [README.md](../README.md) y [DOCUMENTACION_TECNICA.md](../DOCUMENTACION_TECNICA.md).
 
-## Tabla de Contenidos
+## Tecnologías Utilizadas
 
-1. [Descripción del Proyecto](#descripción-del-proyecto)
-2. [Stack Tecnológico](#stack-tecnológico)
-3. [Estructura del Proyecto](#estructura-del-proyecto)
-4. [Requisitos Previos](#requisitos-previos)
-5. [Instalación y Configuración](#instalación-y-configuración)
-6. [Ejecución en Desarrollo](#ejecución-en-desarrollo)
-7. [Arquitectura del Sistema](#arquitectura-del-sistema)
-8. [Documentación Técnica](#documentación-técnica)
-9. [Despliegue](#despliegue)
-10. [Escalabilidad](#escalabilidad)
-
-## Descripción del Proyecto
-
-Sistema de directorio comercial que permite a los usuarios buscar, explorar y gestionar negocios locales. Incluye funcionalidades de:
-
-- Búsqueda y filtrado de negocios por categoría y ubicación
-- Sistema de reseñas y calificaciones
-- Panel de administración con autenticación JWT
-- Gestión de leads y suscriptores de newsletter
-- Subida y almacenamiento de imágenes mediante Cloudinary
-- Aplicación Web Progresiva (PWA) con soporte offline
-
-## Stack Tecnológico
-
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js 4.18.2
-- **Base de Datos**: PostgreSQL 17
-- **ORM/Cliente**: pg (node-postgres) 8.11.3
-- **Autenticación**: JWT (jsonwebtoken 9.0.2)
-- **Validación**: Joi 18.0.1
-- **Almacenamiento**: Cloudinary para imágenes
-- **Seguridad**: bcrypt 6.0.0 para hash de contraseñas
-
-### Frontend
-- **Framework**: Next.js 15.5.6 (App Router)
-- **UI Library**: React 19.1.0
-- **Lenguaje**: TypeScript 5.x
-- **Estilos**: Tailwind CSS 4.x
-- **HTTP Client**: Axios 1.12.2
-- **Data Fetching**: SWR 2.3.6
-- **Mapas**: React Leaflet 5.0.0
-
-### DevOps
-- **Frontend Hosting**: Netlify
-- **Backend Hosting**: Render
-- **Base de Datos**: Render PostgreSQL
-- **Control de Versiones**: Git
+- Next.js 15 con App Router
+- React 19 con hooks modernos
+- TypeScript para tipado estático
+- Tailwind CSS para estilos
+- Axios para peticiones HTTP
+- SWR para manejo de estado de servidor
 
 ## Estructura del Proyecto
 
 ```
-DirectorioComercial/
-├── backend/                    # API REST Backend
-│   ├── config/                 # Configuraciones
-│   │   ├── database.js        # Pool de conexiones PostgreSQL
-│   │   └── cloudinary.js      # Configuración Cloudinary
-│   ├── database/               # Scripts SQL
-│   │   └── init.sql           # Inicialización de BD
-│   ├── middleware/             # Middlewares Express
-│   │   ├── auth.js            # Autenticación JWT
-│   │   └── validation.js      # Validación con Joi
-│   ├── models/                 # Modelos de datos
-│   │   ├── Business.js
-│   │   ├── Category.js
-│   │   ├── Lead.js
-│   │   ├── NewsletterSubscriber.js
-│   │   ├── Review.js
-│   │   ├── User.js
-│   │   └── BusinessImage.js
-│   ├── routes/                 # Rutas de la API
-│   │   ├── auth.js
-│   │   ├── businesses.js
-│   │   ├── categories.js
-│   │   ├── leads.js
-│   │   ├── newsletter.js
-│   │   └── reviews.js
-│   ├── utils/                  # Utilidades
-│   ├── server.js              # Punto de entrada
-│   └── package.json
-├── frontend/                   # Aplicación Next.js
-│   ├── public/                 # Archivos estáticos
-│   │   ├── manifest.json      # PWA Manifest
-│   │   └── sw.js              # Service Worker
-│   ├── src/
-│   │   ├── app/               # App Router (Next.js 15)
-│   │   │   ├── admin/         # Panel de administración
-│   │   │   ├── businesses/    # Páginas de negocios
-│   │   │   ├── add-listing/   # Agregar negocio
-│   │   │   └── contact/       # Contacto
-│   │   ├── components/        # Componentes React
-│   │   ├── hooks/             # Custom hooks
-│   │   ├── lib/               # Utilidades
-│   │   │   └── api.ts         # Cliente API
-│   │   ├── types/             # Tipos TypeScript
-│   │   └── multimedia/        # Assets multimedia
-│   └── package.json
-├── ARQUITECTURA.md            # Documentación de arquitectura
-├── DOCUMENTACION_TECNICA.md   # Documentación técnica detallada
-└── README.md                  # Este archivo
+src/
+├── app/                    # Páginas de Next.js App Router
+│   ├── layout.tsx         # Layout principal
+│   ├── page.tsx           # Página principal
+│   ├── globals.css        # Estilos globales
+│   └── businesses/        # Páginas de negocios
+├── components/            # Componentes reutilizables
+│   ├── Header.tsx         # Navegación principal
+│   ├── HeroSection.tsx    # Sección principal con búsqueda
+│   ├── FeaturedListings.tsx # Listado de negocios destacados
+│   ├── CategorySection.tsx # Grid de categorías
+│   ├── BusinessList.tsx   # Lista de negocios
+│   └── Footer.tsx         # Pie de página
+├── lib/                   # Utilidades y configuración
+│   └── api.ts            # Cliente API con endpoints
+└── types/                 # Definiciones de TypeScript
+    └── index.ts          # Interfaces y tipos
 ```
-
-## Requisitos Previos
-
-- **Node.js**: Versión 20 o superior
-- **PostgreSQL**: Versión 15 o superior
-- **npm**: Versión 9 o superior
-- **Git**: Para clonar el repositorio
-
-### Servicios Externos Requeridos
-
-- **Cloudinary**: Cuenta para almacenamiento de imágenes (nivel gratuito suficiente)
-- **Render** (producción): Para hosting de backend y base de datos
-- **Netlify** (producción): Para hosting de frontend
 
 ## Instalación y Configuración
 
-### 1. Clonar el Repositorio
+### Prerrequisitos
 
+- Node.js 18 o superior
+- npm o yarn
+- API backend ejecutándose en puerto 5000
+
+### Instalación
+
+1. Instalar dependencias:
 ```bash
-git clone <repository-url>
-cd DirectorioComercial
-```
-
-### 2. Configurar Base de Datos
-
-```bash
-# Crear base de datos PostgreSQL
-createdb dondeoficial
-
-# Ejecutar script de inicialización
-psql -d dondeoficial -f backend/database/init.sql
-```
-
-El script `init.sql` crea todas las tablas necesarias, índices y datos de ejemplo.
-
-### 3. Configurar Backend
-
-```bash
-cd backend
-
-# Instalar dependencias
 npm install
-
-# Copiar archivo de ejemplo de variables de entorno
-cp config.env.example .env
-
-# Editar .env con tus credenciales
 ```
 
-**Variables de entorno requeridas para backend** (`.env`):
-
-```env
-PORT=5000
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=dondeoficial
-DB_USER=tu_usuario_postgres
-DB_PASSWORD=tu_password_postgres
-NODE_ENV=development
-
-# JWT
-JWT_SECRET=tu_secret_jwt_muy_seguro_minimo_32_caracteres
-
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=tu_cloud_name
-CLOUDINARY_API_KEY=tu_api_key
-CLOUDINARY_API_SECRET=tu_api_secret
-
-# Frontend URL (para CORS)
-FRONTEND_URL=http://localhost:3000
-```
-
-### 4. Configurar Frontend
-
+2. Configurar variables de entorno:
 ```bash
-cd frontend
-
-# Instalar dependencias
-npm install
-
-# Crear archivo de variables de entorno
-echo "NEXT_PUBLIC_API_URL=http://localhost:5000/api" > .env.local
-echo "NEXT_PUBLIC_SITE_URL=http://localhost:3000" >> .env.local
+# Crear archivo .env.local
+echo NEXT_PUBLIC_API_URL=http://localhost:5000/api > .env.local
 ```
 
-**Variables de entorno requeridas para frontend** (`.env.local`):
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-## Ejecución en Desarrollo
-
-### Iniciar Backend
-
+3. Ejecutar en modo desarrollo:
 ```bash
-cd backend
 npm run dev
 ```
 
-El servidor backend estará disponible en `http://localhost:5000`. La API estará en `http://localhost:5000/api`.
+La aplicación estará disponible en http://localhost:3000
 
-### Iniciar Frontend
+## Scripts Disponibles
 
-```bash
-cd frontend
-npm run dev
-```
+- `npm run dev` - Ejecuta en modo desarrollo con hot reload
+- `npm run build` - Construye la aplicación para producción
+- `npm run start` - Ejecuta la aplicación en modo producción
+- `npm run lint` - Ejecuta el linter de código
 
-La aplicación frontend estará disponible en `http://localhost:3000`.
+## Componentes Principales
 
-### Verificación
+### Header
+Componente de navegación principal que incluye:
+- Logo de la aplicación
+- Menú de navegación
+- Botones de acción (Search, Wishlist, Cart)
+- Botón "Add Listing"
 
-1. Abrir `http://localhost:3000` en el navegador
-2. Verificar que la página principal carga correctamente
-3. Probar la búsqueda de negocios
-4. Navegar a diferentes páginas
+### HeroSection
+Sección principal con:
+- Título y subtítulo
+- Formulario de búsqueda (término y ubicación)
+- Botones de búsquedas populares
 
-## Arquitectura del Sistema
+### FeaturedListings
+Listado de negocios que muestra:
+- Grid responsive de tarjetas
+- Información básica del negocio
+- Estado (Open/Close)
+- Categoría
+- Botones de acción
 
-El sistema sigue una arquitectura de tres capas (3-Tier Architecture):
+### CategorySection
+Grid de categorías con:
+- Iconos de categoría
+- Nombre de categoría
+- Enlaces de navegación
 
-```
-┌─────────────────────────────────────┐
-│   Capa de Presentación              │
-│   Next.js Frontend (Netlify)        │
-└──────────────┬──────────────────────┘
-               │ HTTPS
-               ▼
-┌─────────────────────────────────────┐
-│   Capa de Lógica de Negocio         │
-│   Express.js API (Render)           │
-└──────────────┬──────────────────────┘
-               │ SSL/TLS
-               ▼
-┌─────────────────────────────────────┐
-│   Capa de Datos                     │
-│   PostgreSQL (Render)               │
-└─────────────────────────────────────┘
-```
+## API Integration
 
-### Patrón de Diseño
+La aplicación consume la API REST del backend mediante:
+- Cliente HTTP configurado en `lib/api.ts`
+- Endpoints para negocios y categorías
+- Manejo de errores y estados de carga
 
-- **Backend**: Patrón MVC (Model-View-Controller) adaptado a API REST
-- **Frontend**: Arquitectura basada en componentes con App Router de Next.js
-- **Comunicación**: RESTful API con JSON
+### Endpoints Utilizados
 
-## Documentación Técnica
+- GET /api/businesses - Lista negocios con filtros
+- GET /api/categories - Lista categorías disponibles
 
-Para información técnica detallada, consultar:
+## Responsive Design
 
-- **[ARQUITECTURA.md](ARQUITECTURA.md)**: Arquitectura completa del sistema
-- **[DOCUMENTACION_TECNICA.md](DOCUMENTACION_TECNICA.md)**: Documentación técnica detallada
+La aplicación está optimizada para:
+- Dispositivos móviles (320px+)
+- Tablets (768px+)
+- Desktop (1024px+)
 
-### Endpoints Principales de la API
+Utiliza Tailwind CSS con clases responsive para adaptarse automáticamente.
 
-#### Negocios
-- `GET /api/businesses` - Listar negocios con filtros
-- `GET /api/businesses/:id` - Obtener negocio por ID
-- `POST /api/businesses` - Crear negocio
-- `PUT /api/businesses/:id` - Actualizar negocio (requiere autenticación)
-- `DELETE /api/businesses/:id` - Eliminar negocio (requiere autenticación)
+## Tipado TypeScript
 
-#### Autenticación
-- `POST /api/auth/login` - Iniciar sesión
-- `POST /api/auth/refresh` - Refrescar token de acceso
-- `POST /api/auth/logout` - Cerrar sesión
-- `GET /api/auth/verify` - Verificar token (requiere autenticación)
+Definiciones de tipos principales:
+- `Business` - Estructura de negocio
+- `Category` - Estructura de categoría
+- `ApiResponse` - Respuestas de la API
+- `BusinessFilters` - Filtros de búsqueda
 
-#### Categorías
-- `GET /api/categories` - Listar categorías
-- `POST /api/categories` - Crear categoría (requiere autenticación)
+## Variables de Entorno
 
-#### Reseñas
-- `GET /api/reviews/business/:businessId` - Obtener reseñas de un negocio
-- `POST /api/reviews` - Crear reseña
+- `NEXT_PUBLIC_API_URL` - URL base de la API (pública para el cliente)
 
-#### Leads y Newsletter
-- `POST /api/leads` - Crear lead (formulario de contacto)
-- `POST /api/newsletter/subscribe` - Suscribirse al newsletter
+## Deploy en Netlify
 
-## Despliegue
+1. Conectar repositorio a Netlify
+2. Configurar build settings:
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+3. Configurar variable de entorno:
+   - `NEXT_PUBLIC_API_URL`: URL de la API en producción
 
-### Backend en Render
+## Estructura de Estilos
 
-1. Conectar repositorio Git a Render
-2. Crear nuevo Web Service
-3. Configurar:
-   - **Root Directory**: `backend`
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-4. Agregar variables de entorno en Render Dashboard
-5. Configurar base de datos PostgreSQL en Render
-6. Actualizar variables de entorno con credenciales de BD
+- Tailwind CSS para utilidades
+- Clases personalizadas en `globals.css`
+- Componentes estilizados con Tailwind
+- Diseño coherente con el sitio original
 
-### Frontend en Netlify
+## Desarrollo
 
-1. Conectar repositorio Git a Netlify
-2. Configurar:
-   - **Base directory**: `frontend`
-   - **Build command**: `npm run build`
-   - **Publish directory**: `.next`
-3. Agregar variables de entorno:
-   - `NEXT_PUBLIC_API_URL`: URL del backend en Render
-   - `NEXT_PUBLIC_SITE_URL`: URL del frontend en Netlify
+Para contribuir al proyecto:
+1. Crear rama desde main
+2. Realizar cambios siguiendo las convenciones
+3. Probar en modo desarrollo
+4. Crear pull request
 
-### Base de Datos en Render
+## Notas Técnicas
 
-1. Crear servicio PostgreSQL en Render
-2. Obtener Internal Database URL para el backend
-3. Ejecutar script `init.sql` manualmente o mediante migración
-
-## Escalabilidad
-
-### Consideraciones para Escalar
-
-1. **Base de Datos**
-   - Implementar índices adicionales según patrones de consulta
-   - Considerar particionamiento de tablas grandes
-   - Implementar replicación para lectura
-
-2. **Backend**
-   - Implementar balanceo de carga con múltiples instancias
-   - Utilizar caché Redis para consultas frecuentes
-   - Implementar rate limiting
-   - Considerar CDN para assets estáticos
-
-3. **Frontend**
-   - Implementar SSR/SSG estratégicamente
-   - Optimizar imágenes con Next.js Image component
-   - Implementar lazy loading de componentes
-   - Utilizar Service Worker para caché offline
-
-4. **Monitoreo y Logs**
-   - Integrar herramientas de monitoreo (Sentry, LogRocket)
-   - Implementar logging estructurado
-   - Configurar alertas para errores críticos
-
-5. **Seguridad**
-   - Implementar rate limiting por IP
-   - Configurar HTTPS en todos los servicios
-   - Implementar sanitización de inputs
-   - Revisar regularmente dependencias por vulnerabilidades
-
-### Mejoras Futuras Sugeridas
-
-- Implementar búsqueda full-text con PostgreSQL o Elasticsearch
-- Agregar sistema de notificaciones push para PWA
-- Implementar internacionalización (i18n)
-- Agregar integración con mapas (Google Maps, Mapbox)
-- Implementar sistema de favoritos con persistencia
-- Agregar analytics y métricas de uso
-- Implementar tests automatizados (unitarios e integración)
-
-## Contribución
-
-Este proyecto está diseñado para ser escalable y mantenible. Al contribuir:
-
-1. Seguir las convenciones de código establecidas
-2. Documentar nuevos endpoints y funcionalidades
-3. Actualizar esta documentación cuando sea necesario
-4. Realizar pruebas antes de commit
-
-## Licencia
-
-Proyecto propietario - Todos los derechos reservados
-
----
-
-**Versión del documento**: 1.0  
-**Última actualización**: Diciembre 2024
+- Utiliza Next.js App Router para enrutamiento
+- Componentes funcionales con hooks de React
+- Manejo de estado local con useState
+- Configuración de TypeScript estricta
+- Linting con ESLint configurado

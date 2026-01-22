@@ -12,14 +12,14 @@ interface HealthStatus {
 export default function HealthCheck() {
   const [healthStatus, setHealthStatus] = useState<HealthStatus>({
     status: 'checking',
-    message: 'Verificando estado del API...',
+    message: 'Verificando conexión con Supabase...',
     lastChecked: null,
   });
 
   const checkHealth = async () => {
     setHealthStatus({
       status: 'checking',
-      message: 'Verificando estado del API...',
+      message: 'Verificando conexión con Supabase...',
       lastChecked: null,
     });
 
@@ -27,22 +27,16 @@ export default function HealthCheck() {
       const response = await healthApi.check();
       setHealthStatus({
         status: 'healthy',
-        message: response.message || 'API funcionando correctamente',
+        message: response.message || 'Conexión con Supabase exitosa',
         lastChecked: new Date(),
       });
     } catch (error) {
       console.error('Health check error:', error);
-      let errorMessage = 'Error al conectar con el API';
-      
+      let errorMessage = 'Error al conectar con el backend';
       if (error instanceof Error) {
         errorMessage = error.message;
-        // Si el mensaje menciona la URL, lo mantenemos, si no, agregamos más contexto
-        if (!errorMessage.includes('http')) {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-          errorMessage += ` (${apiUrl})`;
-        }
       }
-      
+
       setHealthStatus({
         status: 'error',
         message: errorMessage,
@@ -102,7 +96,7 @@ export default function HealthCheck() {
         <div className="flex items-center gap-3">
           {getStatusIcon()}
           <div>
-            <div className="font-semibold">Estado del API</div>
+            <div className="font-semibold">Estado del Backend</div>
             <div className="text-sm opacity-90">{healthStatus.message}</div>
             {healthStatus.lastChecked && (
               <div className="text-xs opacity-75 mt-1">
