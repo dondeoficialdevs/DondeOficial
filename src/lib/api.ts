@@ -260,16 +260,26 @@ export const businessApi = {
 
     if (error) throw error;
 
+    // Log para depuración en consola (F12)
+    console.group('🔍 Depuración de Negocios Pendientes');
+    console.log('Datos raw de Supabase:', data);
+    console.groupEnd();
+
     interface PendingBusiness extends Business {
       categories: { name: string } | null;
       business_images: BusinessImage[];
     }
 
-    return ((data as unknown as PendingBusiness[]) || []).map((b) => ({
-      ...b,
-      category_name: b.categories?.name,
-      images: b.business_images || b.images || []
-    }));
+    return ((data as unknown as PendingBusiness[]) || []).map((b) => {
+      // Intentar encontrar imágenes en cualquier propiedad parecida si no está en business_images
+      const foundImages = b.business_images || (b as any).images || (b as any).business_image || [];
+
+      return {
+        ...b,
+        category_name: b.categories?.name,
+        images: Array.isArray(foundImages) ? foundImages : []
+      };
+    });
   },
 
   // Aprobar negocio (solo admin)

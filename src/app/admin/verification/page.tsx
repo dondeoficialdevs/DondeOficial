@@ -23,6 +23,7 @@ export default function VerificationPage() {
       setLoading(true);
       setError(null);
       const businesses = await businessApi.getPending();
+      console.log('Negocios procesados en UI:', businesses);
       setPendingBusinesses(businesses);
     } catch (error) {
       console.error('Error loading pending businesses:', error);
@@ -233,7 +234,15 @@ export default function VerificationPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                           <p className="text-sm text-gray-500 font-medium">Sin imágenes</p>
-                          <p className="text-xs text-gray-400 mt-1">Este negocio no tiene imágenes subidas</p>
+                          <p className="text-xs text-gray-400 mt-1">Este negocio no tiene imágenes vinculadas</p>
+
+                          {/* Info de depuración solo visible si hay algo raro */}
+                          {(business as any).business_images?.length > 0 && (
+                            <p className="text-[10px] text-red-400 mt-4">
+                              Debug: Se encontraron {(business as any).business_images.length} registros en business_images pero no en images.
+                            </p>
+                          )}
+
                           <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
                             Pendiente
                           </div>
@@ -435,29 +444,29 @@ export default function VerificationPage() {
                       <button
                         onClick={() => handleApprove(business.id)}
                         disabled={processingId === business.id}
-                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-linear-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-black text-white bg-linear-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-xl active:scale-95 uppercase tracking-wider"
                       >
                         {processingId === business.id ? (
                           <>
-                            <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Aprobando...
+                            PROCESANDO...
                           </>
                         ) : (
                           <>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                             </svg>
-                            APROBAR PUBLICACIÓN
+                            ACEPTAR Y PUBLICAR
                           </>
                         )}
                       </button>
                       <button
                         onClick={() => handleReject(business.id)}
                         disabled={processingId === business.id}
-                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-linear-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-linear-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95 uppercase"
                       >
                         {processingId === business.id ? (
                           <>
@@ -465,7 +474,7 @@ export default function VerificationPage() {
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Rechazando...
+                            RECHAZANDO...
                           </>
                         ) : (
                           <>
