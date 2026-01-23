@@ -126,5 +126,11 @@ export interface SiteSettings {
   id: number;
   logo_url: string;
   site_name: string;
+  primary_color: string;
+  secondary_color: string;
+  header_color: string;
+  footer_color: string;
+  bg_color: string;
+  gradient_direction: 'horizontal' | 'vertical';
   updated_at?: string;
 }

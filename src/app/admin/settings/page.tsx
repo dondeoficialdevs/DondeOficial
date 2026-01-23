@@ -9,7 +9,13 @@ export default function SettingsPage() {
     const [settings, setSettings] = useState<SiteSettings>({
         id: 0,
         logo_url: '/images/logo/Logo_Dondel.png',
-        site_name: 'DondeOficial'
+        site_name: 'DondeOficial',
+        primary_color: '#2563eb',
+        secondary_color: '#4f46e5',
+        header_color: '#ffffff',
+        footer_color: '#111827',
+        bg_color: '#f9fafb',
+        gradient_direction: 'horizontal'
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -25,7 +31,15 @@ export default function SettingsPage() {
             setLoading(true);
             const data = await settingsApi.getSettings();
             if (data) {
-                setSettings(data);
+                setSettings({
+                    ...data,
+                    primary_color: data.primary_color || '#2563eb',
+                    secondary_color: data.secondary_color || '#4f46e5',
+                    header_color: data.header_color || '#ffffff',
+                    footer_color: data.footer_color || '#111827',
+                    bg_color: data.bg_color || '#f9fafb',
+                    gradient_direction: data.gradient_direction || 'horizontal'
+                });
                 setPreviewUrl(data.logo_url);
             }
         } catch (err) {
@@ -60,7 +74,7 @@ export default function SettingsPage() {
 
             setSettings(updatedSettings);
             alert('Configuración guardada correctamente');
-            window.location.reload(); // Reload to refresh logo in layout/header
+            window.location.reload();
         } catch (err: any) {
             console.error('Error saving settings:', err);
             const message = err.message || 'Error desconocido';
@@ -76,83 +90,176 @@ export default function SettingsPage() {
         </div>
     );
 
+    const getGradientStyle = () => {
+        const direction = settings.gradient_direction === 'vertical' ? 'to bottom' : 'to right';
+        return `linear-gradient(${direction}, ${settings.primary_color}, ${settings.secondary_color})`;
+    };
+
     return (
-        <div className="p-8 max-w-4xl mx-auto">
+        <div className="p-8 max-w-5xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Configuración del Sitio</h1>
-                <p className="text-gray-500 font-medium">Personaliza la identidad visual de tu plataforma</p>
+                <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Personalización del Sitio</h1>
+                <p className="text-gray-500 font-medium">Gestiona el logo y la paleta de colores global</p>
             </div>
 
-            <div className="bg-white rounded-[2rem] border border-gray-100 shadow-2xl overflow-hidden">
-                <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-10">
-                    {/* Logo Section */}
-                    <div className="space-y-6">
-                        <label className="text-sm font-black text-gray-700 uppercase tracking-wider block">Logo Principal</label>
+            <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Logo Section */}
+                <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden p-8 md:p-12">
+                    <h2 className="text-xl font-black mb-8 text-gray-900 uppercase tracking-tight flex items-center gap-3">
+                        <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                        Identidad Visual
+                    </h2>
 
-                        <div className="flex flex-col md:flex-row items-center gap-10">
-                            {/* Logo Preview Container */}
-                            <div className="relative w-48 h-48 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden group">
-                                {previewUrl ? (
-                                    <Image
-                                        src={previewUrl}
-                                        alt="Logo Preview"
-                                        fill
-                                        className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
-                                    />
-                                ) : (
-                                    <div className="text-gray-400 text-center p-4">
-                                        <svg className="w-12 h-12 mx-auto mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <span className="text-xs font-bold uppercase tracking-tighter">Sin imagen</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="flex-1 space-y-4">
-                                <p className="text-sm text-gray-500 leading-relaxed font-medium">
-                                    Recomendamos usar una imagen transparente en formato <span className="font-bold text-gray-900">PNG</span> o <span className="font-bold text-gray-900">SVG</span>.
-                                    El tamaño ideal es de <span className="font-bold text-gray-900">512x512 píxeles</span>.
-                                </p>
-
-                                <label className="inline-flex items-center px-6 py-3 bg-blue-50 text-blue-600 rounded-xl font-black text-sm uppercase tracking-widest cursor-pointer hover:bg-blue-600 hover:text-white transition-all transform active:scale-95 shadow-sm">
-                                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    <div className="flex flex-col md:flex-row items-center gap-10">
+                        <div className="relative w-48 h-48 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden group">
+                            {previewUrl ? (
+                                <Image
+                                    src={previewUrl}
+                                    alt="Logo Preview"
+                                    fill
+                                    className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
+                                />
+                            ) : (
+                                <div className="text-gray-400 text-center p-4">
+                                    <svg className="w-12 h-12 mx-auto mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    Subir Nuevo Logo
-                                    <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-                                </label>
+                                    <span className="text-xs font-bold tracking-tighter">SIN LOGO</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex-1 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Nombre del Sitio</label>
+                                <input
+                                    type="text"
+                                    value={settings.site_name}
+                                    onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-blue-500 rounded-2xl outline-none transition-all font-bold text-gray-800"
+                                    placeholder="Nombre de tu marca..."
+                                />
+                            </div>
+
+                            <label className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all transform active:scale-95 shadow-lg shadow-blue-500/20">
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                Cambiar Logo
+                                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Colors Section */}
+                <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden p-8 md:p-12">
+                    <h2 className="text-xl font-black mb-8 text-gray-900 uppercase tracking-tight flex items-center gap-3">
+                        <span className="w-1.5 h-6 bg-indigo-600 rounded-full"></span>
+                        Diseño y Colores
+                    </h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+                        {/* Primary & Secondary */}
+                        <div className="space-y-3">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Color Primario</label>
+                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
+                                <input type="color" value={settings.primary_color} onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
+                                <input type="text" value={settings.primary_color} onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Color Secundario</label>
+                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
+                                <input type="color" value={settings.secondary_color} onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
+                                <input type="text" value={settings.secondary_color} onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            </div>
+                        </div>
+
+                        {/* Gradient Direction */}
+                        <div className="space-y-3 col-span-1 md:col-span-2">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Dirección del Degradado</label>
+                            <div className="flex gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setSettings({ ...settings, gradient_direction: 'horizontal' })}
+                                    className={`flex-1 py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${settings.gradient_direction === 'horizontal' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                >
+                                    Horizontal (Derecha)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setSettings({ ...settings, gradient_direction: 'vertical' })}
+                                    className={`flex-1 py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${settings.gradient_direction === 'vertical' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                >
+                                    Vertical (Abajo)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Fondo del Header</label>
+                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
+                                <input type="color" value={settings.header_color} onChange={(e) => setSettings({ ...settings, header_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
+                                <input type="text" value={settings.header_color} onChange={(e) => setSettings({ ...settings, header_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Fondo del Footer</label>
+                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
+                                <input type="color" value={settings.footer_color} onChange={(e) => setSettings({ ...settings, footer_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
+                                <input type="text" value={settings.footer_color} onChange={(e) => setSettings({ ...settings, footer_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Fondo de la Página</label>
+                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
+                                <input type="color" value={settings.bg_color} onChange={(e) => setSettings({ ...settings, bg_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
+                                <input type="text" value={settings.bg_color} onChange={(e) => setSettings({ ...settings, bg_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="h-px bg-gray-100"></div>
-
-                    {/* Site Information */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-2">
-                            <label className="text-sm font-black text-gray-700 uppercase tracking-wider block">Nombre del Sitio</label>
-                            <input
-                                type="text"
-                                value={settings.site_name}
-                                onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
-                                className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-blue-500 rounded-2xl outline-none transition-all font-bold text-gray-800"
-                                placeholder="DondeOficial"
-                            />
+                    {/* Preview Helper */}
+                    <div className="mt-12 p-10 rounded-[2.5rem] bg-gray-900 overflow-hidden relative group">
+                        <div className="absolute inset-0 opacity-20" style={{ background: getGradientStyle() }}></div>
+                        <div className="relative z-10">
+                            <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Vista Previa del Estilo</h4>
+                            <div className="flex flex-wrap gap-6">
+                                <button
+                                    className="px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-white shadow-2xl transition-transform hover:scale-105"
+                                    style={{ background: getGradientStyle() }}
+                                    type="button"
+                                >
+                                    Botón con Degradado
+                                </button>
+                                <div
+                                    className="px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-white border-2"
+                                    style={{ borderColor: settings.primary_color, color: settings.primary_color }}
+                                >
+                                    Botón Delineado
+                                </div>
+                            </div>
+                            <p className="mt-8 text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                El degradado se aplicará a botones clave y elementos decorativos
+                            </p>
                         </div>
                     </div>
+                </div>
 
-                    <div className="pt-6">
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="w-full py-5 bg-linear-to-r from-blue-600 to-indigo-700 text-white rounded-[2rem] font-black text-xl hover:shadow-2xl hover:shadow-blue-600/40 transition-all active:scale-[0.97] disabled:opacity-50 uppercase tracking-tight"
-                        >
-                            {saving ? 'Guardando cambios...' : 'Guardar Configuración'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div className="pt-4 pb-12">
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="w-full py-6 bg-linear-to-r from-gray-900 to-gray-800 text-white rounded-[2rem] font-black text-xl hover:shadow-2xl hover:shadow-gray-900/30 transition-all active:scale-[0.97] disabled:opacity-50 uppercase tracking-wide"
+                    >
+                        {saving ? 'Procesando cambios...' : 'Aplicar Configuración Global'}
+                    </button>
+                </div>
+            </form>
         </div>
     );
 }

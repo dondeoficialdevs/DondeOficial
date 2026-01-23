@@ -12,7 +12,10 @@ export default function Header() {
   const { logoUrl } = useSettings();
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-100">
+    <header
+      className="shadow-lg sticky top-0 z-50 border-b border-gray-100"
+      style={{ backgroundColor: 'var(--header-bg)' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
@@ -79,7 +82,8 @@ export default function Header() {
             </Link>
             <Link
               href="/add-listing"
-              className="bg-linear-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              className="text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              style={{ background: 'linear-gradient(var(--gradient-direction), var(--primary-color), var(--secondary-color))' }}
             >
               Agregar Negocio
             </Link>

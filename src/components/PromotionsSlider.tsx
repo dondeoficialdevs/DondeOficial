@@ -54,10 +54,12 @@ export default function PromotionsSlider() {
     const [isPaused, setIsPaused] = useState(false);
 
     const nextSlide = useCallback(() => {
+        if (promotions.length === 0) return;
         setCurrentSlide((prev) => (prev === promotions.length - 1 ? 0 : prev + 1));
     }, [promotions.length]);
 
     const prevSlide = () => {
+        if (promotions.length === 0) return;
         setCurrentSlide((prev) => (prev === 0 ? promotions.length - 1 : prev - 1));
     };
 
@@ -65,7 +67,7 @@ export default function PromotionsSlider() {
         const fetchPromotions = async () => {
             try {
                 const data = await promotionApi.getActive();
-                if (data && data.length > 0) {
+                if (data && Array.isArray(data) && data.length > 0) {
                     setPromotions(data);
                 }
             } catch (error) {
@@ -84,36 +86,43 @@ export default function PromotionsSlider() {
         }
     }, [nextSlide, isPaused, promotions.length]);
 
-    if (promotions.length === 0) return null;
+    if (!promotions || promotions.length === 0) return null;
 
     return (
         <section
-            className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden bg-gray-900 group"
+            className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden bg-gray-950 group"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
         >
             {/* Slides */}
             {promotions.map((promo, index) => (
                 <div
-                    key={promo.id}
+                    key={promo.id || index}
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
                         }`}
                 >
                     {/* Background Image with Overlay */}
                     <div className="absolute inset-0">
-                        <Image
-                            src={promo.image_url}
-                            alt={promo.title}
-                            fill
-                            className="object-cover transition-transform duration-[10s] group-hover:scale-110"
-                            priority={index === 0}
-                        />
+                        {promo.image_url ? (
+                            <Image
+                                src={promo.image_url}
+                                alt={promo.title || 'Promoción'}
+                                fill
+                                className="object-cover transition-transform duration-[10s] group-hover:scale-105"
+                                priority={index === 0}
+                            />
+                        ) : (
+                            <div className="absolute inset-0 bg-gray-900"></div>
+                        )}
                         {/* More intense gradient for guaranteed readability */}
-                        <div className="absolute inset-0 bg-linear-to-r from-black/95 via-black/50 to-transparent"></div>
-                        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/40 to-transparent"></div>
+                        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent"></div>
 
-                        {/* Decorative light ray */}
-                        <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-blue-500/0 via-blue-500/50 to-blue-500/0 opacity-50"></div>
+                        {/* Decorative light ray representing primary color */}
+                        <div
+                            className="absolute top-0 left-0 w-full h-1 opacity-50"
+                            style={{ background: 'linear-gradient(90deg, transparent, var(--primary-color), transparent)' }}
+                        ></div>
                     </div>
 
                     {/* Content */}
@@ -121,8 +130,14 @@ export default function PromotionsSlider() {
                         <div className={`max-w-3xl transition-all duration-1000 transform ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
                             }`}>
                             <div className="flex flex-wrap items-center gap-4 mb-8">
-                                <div className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/10 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-blue-600/20 text-blue-400 border-blue-500/20'
-                                    }`}>
+                                <div
+                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/10 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : ''}`}
+                                    style={!promo.is_discount ? {
+                                        backgroundColor: 'color-mix(in srgb, var(--primary-color) 20%, transparent)',
+                                        color: 'white',
+                                        borderColor: 'var(--primary-color)'
+                                    } : {}}
+                                >
                                     {promo.badge_text || (promo.is_discount ? 'OFERTA' : 'DESTACADO')}
                                 </div>
                                 {promo.is_discount && (
@@ -137,7 +152,7 @@ export default function PromotionsSlider() {
                             </div>
 
                             <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
-                                {promo.title.split(' ').map((word, i) => (
+                                {(promo.title || '').split(' ').map((word, i) => (
                                     <span key={i} className="inline-block mr-4 last:mr-0 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
                                         {word}
                                     </span>
@@ -152,10 +167,8 @@ export default function PromotionsSlider() {
                                 <div className="flex items-center gap-6">
                                     <Link
                                         href={promo.button_link}
-                                        className={`group relative inline-flex items-center justify-center px-12 py-5 font-black text-white transition-all duration-500 rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden ${promo.is_discount
-                                                ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/40'
-                                                : 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/40'
-                                            }`}
+                                        className="group relative inline-flex items-center justify-center px-12 py-5 font-black text-white transition-all duration-500 rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden"
+                                        style={{ backgroundColor: promo.is_discount ? '#10b981' : 'var(--primary-color)' }}
                                     >
                                         <span className="relative z-10 flex items-center text-lg uppercase tracking-wider">
                                             {promo.button_text || 'Explorar'}
@@ -169,14 +182,16 @@ export default function PromotionsSlider() {
                                     <div className="hidden md:flex flex-col">
                                         <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Disponible ahora</span>
                                         <span className="w-12 h-1 bg-white/20 rounded-full overflow-hidden">
-                                            <span className="block h-full bg-blue-500 w-2/3"></span>
+                                            <span
+                                                className="block h-full w-2/3"
+                                                style={{ backgroundColor: 'var(--primary-color)' }}
+                                            ></span>
                                         </span>
                                     </div>
                                 </div>
                             )}
                         </div>
                     </div>
-
                 </div>
             ))}
 
@@ -184,7 +199,7 @@ export default function PromotionsSlider() {
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 flex justify-between px-4 sm:px-8 pointer-events-none">
                 <button
                     onClick={prevSlide}
-                    className="p-4 sm:p-5 rounded-2xl bg-black/10 hover:bg-blue-600/40 text-white backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none pointer-events-auto border border-white/5 hover:border-blue-400/30"
+                    className="p-4 sm:p-5 rounded-2xl bg-black/20 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none pointer-events-auto border border-white/5"
                     aria-label="Anterior promoción"
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,7 +208,7 @@ export default function PromotionsSlider() {
                 </button>
                 <button
                     onClick={nextSlide}
-                    className="p-4 sm:p-5 rounded-2xl bg-black/10 hover:bg-blue-600/40 text-white backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none pointer-events-auto border border-white/5 hover:border-blue-400/30"
+                    className="p-4 sm:p-5 rounded-2xl bg-black/20 hover:bg-white/10 text-white backdrop-blur-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus:outline-none pointer-events-auto border border-white/5"
                     aria-label="Siguiente promoción"
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,11 +226,12 @@ export default function PromotionsSlider() {
                         className="group py-2 focus:outline-none"
                         aria-label={`Ir a promoción ${index + 1}`}
                     >
-                        <div className={`relative h-1.5 transition-all duration-500 overflow-hidden rounded-full ${index === currentSlide ? 'w-16 bg-white/10' : 'w-5 bg-white/10 hover:bg-white/30'
+                        <div className={`relative h-1.5 transition-all duration-500 overflow-hidden rounded-full ${index === currentSlide ? 'w-16 bg-white/20' : 'w-5 bg-white/10 hover:bg-white/30'
                             }`}>
                             {index === currentSlide && (
                                 <div
-                                    className={`absolute inset-0 bg-blue-500 animate-slider-progress ${isPaused ? '[animation-play-state:paused]' : ''}`}
+                                    className={`absolute inset-0 animate-slider-progress ${isPaused ? '[animation-play-state:paused]' : ''}`}
+                                    style={{ backgroundColor: 'var(--primary-color)' }}
                                 ></div>
                             )}
                         </div>
@@ -223,9 +239,15 @@ export default function PromotionsSlider() {
                 ))}
             </div>
 
-            {/* Luxury Light Effects */}
-            <div className="absolute -bottom-60 -left-60 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[150px] z-10 pointer-events-none animate-pulse"></div>
-            <div className="absolute -top-60 -right-60 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[150px] z-10 pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}></div>
+            {/* Luxury Light Effects based on Theme */}
+            <div
+                className="absolute -bottom-60 -left-60 w-[500px] h-[500px] rounded-full blur-[150px] z-10 pointer-events-none animate-pulse opacity-20"
+                style={{ backgroundColor: 'var(--primary-color)' }}
+            ></div>
+            <div
+                className="absolute -top-60 -right-60 w-[500px] h-[500px] rounded-full blur-[150px] z-10 pointer-events-none animate-pulse opacity-20"
+                style={{ backgroundColor: 'var(--secondary-color)', animationDelay: '1s' }}
+            ></div>
         </section>
     );
 }

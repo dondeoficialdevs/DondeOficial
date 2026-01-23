@@ -34,7 +34,10 @@ export default function Footer() {
     }
   };
   return (
-    <footer className="bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <footer
+      className="text-white"
+      style={{ backgroundColor: 'var(--footer-bg)' }}
+    >
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -217,7 +220,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-700 bg-gray-900">
+      <div className="border-t border-gray-700/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-6 mb-4 md:mb-0">

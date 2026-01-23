@@ -2,12 +2,19 @@
 
 /* PWA Install Button Animation */
 @keyframes bounce-in {
-  0%, 20%, 50%, 80%, 100% {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
+
   40% {
     transform: translateY(-10px);
   }
+
   60% {
     transform: translateY(-5px);
   }
@@ -18,23 +25,19 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-/* Tailwind CSS v4 theme configuration */
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f9fafb;
+  --foreground: #111827;
+  --primary-color: #2563eb;
+  --secondary-color: #4f46e5;
+  --site-bg: #f9fafb;
+  --header-bg: #ffffff;
+  --footer-bg: #111827;
+  --gradient-direction: to right;
 }
 
 body {
-  background: var(--background);
+  background: var(--site-bg);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Utility classes */
@@ -60,6 +63,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -71,9 +75,17 @@ body {
 }
 
 /* Delays para partículas del loading */
-.particle-delay-500 { animation-delay: 0.5s; }
-.particle-delay-1000 { animation-delay: 1s; }
-.particle-delay-1500 { animation-delay: 1.5s; }
+.particle-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.particle-delay-1000 {
+  animation-delay: 1s;
+}
+
+.particle-delay-1500 {
+  animation-delay: 1.5s;
+}
 
 /* Spinner con dirección reversa */
 .spinner-reverse {
@@ -82,18 +94,24 @@ body {
 
 /* Animación de rompecabezas - efecto zigzag simple */
 @keyframes bounce-up {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(-30px) rotate(-3deg);
   }
 }
 
 @keyframes bounce-down {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(30px) rotate(3deg);
   }
@@ -108,36 +126,68 @@ body {
 }
 
 /* Delays para animaciones escalonadas */
-.bounce-delay-0 { animation-delay: 0ms; }
-.bounce-delay-200 { animation-delay: 200ms; }
-.bounce-delay-400 { animation-delay: 400ms; }
-.bounce-delay-600 { animation-delay: 600ms; }
+.bounce-delay-0 {
+  animation-delay: 0ms;
+}
+
+.bounce-delay-200 {
+  animation-delay: 200ms;
+}
+
+.bounce-delay-400 {
+  animation-delay: 400ms;
+}
+
+.bounce-delay-600 {
+  animation-delay: 600ms;
+}
 
 
 /* Animaciones de partículas */
 @keyframes particle-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
-.particle-1 { animation: particle-pulse 2s infinite; }
-.particle-2 { animation: particle-pulse 2s infinite 0.5s; }
-.particle-3 { animation: particle-pulse 2s infinite 1s; }
-.particle-4 { animation: particle-pulse 2s infinite 1.5s; }
+.particle-1 {
+  animation: particle-pulse 2s infinite;
+}
+
+.particle-2 {
+  animation: particle-pulse 2s infinite 0.5s;
+}
+
+.particle-3 {
+  animation: particle-pulse 2s infinite 1s;
+}
+
+.particle-4 {
+  animation: particle-pulse 2s infinite 1.5s;
+}
 
 /* Optimizaciones para PWA y performance */
 @media (prefers-reduced-motion: reduce) {
+
   .animate-puzzle-up,
   .animate-puzzle-down {
     animation: none;
     opacity: 1;
     transform: none;
   }
-  
+
   .group-hover\:scale-105:hover {
     transform: none;
   }
-  
+
   .group-hover\:-translate-y-2:hover {
     transform: none;
   }
@@ -148,7 +198,7 @@ body {
   .group:hover .group-hover\:scale-105 {
     transform: scale(1.02);
   }
-  
+
   .group:hover .group-hover\:-translate-y-2 {
     transform: translateY(-1px);
   }
@@ -156,12 +206,16 @@ body {
 
 /* Animaciones para página de login */
 @keyframes blob {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
+
   33% {
     transform: translate(30px, -50px) scale(1.1);
   }
+
   66% {
     transform: translate(-20px, 20px) scale(0.9);
   }
@@ -180,13 +234,24 @@ body {
 }
 
 @keyframes shake {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-5px);
   }
-  20%, 40%, 60%, 80% {
+
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(5px);
   }
 }
@@ -226,10 +291,16 @@ body {
 .map-container {
   height: 500px;
 }
+
 /* Slider Progress Animation */
 @keyframes slider-progress {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .animate-slider-progress {
