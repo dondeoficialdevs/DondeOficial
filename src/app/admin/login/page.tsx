@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { authApi } from '@/lib/api';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useSettings } from '@/hooks/useSettings';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const { logoUrl } = useSettings();
 
   useEffect(() => {
     // Si ya está autenticado, redirigir al admin
@@ -62,7 +64,7 @@ export default function LoginPage() {
                 <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                   <div className="relative w-full h-full flex items-center justify-center">
                     <Image
-                      src="/images/logo/Logo_Dondel.png"
+                      src={logoUrl}
                       alt="DondeOficial Logo"
                       fill
                       className="object-contain drop-shadow-lg"

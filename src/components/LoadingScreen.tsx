@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useSettings } from '@/hooks/useSettings';
 
 interface Particle {
   size: number;
@@ -18,6 +19,7 @@ export default function LoadingScreen() {
   const [progress, setProgress] = useState(0);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const { logoUrl } = useSettings();
 
   useEffect(() => {
     // Generar partículas solo en el cliente para evitar problemas de hidratación
@@ -64,16 +66,16 @@ export default function LoadingScreen() {
   if (!isVisible) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-500 overflow-hidden"
-      style={{ 
+      style={{
         background: 'linear-gradient(135deg, #161617 0%, #1a1a1b 50%, #161617 100%)',
         backgroundSize: '200% 200%',
         animation: 'gradientShift 8s ease infinite',
       }}
     >
       {/* Efecto de gradiente animado de fondo */}
-      <div 
+      <div
         className="absolute inset-0 opacity-20"
         style={{
           background: 'radial-gradient(circle at 30% 50%, #FF5A00 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(255, 90, 0, 0.3) 0%, transparent 50%)',
@@ -88,7 +90,7 @@ export default function LoadingScreen() {
           const baseSize = 30; // 30vw como base
           const sizeMultiplier = baseSize + (i * 10); // Incremento de 10vw por cada onda
           return (
-            <div 
+            <div
               key={i}
               className="absolute rounded-full border"
               style={{
@@ -131,7 +133,7 @@ export default function LoadingScreen() {
         {/* Logo con efecto de entrada */}
         <div className="mb-4 sm:mb-6 md:mb-8 w-full">
           <div className="flex justify-center mb-4 sm:mb-6">
-            <div 
+            <div
               className="relative animate-scale-in"
               style={{
                 animation: 'scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -139,7 +141,7 @@ export default function LoadingScreen() {
             >
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 xl:w-40 xl:h-40 2xl:w-44 2xl:h-44">
                 {/* Glow effect alrededor del logo */}
-                <div 
+                <div
                   className="absolute inset-0 rounded-full blur-2xl sm:blur-3xl opacity-30 animate-pulse"
                   style={{
                     background: 'radial-gradient(circle, #FF5A00 0%, transparent 70%)',
@@ -148,7 +150,7 @@ export default function LoadingScreen() {
                 ></div>
                 <div className="relative w-full h-full flex items-center justify-center z-10">
                   <Image
-                    src="/images/logo/Logo_Dondel.png"
+                    src={logoUrl}
                     alt="DondeOficial Logo"
                     fill
                     className="object-contain drop-shadow-2xl"
@@ -160,11 +162,11 @@ export default function LoadingScreen() {
               </div>
             </div>
           </div>
-          
+
           {/* Subtítulo con efecto de escritura */}
-          <p 
+          <p
             className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-light tracking-wide px-2 sm:px-4 animate-slide-up"
-            style={{ 
+            style={{
               color: '#f1f1f1',
               animation: 'slideUp 0.8s ease-out 0.3s both',
             }}
@@ -175,9 +177,9 @@ export default function LoadingScreen() {
 
         {/* Barra de progreso mejorada con diseño moderno - Responsive */}
         <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mb-4 sm:mb-6 md:mb-8">
-          <div 
+          <div
             className="h-1.5 sm:h-2 rounded-full overflow-hidden relative"
-            style={{ 
+            style={{
               backgroundColor: 'rgba(241, 241, 241, 0.08)',
               boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)',
             }}
@@ -192,7 +194,7 @@ export default function LoadingScreen() {
                 boxShadow: '0 0 10px rgba(255, 90, 0, 0.5), 0 0 20px rgba(255, 90, 0, 0.3)',
               }}
             >
-              <div 
+              <div
                 className="absolute inset-0"
                 style={{
                   background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
@@ -200,7 +202,7 @@ export default function LoadingScreen() {
                 }}
               ></div>
               {/* Efecto de brillo superior */}
-              <div 
+              <div
                 className="absolute top-0 left-0 right-0 h-1/2 rounded-t-full"
                 style={{
                   background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent)',
@@ -209,7 +211,7 @@ export default function LoadingScreen() {
             </div>
           </div>
           {/* Porcentaje de carga */}
-          <p 
+          <p
             className="text-xs sm:text-sm mt-1 sm:mt-2 font-medium"
             style={{ color: 'rgba(241, 241, 241, 0.6)' }}
           >
@@ -221,16 +223,16 @@ export default function LoadingScreen() {
         <div className="flex justify-center mb-4 sm:mb-6">
           <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56">
             {/* Glow suave alrededor */}
-            <div 
+            <div
               className="absolute inset-0 rounded-full blur-2xl opacity-25"
               style={{
                 background: 'radial-gradient(circle, #FF5A00 0%, transparent 70%)',
                 animation: 'pulse 2s ease-in-out infinite',
               }}
             ></div>
-            
+
             {/* SVG del localizador */}
-            <svg 
+            <svg
               className="w-full h-full relative z-10"
               viewBox="0 0 100 100"
               fill="none"
@@ -243,14 +245,14 @@ export default function LoadingScreen() {
                   <stop offset="100%" stopColor="#cc4800" />
                 </linearGradient>
                 <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                  <feGaussianBlur stdDeviation="2" result="coloredBlur" />
                   <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
               </defs>
-              
+
               {/* Círculo de carga - Spinner */}
               <circle
                 cx="50"
@@ -278,45 +280,45 @@ export default function LoadingScreen() {
                   filter: 'drop-shadow(0 0 4px rgba(255, 90, 0, 0.5))',
                 }}
               />
-              
+
               {/* Ondas de radar suaves */}
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="20" 
-                fill="none" 
-                stroke="#FF5A00" 
+              <circle
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke="#FF5A00"
                 strokeWidth="1.5"
                 opacity="0.3"
                 style={{
                   animation: 'radarWave 2.5s ease-out infinite',
                 }}
               />
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="20" 
-                fill="none" 
-                stroke="#FF5A00" 
+              <circle
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke="#FF5A00"
                 strokeWidth="1.5"
                 opacity="0.3"
                 style={{
                   animation: 'radarWave 2.5s ease-out infinite 0.6s',
                 }}
               />
-              <circle 
-                cx="50" 
-                cy="50" 
-                r="20" 
-                fill="none" 
-                stroke="#FF5A00" 
+              <circle
+                cx="50"
+                cy="50"
+                r="20"
+                fill="none"
+                stroke="#FF5A00"
                 strokeWidth="1.5"
                 opacity="0.3"
                 style={{
                   animation: 'radarWave 2.5s ease-out infinite 1.2s',
                 }}
               />
-              
+
               {/* Puntos de negocios alrededor */}
               <circle cx="30" cy="35" r="2" fill="#FF5A00" opacity="0.5">
                 <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite" begin="0s" />
@@ -334,25 +336,25 @@ export default function LoadingScreen() {
                 <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite" begin="1.2s" />
                 <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite" begin="1.2s" />
               </circle>
-              
+
               {/* Pin de localización - Centro */}
               <g transform="translate(50, 50)">
                 {/* Sombra del pin */}
-                <ellipse 
-                  cx="0" 
-                  cy="10" 
-                  rx="5" 
-                  ry="2.5" 
-                  fill="#000" 
+                <ellipse
+                  cx="0"
+                  cy="10"
+                  rx="5"
+                  ry="2.5"
+                  fill="#000"
                   opacity="0.3"
                   style={{
                     animation: 'pinShadowPulse 2s ease-in-out infinite',
                   }}
                 />
-                
+
                 {/* Cuerpo del pin */}
-                <path 
-                  d="M 0,-10 L -4.5,2 L 0,3.5 L 4.5,2 Z" 
+                <path
+                  d="M 0,-10 L -4.5,2 L 0,3.5 L 4.5,2 Z"
                   fill="url(#pinGradient)"
                   stroke="#f1f1f1"
                   strokeWidth="0.6"
@@ -361,22 +363,22 @@ export default function LoadingScreen() {
                     animation: 'pinBounce 2s ease-in-out infinite',
                   }}
                 />
-                
+
                 {/* Centro del pin con brillo */}
-                <circle 
-                  cx="0" 
-                  cy="-4" 
-                  r="2.5" 
+                <circle
+                  cx="0"
+                  cy="-4"
+                  r="2.5"
                   fill="#f1f1f1"
                   style={{
                     animation: 'pinPulse 2s ease-in-out infinite',
                     filter: 'drop-shadow(0 0 3px rgba(255, 90, 0, 0.8))',
                   }}
                 />
-                <circle 
-                  cx="0" 
-                  cy="-4" 
-                  r="1.2" 
+                <circle
+                  cx="0"
+                  cy="-4"
+                  r="1.2"
                   fill="#FF5A00"
                   style={{
                     animation: 'pinPulse 2s ease-in-out infinite',

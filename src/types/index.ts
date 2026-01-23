@@ -122,3 +122,9 @@ export interface Promotion {
 }
 
 
+export interface SiteSettings {
+  id: number;
+  logo_url: string;
+  site_name: string;
+  updated_at?: string;
+}

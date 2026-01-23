@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion } from '@/types';
+import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings } from '@/types';
 
 // Utility to handle Supabase responses (Not currently used but kept for potential future use)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -660,4 +660,78 @@ export const promotionApi = {
 
     if (error) throw error;
   },
+};
+
+export const settingsApi = {
+  // Obtener configuración del sitio
+  getSettings: async (): Promise<SiteSettings | null> => {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+      console.error('Error fetching settings:', error);
+      return null;
+    }
+    return data;
+  },
+
+  // Actualizar configuración del sitio
+  updateSettings: async (settingsData: Partial<SiteSettings>): Promise<SiteSettings> => {
+    // Intentar obtener el registro actual para saber el ID real
+    const currentSettings = await settingsApi.getSettings();
+
+    // Extraemos el id para no incluirlo en el cuerpo del update/insert
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...dataToSave } = settingsData;
+
+    if (currentSettings) {
+      // Si existe, actualizar
+      const { data, error } = await supabase
+        .from('site_settings')
+        .update(dataToSave)
+        .eq('id', currentSettings.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase Update Error:', error);
+        throw error;
+      }
+      return data;
+    } else {
+      // Si no existe, crear
+      const { data, error } = await supabase
+        .from('site_settings')
+        .insert([dataToSave])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase Insert Error:', error);
+        throw error;
+      }
+      return data;
+    }
+  },
+
+  // Subir nuevo logo
+  uploadLogo: async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `site-logo-${Math.random()}.${fileExt}`;
+    const filePath = `settings/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('businesses') // Reusing businesses bucket or settings if exists
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('businesses')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  }
 };

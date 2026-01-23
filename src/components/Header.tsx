@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useSettings } from '@/hooks/useSettings';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { favoritesCount } = useFavorites();
+  const { logoUrl } = useSettings();
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-100">
@@ -18,7 +20,7 @@ export default function Header() {
             <Link href="/" className="flex items-center group">
               <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
                 <Image
-                  src="/images/logo/Logo_Dondel.png"
+                  src={logoUrl}
                   alt="DondeOficial Logo"
                   fill
                   className="object-contain"
@@ -50,7 +52,7 @@ export default function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Link 
+            <Link
               href="/favorites"
               className="relative flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors duration-200 group"
             >
@@ -64,8 +66,8 @@ export default function Header() {
                 </span>
               )}
             </Link>
-            <Link 
-              href="/admin" 
+            <Link
+              href="/admin"
               className="flex items-center space-x-2 bg-linear-to-r from-purple-600 to-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-purple-500/20"
               title="Panel de Administración"
             >
@@ -75,8 +77,8 @@ export default function Header() {
               </svg>
               <span>Admin</span>
             </Link>
-            <Link 
-              href="/add-listing" 
+            <Link
+              href="/add-listing"
               className="bg-linear-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
               Agregar Negocio
@@ -84,8 +86,8 @@ export default function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <button 
-            className="lg:hidden text-gray-700 hover:text-blue-600 transition-colors duration-200" 
+          <button
+            className="lg:hidden text-gray-700 hover:text-blue-600 transition-colors duration-200"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             title="Menú móvil"
           >
@@ -99,30 +101,30 @@ export default function Header() {
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-gray-100 py-4">
             <nav className="flex flex-col space-y-4">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Inicio
               </Link>
-              <Link 
-                href="/listings" 
+              <Link
+                href="/listings"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Directorio
               </Link>
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contacto
               </Link>
               <div className="flex flex-col space-y-3 pt-4 border-t border-gray-100">
-                <Link 
-                  href="/admin" 
+                <Link
+                  href="/admin"
                   className="flex items-center justify-center space-x-2 bg-linear-to-r from-purple-600 to-indigo-600 text-white px-4 py-2.5 rounded-lg font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -132,7 +134,7 @@ export default function Header() {
                   </svg>
                   <span>Panel de Administración</span>
                 </Link>
-                <Link 
+                <Link
                   href="/favorites"
                   className="relative flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors duration-200 group"
                   onClick={() => setIsMobileMenuOpen(false)}
