@@ -81,7 +81,7 @@ export const businessApi = {
     return {
       ...data,
       category_name: data.categories?.name,
-      images: data.business_images
+      images: data.business_images || data.images || []
     };
   },
 
@@ -167,7 +167,7 @@ export const businessApi = {
 
       if (uploadError) {
         console.error('Error uploading image:', uploadError);
-        continue;
+        throw new Error(`Error al subir la imagen ${image.name}: ${uploadError.message}`);
       }
 
       // 2. Obtener URL pública
@@ -187,7 +187,12 @@ export const businessApi = {
         .select()
         .single();
 
-      if (!dbError && imageData) {
+      if (dbError) {
+        console.error('Error saving image record:', dbError);
+        throw new Error(`Error al registrar la imagen en la base de datos: ${dbError.message}`);
+      }
+
+      if (imageData) {
         uploadedImages.push(imageData);
       }
     }
@@ -238,7 +243,7 @@ export const businessApi = {
     return ((data as unknown as AdminBusiness[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
-      images: b.business_images
+      images: b.business_images || b.images || []
     }));
   },
 
@@ -263,7 +268,7 @@ export const businessApi = {
     return ((data as unknown as PendingBusiness[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
-      images: b.business_images
+      images: b.business_images || b.images || []
     }));
   },
 

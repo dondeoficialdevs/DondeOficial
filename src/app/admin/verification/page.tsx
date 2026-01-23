@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { businessApi } from '@/lib/api';
-import { Business } from '@/types';
+import { Business, BusinessImage } from '@/types';
 import { useRouter } from 'next/navigation';
 
 export default function VerificationPage() {
@@ -44,8 +44,8 @@ export default function VerificationPage() {
       await loadPendingBusinesses();
     } catch (error) {
       console.error('Error approving business:', error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
+      const errorMessage = error instanceof Error
+        ? error.message
         : 'Error al aprobar el negocio. Por favor intenta de nuevo.';
       alert(errorMessage);
     } finally {
@@ -55,7 +55,7 @@ export default function VerificationPage() {
 
   const handleReject = async (id: number) => {
     const reason = prompt('¿Por qué rechazas este negocio? (Opcional)');
-    
+
     if (reason === null) {
       return; // Usuario canceló
     }
@@ -71,8 +71,8 @@ export default function VerificationPage() {
       await loadPendingBusinesses();
     } catch (error) {
       console.error('Error rejecting business:', error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
+      const errorMessage = error instanceof Error
+        ? error.message
         : 'Error al rechazar el negocio. Por favor intenta de nuevo.';
       alert(errorMessage);
     } finally {
@@ -175,69 +175,71 @@ export default function VerificationPage() {
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                   {/* Galería de imágenes */}
                   <div className="flex-shrink-0">
-                    {business.images && business.images.length > 0 ? (
-                      <div className="relative">
-                        <div className="relative mb-2">
-                          <img
-                            src={business.images[selectedImageIndex[business.id] || 0]?.image_url || business.images[0].image_url}
-                            alt={business.name}
-                            className="w-full max-w-md h-64 object-cover rounded-xl shadow-md border-2 border-gray-200"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = '/placeholder-image.png';
-                            }}
-                          />
+                    {(() => {
+                      const businessImages: BusinessImage[] = business.images || (business as any).business_images || [];
+                      return businessImages.length > 0 ? (
+                        <div className="relative">
+                          <div className="relative mb-2">
+                            <img
+                              src={businessImages[selectedImageIndex[business.id] || 0]?.image_url || businessImages[0]?.image_url || '/placeholder-image.png'}
+                              alt={business.name}
+                              className="w-full max-w-md h-64 object-cover rounded-xl shadow-md border-2 border-gray-200"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/placeholder-image.png';
+                              }}
+                            />
+                            <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                              Pendiente
+                            </div>
+                            {businessImages.length > 1 && (
+                              <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs font-medium px-2 py-1 rounded">
+                                {selectedImageIndex[business.id] !== undefined ? selectedImageIndex[business.id] + 1 : 1} / {businessImages.length}
+                              </div>
+                            )}
+                          </div>
+                          {/* Miniaturas de todas las imágenes */}
+                          {businessImages.length > 1 && (
+                            <div className="flex gap-2 overflow-x-auto pb-2">
+                              {businessImages.map((image: BusinessImage, idx: number) => (
+                                <button
+                                  key={image.id}
+                                  onClick={() => setSelectedImageIndex({ ...selectedImageIndex, [business.id]: idx })}
+                                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${(selectedImageIndex[business.id] || 0) === idx
+                                    ? 'border-blue-500 ring-2 ring-blue-300'
+                                    : 'border-gray-200 hover:border-gray-300'
+                                    }`}
+                                >
+                                  <img
+                                    src={image.image_url}
+                                    alt={`${business.name} - Imagen ${idx + 1}`}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = '/placeholder-image.png';
+                                    }}
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                          <div className="mt-2 text-xs text-gray-500 text-center">
+                            {businessImages.length} imagen{businessImages.length !== 1 ? 'es' : ''} subida{businessImages.length !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative w-full max-w-md h-64 flex flex-col items-center justify-center bg-gray-100 rounded-xl border-2 border-dashed border-gray-300">
+                          <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <p className="text-sm text-gray-500 font-medium">Sin imágenes</p>
+                          <p className="text-xs text-gray-400 mt-1">Este negocio no tiene imágenes subidas</p>
                           <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
                             Pendiente
                           </div>
-                          {business.images.length > 1 && (
-                            <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs font-medium px-2 py-1 rounded">
-                              {selectedImageIndex[business.id] !== undefined ? selectedImageIndex[business.id] + 1 : 1} / {business.images.length}
-                            </div>
-                          )}
                         </div>
-                        {/* Miniaturas de todas las imágenes */}
-                        {business.images.length > 1 && (
-                          <div className="flex gap-2 overflow-x-auto pb-2">
-                            {business.images.map((image, idx) => (
-                              <button
-                                key={image.id}
-                                onClick={() => setSelectedImageIndex({ ...selectedImageIndex, [business.id]: idx })}
-                                className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                                  (selectedImageIndex[business.id] || 0) === idx
-                                    ? 'border-blue-500 ring-2 ring-blue-300'
-                                    : 'border-gray-200 hover:border-gray-300'
-                                }`}
-                              >
-                                <img
-                                  src={image.image_url}
-                                  alt={`${business.name} - Imagen ${idx + 1}`}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    target.src = '/placeholder-image.png';
-                                  }}
-                                />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        <div className="mt-2 text-xs text-gray-500 text-center">
-                          {business.images.length} imagen{business.images.length !== 1 ? 'es' : ''} subida{business.images.length !== 1 ? 's' : ''}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="relative w-full max-w-md h-64 flex flex-col items-center justify-center bg-gray-100 rounded-xl border-2 border-dashed border-gray-300">
-                        <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <p className="text-sm text-gray-500 font-medium">Sin imágenes</p>
-                        <p className="text-xs text-gray-400 mt-1">Este negocio no tiene imágenes subidas</p>
-                        <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                          Pendiente
-                        </div>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
 
                   {/* Información del negocio */}
@@ -433,7 +435,7 @@ export default function VerificationPage() {
                       <button
                         onClick={() => handleApprove(business.id)}
                         disabled={processingId === business.id}
-                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-linear-to-r from-emerald-600 to-green-700 hover:from-emerald-700 hover:to-green-800 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95"
                       >
                         {processingId === business.id ? (
                           <>
@@ -445,17 +447,17 @@ export default function VerificationPage() {
                           </>
                         ) : (
                           <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                             </svg>
-                            Aprobar
+                            APROBAR PUBLICACIÓN
                           </>
                         )}
                       </button>
                       <button
                         onClick={() => handleReject(business.id)}
                         disabled={processingId === business.id}
-                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                        className="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-linear-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95"
                       >
                         {processingId === business.id ? (
                           <>
@@ -467,10 +469,10 @@ export default function VerificationPage() {
                           </>
                         ) : (
                           <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            Rechazar
+                            RECHAZAR
                           </>
                         )}
                       </button>

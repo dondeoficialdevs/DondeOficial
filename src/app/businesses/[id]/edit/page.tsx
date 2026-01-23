@@ -45,7 +45,7 @@ export default function EditBusinessPage() {
       return;
     }
     setIsAuthenticated(true);
-    
+
     if (params.id) {
       loadData(Number(params.id));
     }
@@ -58,20 +58,20 @@ export default function EditBusinessPage() {
         businessApi.getById(id),
         categoryApi.getAll()
       ]);
-      
+
       setBusiness(businessData);
       setCategories(categoriesData);
-      
+
       // Pre-cargar formulario con datos del negocio
       // Convertir has_offer a boolean
       const rawHasOffer = businessData.has_offer;
-      const hasOffer = 
-        typeof rawHasOffer === 'boolean' 
+      const hasOffer =
+        typeof rawHasOffer === 'boolean'
           ? rawHasOffer
           : (typeof rawHasOffer === 'string' && (rawHasOffer === 'true' || rawHasOffer === '1' || rawHasOffer.toLowerCase() === 't'))
           || (typeof rawHasOffer === 'number' && rawHasOffer === 1)
           || false;
-      
+
       setFormData({
         name: businessData.name || '',
         description: businessData.description || '',
@@ -133,12 +133,12 @@ export default function EditBusinessPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-    
+
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => {
@@ -151,7 +151,7 @@ export default function EditBusinessPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm() || !business) {
       return;
     }
@@ -159,24 +159,50 @@ export default function EditBusinessPage() {
     setSaving(true);
 
     try {
-      const businessData = {
-        ...formData,
-        category_id: formData.category_id ? parseInt(formData.category_id) : undefined,
-        latitude: formData.latitude ? parseFloat(formData.latitude) : undefined,
-        longitude: formData.longitude ? parseFloat(formData.longitude) : undefined,
-        price: formData.price ? parseFloat(formData.price) : undefined,
-        offer_price: formData.offer_price ? parseFloat(formData.offer_price) : undefined,
+      // Limpiar y preparar datos - Solo enviar lo que tiene valor
+      const updateData: any = {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        address: formData.address.trim() || null,
+        phone: formData.phone.trim() || null,
+        email: formData.email.trim() || null,
+        website: formData.website.trim() || null,
+        category_id: formData.category_id ? parseInt(formData.category_id) : null,
+        opening_hours: formData.opening_hours.trim() || null,
+        latitude: formData.latitude && formData.latitude.trim() ? parseFloat(formData.latitude) : null,
+        longitude: formData.longitude && formData.longitude.trim() ? parseFloat(formData.longitude) : null,
+        facebook_url: formData.facebook_url.trim() || null,
+        instagram_url: formData.instagram_url.trim() || null,
+        tiktok_url: formData.tiktok_url.trim() || null,
+        whatsapp_url: formData.whatsapp_url.trim() || null,
+        price: formData.price && formData.price.trim() ? parseFloat(formData.price) : null,
+        offer_price: formData.offer_price && formData.offer_price.trim() ? parseFloat(formData.offer_price) : null,
         has_offer: formData.has_offer || false,
-        offer_description: formData.offer_description || undefined
+        offer_description: formData.offer_description.trim() || null
       };
 
-      await businessApi.update(business.id, businessData);
+      // Eliminar campos undefined para evitar problemas con Supabase
+      Object.keys(updateData).forEach(key => {
+        if (updateData[key] === undefined) {
+          delete updateData[key];
+        }
+      });
+
+      await businessApi.update(business.id, updateData);
       router.push(`/businesses/${business.id}`);
     } catch (error: unknown) {
       console.error('Error updating business:', error);
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Error al actualizar el negocio. Por favor intenta de nuevo.';
+      let errorMessage = 'Error al actualizar el negocio. Por favor intenta de nuevo.';
+
+      if (error && typeof error === 'object') {
+        errorMessage = (error as any).message || (error as any).error_description || errorMessage;
+        if ((error as any).details) {
+          errorMessage += ` (${(error as any).details})`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
       alert(errorMessage);
     } finally {
       setSaving(false);
@@ -215,7 +241,7 @@ export default function EditBusinessPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="flex items-center justify-between mb-8">
@@ -244,9 +270,8 @@ export default function EditBusinessPage() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.name ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.name ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   placeholder="Nombre de tu negocio"
                 />
                 {errors.name && (
@@ -264,9 +289,8 @@ export default function EditBusinessPage() {
                   value={formData.category_id}
                   onChange={handleChange}
                   required
-                  className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.category_id ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.category_id ? 'border-red-500' : 'border-gray-300'
+                    }`}
                 >
                   <option value="">Selecciona una categoría</option>
                   {categories.map((category) => (
@@ -292,9 +316,8 @@ export default function EditBusinessPage() {
                 onChange={handleChange}
                 required
                 rows={4}
-                className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                  errors.description ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.description ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 placeholder="Describe tu negocio en detalle..."
               />
               {errors.description && (
@@ -346,9 +369,8 @@ export default function EditBusinessPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.email ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   placeholder="correo@example.com"
                 />
                 {errors.email && (
@@ -367,9 +389,8 @@ export default function EditBusinessPage() {
                 name="website"
                 value={formData.website}
                 onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                  errors.website ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.website ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 placeholder="https://tu-sitio-web.com"
               />
               {errors.website && (
@@ -396,7 +417,7 @@ export default function EditBusinessPage() {
                 <div>
                   <label htmlFor="facebook_url" className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <svg className="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                     </svg>
                     Facebook
                   </label>
@@ -422,7 +443,7 @@ export default function EditBusinessPage() {
                           <stop offset="100%" stopColor="#FCAF45" />
                         </linearGradient>
                       </defs>
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
                     Instagram
                   </label>
@@ -441,7 +462,7 @@ export default function EditBusinessPage() {
                 <div>
                   <label htmlFor="tiktok_url" className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                     </svg>
                     TikTok
                   </label>
@@ -460,7 +481,7 @@ export default function EditBusinessPage() {
                 <div>
                   <label htmlFor="whatsapp_url" className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <svg className="w-4 h-4 text-[#25D366]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
                     </svg>
                     WhatsApp (Ventas/Domicilios)
                   </label>
