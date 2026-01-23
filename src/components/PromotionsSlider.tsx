@@ -180,17 +180,17 @@ export default function PromotionsSlider() {
                             }`}>
                             {index === currentSlide && (
                                 <div
-                                    className={`absolute inset-0 bg-blue-500 animate-slider-progress \${isPaused ? '[animation-play-state:paused]' : ''}\`}
-                ></div>
-              )}
+                                    className={`absolute inset-0 bg-blue-500 animate-slider-progress ${isPaused ? '[animation-play-state:paused]' : ''}`}
+                                ></div>
+                            )}
+                        </div>
+                    </button>
+                ))}
             </div>
-          </button>
-        ))}
-      </div>
 
-      {/* Luxury Light Effects */}
-      <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] z-10 pointer-events-none"></div>
-      <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] z-10 pointer-events-none"></div>
-    </section>
-  );
+            {/* Luxury Light Effects */}
+            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] z-10 pointer-events-none"></div>
+            <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] z-10 pointer-events-none"></div>
+        </section>
+    );
 }

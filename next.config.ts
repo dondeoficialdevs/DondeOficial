@@ -12,9 +12,19 @@ const nextConfig: NextConfig = {
 
   // Configuración de imágenes
   images: {
-    domains: ['localhost', 'ejwtglrctieeyecyrsta.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ejwtglrctieeyecyrsta.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
     unoptimized: false,
   },
+
 
   // Configuración de redirecciones
   async redirects() {
