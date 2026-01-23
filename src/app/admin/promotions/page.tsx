@@ -23,7 +23,7 @@ export default function VitrinaAdminPage() {
         button_link: '',
         badge_text: '',
         is_discount: false,
-        business_id: undefined as number | undefined,
+        business_id: undefined as number | null | undefined,
         active: true,
         priority: 0
     };
