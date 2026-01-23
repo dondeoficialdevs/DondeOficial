@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating } from '@/types';
+import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion } from '@/types';
 
 // Utility to handle Supabase responses (Not currently used but kept for potential future use)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
