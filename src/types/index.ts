@@ -113,7 +113,12 @@ export interface Promotion {
   image_url: string;
   button_text?: string;
   button_link?: string;
+  badge_text?: string;
+  is_discount?: boolean;
+  business_id?: number;
   active: boolean;
   priority: number;
   created_at: string;
 }
+
+
