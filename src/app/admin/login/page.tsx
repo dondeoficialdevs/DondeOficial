@@ -32,8 +32,8 @@ export default function LoginPage() {
       router.push('/admin');
     } catch (err: unknown) {
       console.error('Error en login:', err);
-      const errorMessage = err instanceof Error 
-        ? err.message 
+      const errorMessage = err instanceof Error
+        ? err.message
         : 'Error al iniciar sesión. Por favor verifica tus credenciales.';
       setError(errorMessage);
     } finally {
@@ -51,7 +51,7 @@ export default function LoginPage() {
       </div>
 
       <Header />
-      
+
       <main className="relative flex items-center justify-center min-h-[calc(100vh-200px)] px-4 py-12">
         <div className="w-full max-w-md">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-10 border border-white/20">
@@ -113,7 +113,7 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full px-4 py-3.5 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 hover:bg-white focus:bg-white text-gray-900 placeholder-gray-400"
-                    placeholder="admin@dondeoficial.com"
+                    placeholder="Correo Electrónico"
                     disabled={loading}
                   />
                   <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -139,7 +139,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full px-4 py-3.5 pl-12 pr-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 hover:bg-white focus:bg-white text-gray-900 placeholder-gray-400"
-                    placeholder="Ingresa tu contraseña"
+                    placeholder="Contraseña"
                     disabled={loading}
                   />
                   <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -200,8 +200,8 @@ export default function LoginPage() {
                 <p className="text-sm text-gray-600 mb-2">
                   ¿Problemas para iniciar sesión?
                 </p>
-                <a 
-                  href="/contact" 
+                <a
+                  href="/contact"
                   className="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors group"
                 >
                   <svg className="w-4 h-4 mr-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
