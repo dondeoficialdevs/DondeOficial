@@ -111,11 +111,17 @@ export default function VitrinaAdminPage() {
         e.preventDefault();
         setSaving(true);
         try {
+            // Limpiar datos
+            const dataToSave = {
+                ...formData,
+                business_id: formData.business_id || null, // Asegurar null si no hay id
+            };
+
             if (editingId) {
-                await promotionApi.update(editingId, formData);
+                await promotionApi.update(editingId, dataToSave);
             } else {
                 await promotionApi.create({
-                    ...formData,
+                    ...dataToSave,
                     created_at: new Date().toISOString()
                 });
             }
@@ -123,9 +129,12 @@ export default function VitrinaAdminPage() {
             setEditingId(null);
             setFormData(initialFormState);
             loadPromotions();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error saving:', err);
-            alert('Error al procesar la solicitud');
+            let errorMessage = 'Error al procesar la solicitud';
+            if (err.message) errorMessage = err.message;
+            if (err.details) errorMessage += ` (${err.details})`;
+            alert(errorMessage);
         } finally {
             setSaving(false);
         }
