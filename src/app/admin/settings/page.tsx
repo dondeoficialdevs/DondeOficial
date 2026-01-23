@@ -38,7 +38,7 @@ export default function SettingsPage() {
                     header_color: data.header_color || '#ffffff',
                     footer_color: data.footer_color || '#111827',
                     bg_color: data.bg_color || '#f9fafb',
-                    gradient_direction: data.gradient_direction || 'horizontal'
+                    gradient_direction: (data.gradient_direction as any) || 'horizontal'
                 });
                 setPreviewUrl(data.logo_url);
             }
@@ -96,22 +96,22 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="p-4 sm:p-8 max-w-5xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Personalización del Sitio</h1>
-                <p className="text-gray-500 font-medium">Gestiona el logo y la paleta de colores global</p>
+                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 uppercase tracking-tight text-center sm:text-left">Personalización</h1>
+                <p className="text-xs sm:text-base text-gray-500 font-medium text-center sm:text-left">Gestiona la identidad visual global</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                 {/* Logo Section */}
-                <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden p-8 md:p-12">
-                    <h2 className="text-xl font-black mb-8 text-gray-900 uppercase tracking-tight flex items-center gap-3">
+                <div className="bg-white rounded-3xl sm:rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden p-6 sm:p-12">
+                    <h2 className="text-lg sm:text-xl font-black mb-6 sm:mb-8 text-gray-900 uppercase tracking-tight flex items-center justify-center sm:justify-start gap-3">
                         <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
                         Identidad Visual
                     </h2>
 
-                    <div className="flex flex-col md:flex-row items-center gap-10">
-                        <div className="relative w-48 h-48 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden group">
+                    <div className="flex flex-col md:flex-row items-center gap-6 sm:gap-10">
+                        <div className="relative w-full sm:w-48 h-48 bg-gray-50 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden group">
                             {previewUrl ? (
                                 <Image
                                     src={previewUrl}
@@ -124,139 +124,156 @@ export default function SettingsPage() {
                                     <svg className="w-12 h-12 mx-auto mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span className="text-xs font-bold tracking-tighter">SIN LOGO</span>
+                                    <span className="text-xs font-bold tracking-tighter uppercase">Sin Logo</span>
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex-1 space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-500 uppercase tracking-widest">Nombre del Sitio</label>
+                        <div className="flex-1 w-full space-y-6">
+                            <div className="space-y-2 text-center sm:text-left">
+                                <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Nombre del Sitio</label>
                                 <input
                                     type="text"
                                     value={settings.site_name}
                                     onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
-                                    className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-blue-500 rounded-2xl outline-none transition-all font-bold text-gray-800"
+                                    className="w-full px-4 py-3 sm:py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-blue-500 rounded-xl sm:rounded-2xl outline-none transition-all font-bold text-gray-800 text-center sm:text-left"
                                     placeholder="Nombre de tu marca..."
                                 />
                             </div>
 
-                            <label className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all transform active:scale-95 shadow-lg shadow-blue-500/20">
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                </svg>
-                                Cambiar Logo
-                                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-                            </label>
+                            <div className="flex justify-center sm:justify-start">
+                                <label className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest cursor-pointer hover:bg-blue-700 transition-all transform active:scale-95 shadow-lg shadow-blue-500/20">
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                    Cambiar Logo
+                                    <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Colors Section */}
-                <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden p-8 md:p-12">
-                    <h2 className="text-xl font-black mb-8 text-gray-900 uppercase tracking-tight flex items-center gap-3">
+                <div className="bg-white rounded-3xl sm:rounded-[2rem] border border-gray-100 shadow-xl overflow-hidden p-6 sm:p-12">
+                    <h2 className="text-lg sm:text-xl font-black mb-6 sm:mb-8 text-gray-900 uppercase tracking-tight flex items-center justify-center sm:justify-start gap-3">
                         <span className="w-1.5 h-6 bg-indigo-600 rounded-full"></span>
                         Diseño y Colores
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 sm:gap-y-8">
                         {/* Primary & Secondary */}
                         <div className="space-y-3">
-                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Color Primario</label>
-                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
-                                <input type="color" value={settings.primary_color} onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
-                                <input type="text" value={settings.primary_color} onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block text-center sm:text-left">Color Primario</label>
+                            <div className="flex items-center gap-3 sm:gap-4 p-2 bg-gray-50 rounded-xl sm:rounded-2xl border-2 border-transparent">
+                                <div className="relative w-10 sm:w-12 h-10 sm:h-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                    <input type="color" value={settings.primary_color} onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })} className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer" />
+                                    <div className="w-full h-full" style={{ backgroundColor: settings.primary_color }}></div>
+                                </div>
+                                <input type="text" value={settings.primary_color} onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold text-sm sm:text-base outline-none uppercase" maxLength={7} />
                             </div>
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Color Secundario</label>
-                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
-                                <input type="color" value={settings.secondary_color} onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
-                                <input type="text" value={settings.secondary_color} onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block text-center sm:text-left">Color Secundario</label>
+                            <div className="flex items-center gap-3 sm:gap-4 p-2 bg-gray-50 rounded-xl sm:rounded-2xl border-2 border-transparent">
+                                <div className="relative w-10 sm:w-12 h-10 sm:h-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                    <input type="color" value={settings.secondary_color} onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })} className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer" />
+                                    <div className="w-full h-full" style={{ backgroundColor: settings.secondary_color }}></div>
+                                </div>
+                                <input type="text" value={settings.secondary_color} onChange={(e) => setSettings({ ...settings, secondary_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold text-sm sm:text-base outline-none uppercase" maxLength={7} />
                             </div>
                         </div>
 
                         {/* Gradient Direction */}
                         <div className="space-y-3 col-span-1 md:col-span-2">
-                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Dirección del Degradado</label>
-                            <div className="flex gap-4">
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block text-center sm:text-left">Dirección del Degradado</label>
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 font-black">
                                 <button
                                     type="button"
                                     onClick={() => setSettings({ ...settings, gradient_direction: 'horizontal' })}
-                                    className={`flex-1 py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${settings.gradient_direction === 'horizontal' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                    className={`flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs uppercase tracking-widest transition-all ${settings.gradient_direction === 'horizontal' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                                 >
-                                    Horizontal (Derecha)
+                                    Horizontal
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setSettings({ ...settings, gradient_direction: 'vertical' })}
-                                    className={`flex-1 py-4 px-6 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${settings.gradient_direction === 'vertical' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                    className={`flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs uppercase tracking-widest transition-all ${settings.gradient_direction === 'vertical' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                                 >
-                                    Vertical (Abajo)
+                                    Vertical
                                 </button>
                             </div>
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Fondo del Header</label>
-                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
-                                <input type="color" value={settings.header_color} onChange={(e) => setSettings({ ...settings, header_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
-                                <input type="text" value={settings.header_color} onChange={(e) => setSettings({ ...settings, header_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block text-center sm:text-left">Fondo del Header</label>
+                            <div className="flex items-center gap-3 sm:gap-4 p-2 bg-gray-50 rounded-xl sm:rounded-2xl border-2 border-transparent">
+                                <div className="relative w-10 sm:w-12 h-10 sm:h-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                    <input type="color" value={settings.header_color} onChange={(e) => setSettings({ ...settings, header_color: e.target.value })} className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer" />
+                                    <div className="w-full h-full" style={{ backgroundColor: settings.header_color }}></div>
+                                </div>
+                                <input type="text" value={settings.header_color} onChange={(e) => setSettings({ ...settings, header_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold text-sm sm:text-base outline-none uppercase" maxLength={7} />
                             </div>
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Fondo del Footer</label>
-                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
-                                <input type="color" value={settings.footer_color} onChange={(e) => setSettings({ ...settings, footer_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
-                                <input type="text" value={settings.footer_color} onChange={(e) => setSettings({ ...settings, footer_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block text-center sm:text-left">Fondo del Footer</label>
+                            <div className="flex items-center gap-3 sm:gap-4 p-2 bg-gray-50 rounded-xl sm:rounded-2xl border-2 border-transparent">
+                                <div className="relative w-10 sm:w-12 h-10 sm:h-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                    <input type="color" value={settings.footer_color} onChange={(e) => setSettings({ ...settings, footer_color: e.target.value })} className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer" />
+                                    <div className="w-full h-full" style={{ backgroundColor: settings.footer_color }}></div>
+                                </div>
+                                <input type="text" value={settings.footer_color} onChange={(e) => setSettings({ ...settings, footer_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold text-sm sm:text-base outline-none uppercase" maxLength={7} />
                             </div>
                         </div>
 
                         <div className="space-y-3">
-                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block">Fondo de la Página</label>
-                            <div className="flex items-center gap-4 p-2 bg-gray-50 rounded-2xl border-2 border-transparent">
-                                <input type="color" value={settings.bg_color} onChange={(e) => setSettings({ ...settings, bg_color: e.target.value })} className="w-12 h-12 rounded-xl cursor-pointer" />
-                                <input type="text" value={settings.bg_color} onChange={(e) => setSettings({ ...settings, bg_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold" />
+                            <label className="text-xs font-black text-gray-500 uppercase tracking-widest block text-center sm:text-left">Fondo Página</label>
+                            <div className="flex items-center gap-3 sm:gap-4 p-2 bg-gray-50 rounded-xl sm:rounded-2xl border-2 border-transparent">
+                                <div className="relative w-10 sm:w-12 h-10 sm:h-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                    <input type="color" value={settings.bg_color} onChange={(e) => setSettings({ ...settings, bg_color: e.target.value })} className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer" />
+                                    <div className="w-full h-full" style={{ backgroundColor: settings.bg_color }}></div>
+                                </div>
+                                <input type="text" value={settings.bg_color} onChange={(e) => setSettings({ ...settings, bg_color: e.target.value })} className="flex-1 bg-transparent font-mono font-bold text-sm sm:text-base outline-none uppercase" maxLength={7} />
                             </div>
                         </div>
                     </div>
 
                     {/* Preview Helper */}
-                    <div className="mt-12 p-10 rounded-[2.5rem] bg-gray-900 overflow-hidden relative group">
+                    <div className="mt-8 sm:mt-12 p-6 sm:p-10 rounded-[2rem] bg-gray-900 overflow-hidden relative group">
                         <div className="absolute inset-0 opacity-20" style={{ background: getGradientStyle() }}></div>
-                        <div className="relative z-10">
-                            <h4 className="text-white font-black uppercase tracking-widest text-xs mb-6">Vista Previa del Estilo</h4>
-                            <div className="flex flex-wrap gap-6">
+                        <div className="relative z-10 flex flex-col items-center">
+                            <h4 className="text-white font-black uppercase tracking-widest text-[10px] sm:text-xs mb-6 text-center">Vista Previa</h4>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full">
                                 <button
-                                    className="px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-white shadow-2xl transition-transform hover:scale-105"
+                                    className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm uppercase tracking-widest text-white shadow-2xl transition-transform hover:scale-105"
                                     style={{ background: getGradientStyle() }}
                                     type="button"
                                 >
-                                    Botón con Degradado
+                                    Degradado
                                 </button>
                                 <div
-                                    className="px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-widest text-white border-2"
+                                    className="w-full sm:w-auto px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm uppercase tracking-widest border-2 text-center"
                                     style={{ borderColor: settings.primary_color, color: settings.primary_color }}
                                 >
-                                    Botón Delineado
+                                    Delineado
                                 </div>
                             </div>
-                            <p className="mt-8 text-white/40 text-[10px] font-bold uppercase tracking-[0.2em]">
-                                El degradado se aplicará a botones clave y elementos decorativos
+                            <p className="mt-6 sm:mt-8 text-white/40 text-[8px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-center">
+                                Estilo aplicado a botones y elementos clave
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="pt-4 pb-12">
+                <div className="pt-2 sm:pt-4 pb-12">
                     <button
                         type="submit"
                         disabled={saving}
-                        className="w-full py-6 bg-linear-to-r from-gray-900 to-gray-800 text-white rounded-[2rem] font-black text-xl hover:shadow-2xl hover:shadow-gray-900/30 transition-all active:scale-[0.97] disabled:opacity-50 uppercase tracking-wide"
+                        className="w-full py-4 sm:py-6 bg-linear-to-r from-gray-900 to-gray-800 text-white rounded-2xl sm:rounded-[2rem] font-black text-lg sm:text-xl hover:shadow-2xl hover:shadow-gray-900/30 transition-all active:scale-[0.97] disabled:opacity-50 uppercase tracking-wide"
                     >
-                        {saving ? 'Procesando cambios...' : 'Aplicar Configuración Global'}
+                        {saving ? 'Guardando...' : 'Aplicar Cambios'}
                     </button>
                 </div>
             </form>
