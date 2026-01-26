@@ -21,17 +21,16 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center group">
-              <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative w-32 h-10 sm:w-40 sm:h-12 md:w-48 md:h-16 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
                 <Image
                   src={logoUrl}
                   alt="DondeOficial Logo"
                   fill
-                  className="object-contain"
+                  className="object-contain brightness-0" // Ensure black letters (Item 17)
                   priority
-                  sizes="(max-width: 640px) 32px, (max-width: 768px) 40px, 48px"
+                  sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
                   unoptimized={true}
                 />
-                {/* Fallback text si la imagen no carga */}
                 <span className="sr-only">DondeOficial</span>
               </div>
             </Link>
@@ -39,17 +38,17 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 ml-8">
-            <Link href="/" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group py-2">
+            <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
               Inicio
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link href="/listings" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group py-2">
+            <Link href="/listings" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
               Directorio
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 relative group py-2">
+            <Link href="/contact" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
               Contacto
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
             </Link>
           </nav>
 

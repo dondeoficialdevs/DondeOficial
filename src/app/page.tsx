@@ -13,6 +13,7 @@ import StatsSection from '../components/StatsSection';
 import Footer from '../components/Footer';
 import BusinessDetailModal from '../components/BusinessDetailModal';
 import PromotionsSlider from '../components/PromotionsSlider';
+import AnnouncementPopup from '../components/AnnouncementPopup';
 
 
 // Importar componentes que requieren APIs del navegador solo en el cliente
@@ -118,7 +119,7 @@ export default function Home() {
           />
 
 
-          <GoogleMapsSection businesses={businesses} onSearch={handleSearch} />
+
 
           <ActionCards />
 
@@ -145,6 +146,7 @@ export default function Home() {
           />
 
           <StatsSection />
+          <AnnouncementPopup />
         </main>
 
         <Footer />

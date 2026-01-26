@@ -44,19 +44,16 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="col-span-1 lg:col-span-2">
             <div className="flex items-center space-x-2 sm:space-x-3 mb-6">
-              <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex-shrink-0">
+              <div className="relative w-32 h-10 sm:w-40 sm:h-12 md:w-48 md:h-14 flex-shrink-0">
                 <Image
                   src={logoUrl}
                   alt="DondeOficial Logo"
                   fill
-                  className="object-contain"
-                  sizes="(max-width: 640px) 40px, (max-width: 768px) 48px, 56px"
+                  className="object-contain brightness-0 invert"
+                  sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
                   unoptimized={true}
                 />
               </div>
-              <span className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                {settings?.site_name || 'DondeOficial'}
-              </span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
               Tu plataforma de directorio integral para descubrir y explorar los mejores negocios y destinos.
@@ -129,7 +126,7 @@ export default function Footer() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? '...' : 'Suscribirse'}
                     </button>
@@ -139,40 +136,54 @@ export default function Footer() {
             </div>
           </div>
 
+          {/* Contact Info */}
+          <div>
+            <h4 className="font-semibold mb-6 text-lg">Contacto</h4>
+            <ul className="space-y-3">
+              <li className="flex items-center text-gray-300">
+                <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <a href="mailto:dondeoficial@gmail.com" className="hover:text-white transition-colors">dondeoficial@gmail.com</a>
+              </li>
+              <li className="flex items-center text-gray-300">
+                <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>+57 322 411 7575</span> {/* Placeholder based on typical USER request if not found */}
+              </li>
+              <li className="flex items-start text-gray-300">
+                <svg className="w-5 h-5 mr-3 text-orange-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                <span>Tunja, Boyacá</span>
+              </li>
+              <li className="flex items-center text-gray-300">
+                <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Lun - Dom: Siempre Abierto</span>
+              </li>
+            </ul>
+          </div>
+
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold mb-6 text-lg">Enlaces Rápidos</h4>
+            <h4 className="font-semibold mb-6 text-lg">Menú</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center group">
-                  <svg className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
                   Inicio
                 </Link>
               </li>
               <li>
                 <Link href="/listings" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center group">
-                  <svg className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
                   Directorio
                 </Link>
               </li>
               <li>
                 <Link href="/add-listing" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center group">
-                  <svg className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
                   Agregar Negocio
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors duration-200 flex items-center group">
-                  <svg className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  Contacto
                 </Link>
               </li>
             </ul>

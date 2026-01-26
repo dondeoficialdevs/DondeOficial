@@ -41,7 +41,7 @@ export default function FavoritesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header de la página */}
         <div className="mb-8">
@@ -49,13 +49,13 @@ export default function FavoritesPage() {
             <div>
               <h1 className="text-4xl font-extrabold text-gray-900 mb-2 flex items-center">
                 <svg className="w-10 h-10 mr-3 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
                 Mis Favoritos
               </h1>
               <p className="text-gray-600 text-lg">
-                {favorites.length === 0 
-                  ? 'No tienes favoritos guardados aún' 
+                {favorites.length === 0
+                  ? 'No tienes favoritos guardados aún'
                   : `${favorites.length} negocio${favorites.length !== 1 ? 's' : ''} guardado${favorites.length !== 1 ? 's' : ''}`
                 }
               </p>
@@ -89,7 +89,7 @@ export default function FavoritesPage() {
             </p>
             <Link
               href="/listings"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -101,7 +101,7 @@ export default function FavoritesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {favorites.map((business) => {
               const primaryImage = business.images?.find(img => img.is_primary) || business.images?.[0];
-              
+
               return (
                 <div
                   key={business.id}
@@ -109,7 +109,7 @@ export default function FavoritesPage() {
                 >
                   {/* Imagen */}
                   <Link href={`/businesses/${business.id}`}>
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-64 overflow-hidden">
                       {primaryImage ? (
                         <img
                           src={primaryImage.image_url}
@@ -125,7 +125,7 @@ export default function FavoritesPage() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                       {business.category_name && (
-                        <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
+                        <span className="absolute top-4 left-4 bg-orange-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter shadow-xl transform group-hover:scale-105 transition-transform">
                           {business.category_name}
                         </span>
                       )}
@@ -143,7 +143,7 @@ export default function FavoritesPage() {
                           <div className="animate-spin rounded-full h-5 w-5 border-2 border-red-500 border-t-transparent"></div>
                         ) : (
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                           </svg>
                         )}
                       </button>
@@ -160,7 +160,7 @@ export default function FavoritesPage() {
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                       {business.description}
                     </p>
-                    
+
                     {/* Información adicional */}
                     <div className="space-y-2 mb-4">
                       {business.address && (
@@ -185,7 +185,7 @@ export default function FavoritesPage() {
                     {/* Botón ver detalles */}
                     <Link
                       href={`/businesses/${business.id}`}
-                      className="block w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2.5 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                      className="block w-full text-center bg-orange-600 text-white py-2.5 px-4 rounded-lg hover:bg-orange-700 transition-all font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                     >
                       Ver Detalles
                     </Link>

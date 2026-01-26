@@ -77,7 +77,13 @@ export default function AddListingPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    // Auto uppercase for business name (Item 7)
+    if (name === 'name') {
+      value = value.toUpperCase();
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -492,15 +498,35 @@ export default function AddListingPage() {
               <label htmlFor="opening_hours" className="block text-sm font-medium text-gray-700 mb-2">
                 Horario de Atención
               </label>
-              <input
-                type="text"
-                id="opening_hours"
-                name="opening_hours"
-                value={formData.opening_hours}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-                placeholder="Ej: Lun-Vie: 9AM-6PM, Sáb: 10AM-4PM"
-              />
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  id="opening_hours"
+                  name="opening_hours"
+                  value={formData.opening_hours}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                  placeholder="Ej: Lun-Vie: 9AM-6PM, Sáb: 10AM-4PM"
+                />
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {[
+                    'Lun-Vie: 8AM-6PM',
+                    'Lun-Sáb: 9AM-8PM',
+                    'Lun-Dom: 7AM-8PM',
+                    'Lun-Dom: 24 Horas',
+                    'Fines de semana: 8AM-10PM'
+                  ].map(preset => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, opening_hours: preset }))}
+                      className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded transition-colors border border-gray-200"
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Sección de Redes Sociales */}
@@ -710,44 +736,19 @@ export default function AddListingPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-2">
-                  Latitud (opcional)
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  id="latitude"
-                  name="latitude"
-                  value={formData.latitude}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-                  placeholder="Ej: 40.7128 (opcional)"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-2">
-                  Longitud (opcional)
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  id="longitude"
-                  name="longitude"
-                  value={formData.longitude}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-                  placeholder="Ej: -74.0060 (opcional)"
-                />
-              </div>
+            {/* Latitud y Longitud - Hidden (Item 3) */}
+            <div className="hidden">
+              <input type="hidden" name="latitude" value={formData.latitude} />
+              <input type="hidden" name="longitude" value={formData.longitude} />
             </div>
 
             <div>
-              <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-1">
                 Imágenes del Negocio <span className="text-gray-500">(opcional, máximo 10)</span>
               </label>
+              <p className="text-xs text-orange-600 font-bold mb-2">
+                * La primera foto que selecciones será la que aparecerá como portada de tu negocio.
+              </p>
 
               {/* Área de carga de imágenes */}
               <div className="relative">
@@ -829,7 +830,7 @@ export default function AddListingPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-orange-500 text-white py-3 px-6 rounded-md hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 {loading ? 'Enviando...' : 'Enviar Negocio'}
               </button>

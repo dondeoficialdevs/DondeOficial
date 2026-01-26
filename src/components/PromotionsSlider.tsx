@@ -151,15 +151,15 @@ export default function PromotionsSlider() {
                                 )}
                             </div>
 
-                            <h2 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
+                            <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
                                 {(promo.title || '').split(' ').map((word, i) => (
-                                    <span key={i} className="inline-block mr-4 last:mr-0 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
+                                    <span key={i} className="inline-block mr-2 sm:mr-4 last:mr-0 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
                                         {word}
                                     </span>
                                 ))}
                             </h2>
 
-                            <p className="text-lg md:text-2xl text-white/80 mb-12 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
+                            <p className="text-sm sm:text-lg md:text-2xl text-white/90 mb-6 sm:mb-12 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
                                 {promo.description}
                             </p>
 
@@ -167,12 +167,12 @@ export default function PromotionsSlider() {
                                 <div className="flex items-center gap-6">
                                     <Link
                                         href={promo.button_link}
-                                        className="group relative inline-flex items-center justify-center px-12 py-5 font-black text-white transition-all duration-500 rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden"
+                                        className="group relative inline-flex items-center justify-center px-8 sm:px-12 py-3 sm:py-5 font-black text-white transition-all duration-500 rounded-xl sm:rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden"
                                         style={{ backgroundColor: promo.is_discount ? '#10b981' : 'var(--primary-color)' }}
                                     >
-                                        <span className="relative z-10 flex items-center text-lg uppercase tracking-wider">
+                                        <span className="relative z-10 flex items-center text-sm sm:text-lg uppercase tracking-wider">
                                             {promo.button_text || 'Explorar'}
-                                            <svg className="w-6 h-6 ml-3 transition-transform duration-500 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-5 h-5 sm:w-6 h-6 ml-2 sm:ml-3 transition-transform duration-500 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>
                                         </span>

@@ -131,21 +131,21 @@ export default function LoadingScreen() {
       {/* Contenido principal - Responsive */}
       <div className="text-center relative z-10 animate-fade-in px-4 py-4 sm:py-8 md:py-12 lg:py-16 max-w-7xl mx-auto w-full flex flex-col items-center justify-center">
         {/* Logo con efecto de entrada */}
-        <div className="mb-4 sm:mb-6 md:mb-8 w-full">
-          <div className="flex justify-center mb-4 sm:mb-6">
+        <div className="mb-8 w-full">
+          <div className="flex justify-center mb-8">
             <div
               className="relative animate-scale-in"
               style={{
-                animation: 'scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                animation: 'scaleIn 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
               }}
             >
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 xl:w-40 xl:h-40 2xl:w-44 2xl:h-44">
+              <div className="relative w-48 h-48 sm:w-64 sm:h-64">
                 {/* Glow effect alrededor del logo */}
                 <div
-                  className="absolute inset-0 rounded-full blur-2xl sm:blur-3xl opacity-30 animate-pulse"
+                  className="absolute inset-0 rounded-full blur-3xl opacity-30 animate-pulse"
                   style={{
                     background: 'radial-gradient(circle, #FF5A00 0%, transparent 70%)',
-                    transform: 'scale(1.15)',
+                    transform: 'scale(1.2)',
                   }}
                 ></div>
                 <div className="relative w-full h-full flex items-center justify-center z-10">
@@ -153,9 +153,9 @@ export default function LoadingScreen() {
                     src={logoUrl}
                     alt="DondeOficial Logo"
                     fill
-                    className="object-contain drop-shadow-2xl"
+                    className="object-contain drop-shadow-2xl brightness-0 invert"
                     priority
-                    sizes="(max-width: 480px) 96px, (max-width: 640px) 112px, (max-width: 768px) 128px, (max-width: 1024px) 144px, (max-width: 1280px) 160px, 176px"
+                    sizes="(max-width: 480px) 192px, (max-width: 640px) 256px, 320px"
                     unoptimized={true}
                   />
                 </div>
@@ -163,251 +163,36 @@ export default function LoadingScreen() {
             </div>
           </div>
 
-          {/* Subtítulo con efecto de escritura */}
+          {/* Subtítulo */}
           <p
-            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-light tracking-wide px-2 sm:px-4 animate-slide-up"
+            className="text-lg sm:text-2xl font-bold tracking-widest px-2 sm:px-4 animate-slide-up uppercase"
             style={{
               color: '#f1f1f1',
-              animation: 'slideUp 0.8s ease-out 0.3s both',
+              animation: 'slideUp 0.8s ease-out 0.5s both',
+              textShadow: '0 0 20px rgba(255, 90, 0, 0.5)'
             }}
           >
-            Encuentra negocios cerca de ti
+            DondeOficial
           </p>
         </div>
 
-        {/* Barra de progreso mejorada con diseño moderno - Responsive */}
-        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto mb-4 sm:mb-6 md:mb-8">
+        {/* Barra de progreso */}
+        <div className="w-full max-w-xs sm:max-w-md mx-auto mb-8">
           <div
-            className="h-1.5 sm:h-2 rounded-full overflow-hidden relative"
-            style={{
-              backgroundColor: 'rgba(241, 241, 241, 0.08)',
-              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.3)',
-            }}
+            className="h-1.5 rounded-full overflow-hidden relative bg-white/10"
           >
             <div
-              className="h-full rounded-full transition-all duration-300 ease-out relative overflow-hidden"
+              className="h-full rounded-full transition-all duration-300 ease-out"
               style={{
                 width: `${progress}%`,
-                background: 'linear-gradient(90deg, #FF5A00 0%, #ff7a33 30%, #ff9d66 50%, #ff7a33 70%, #FF5A00 100%)',
-                backgroundSize: '200% 100%',
-                animation: 'shimmer 2s linear infinite',
-                boxShadow: '0 0 10px rgba(255, 90, 0, 0.5), 0 0 20px rgba(255, 90, 0, 0.3)',
-              }}
-            >
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
-                  animation: 'shimmer 1.5s linear infinite',
-                }}
-              ></div>
-              {/* Efecto de brillo superior */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1/2 rounded-t-full"
-                style={{
-                  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent)',
-                }}
-              ></div>
-            </div>
-          </div>
-          {/* Porcentaje de carga */}
-          <p
-            className="text-xs sm:text-sm mt-1 sm:mt-2 font-medium"
-            style={{ color: 'rgba(241, 241, 241, 0.6)' }}
-          >
-            {progress}%
-          </p>
-        </div>
-
-        {/* Localizador animado - Diseño limpio */}
-        <div className="flex justify-center mb-4 sm:mb-6">
-          <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56">
-            {/* Glow suave alrededor */}
-            <div
-              className="absolute inset-0 rounded-full blur-2xl opacity-25"
-              style={{
-                background: 'radial-gradient(circle, #FF5A00 0%, transparent 70%)',
-                animation: 'pulse 2s ease-in-out infinite',
+                background: 'linear-gradient(90deg, #FF5A00, #ff9d66)',
+                boxShadow: '0 0 20px rgba(255, 90, 0, 0.8)',
               }}
             ></div>
-
-            {/* SVG del localizador */}
-            <svg
-              className="w-full h-full relative z-10"
-              viewBox="0 0 100 100"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="pinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#ff7a33" />
-                  <stop offset="50%" stopColor="#FF5A00" />
-                  <stop offset="100%" stopColor="#cc4800" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-
-              {/* Círculo de carga - Spinner */}
-              <circle
-                cx="50"
-                cy="50"
-                r="35"
-                fill="none"
-                stroke="rgba(255, 90, 0, 0.2)"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="35"
-                fill="none"
-                stroke="#FF5A00"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeDasharray={Math.PI * 70}
-                strokeDashoffset={Math.PI * 70 * (1 - progress / 100)}
-                style={{
-                  transform: 'rotate(-90deg)',
-                  transformOrigin: '50px 50px',
-                  transition: 'stroke-dashoffset 0.1s linear',
-                  filter: 'drop-shadow(0 0 4px rgba(255, 90, 0, 0.5))',
-                }}
-              />
-
-              {/* Ondas de radar suaves */}
-              <circle
-                cx="50"
-                cy="50"
-                r="20"
-                fill="none"
-                stroke="#FF5A00"
-                strokeWidth="1.5"
-                opacity="0.3"
-                style={{
-                  animation: 'radarWave 2.5s ease-out infinite',
-                }}
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="20"
-                fill="none"
-                stroke="#FF5A00"
-                strokeWidth="1.5"
-                opacity="0.3"
-                style={{
-                  animation: 'radarWave 2.5s ease-out infinite 0.6s',
-                }}
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="20"
-                fill="none"
-                stroke="#FF5A00"
-                strokeWidth="1.5"
-                opacity="0.3"
-                style={{
-                  animation: 'radarWave 2.5s ease-out infinite 1.2s',
-                }}
-              />
-
-              {/* Puntos de negocios alrededor */}
-              <circle cx="30" cy="35" r="2" fill="#FF5A00" opacity="0.5">
-                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite" begin="0s" />
-                <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite" begin="0s" />
-              </circle>
-              <circle cx="70" cy="40" r="2" fill="#FF5A00" opacity="0.5">
-                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite" begin="0.4s" />
-                <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite" begin="0.4s" />
-              </circle>
-              <circle cx="35" cy="70" r="2" fill="#FF5A00" opacity="0.5">
-                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite" begin="0.8s" />
-                <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite" begin="0.8s" />
-              </circle>
-              <circle cx="75" cy="65" r="2" fill="#FF5A00" opacity="0.5">
-                <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite" begin="1.2s" />
-                <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite" begin="1.2s" />
-              </circle>
-
-              {/* Pin de localización - Centro */}
-              <g transform="translate(50, 50)">
-                {/* Sombra del pin */}
-                <ellipse
-                  cx="0"
-                  cy="10"
-                  rx="5"
-                  ry="2.5"
-                  fill="#000"
-                  opacity="0.3"
-                  style={{
-                    animation: 'pinShadowPulse 2s ease-in-out infinite',
-                  }}
-                />
-
-                {/* Cuerpo del pin */}
-                <path
-                  d="M 0,-10 L -4.5,2 L 0,3.5 L 4.5,2 Z"
-                  fill="url(#pinGradient)"
-                  stroke="#f1f1f1"
-                  strokeWidth="0.6"
-                  filter="url(#glow)"
-                  style={{
-                    animation: 'pinBounce 2s ease-in-out infinite',
-                  }}
-                />
-
-                {/* Centro del pin con brillo */}
-                <circle
-                  cx="0"
-                  cy="-4"
-                  r="2.5"
-                  fill="#f1f1f1"
-                  style={{
-                    animation: 'pinPulse 2s ease-in-out infinite',
-                    filter: 'drop-shadow(0 0 3px rgba(255, 90, 0, 0.8))',
-                  }}
-                />
-                <circle
-                  cx="0"
-                  cy="-4"
-                  r="1.2"
-                  fill="#FF5A00"
-                  style={{
-                    animation: 'pinPulse 2s ease-in-out infinite',
-                  }}
-                />
-              </g>
-            </svg>
           </div>
-        </div>
-
-        {/* Texto de carga con efecto cubo 3D */}
-        <div className="flex items-center justify-center gap-2 animate-fade-in-delay">
-          <div className="flex gap-0.5 sm:gap-1" style={{ perspective: '1000px' }}>
-            {'Cargando'.split('').map((char, index) => (
-              <span
-                key={index}
-                className="inline-block text-xs sm:text-sm font-semibold"
-                style={{
-                  color: '#f1f1f1',
-                  transformStyle: 'preserve-3d',
-                  animation: `cubeRotate 2s ease-in-out infinite`,
-                  animationDelay: `${index * 0.1}s`,
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-                }}
-              >
-                {char === ' ' ? '\u00A0' : char}
-              </span>
-            ))}
-          </div>
+          <p className="text-xs mt-4 font-black uppercase tracking-[0.3em] text-white/40">
+            Cargando {progress}%
+          </p>
         </div>
       </div>
 

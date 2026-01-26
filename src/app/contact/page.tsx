@@ -46,8 +46,8 @@ export default function ContactPage() {
       });
     } catch (err: unknown) {
       console.error('Error sending message:', err);
-      const errorMessage = err instanceof Error 
-        ? err.message 
+      const errorMessage = err instanceof Error
+        ? err.message
         : (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Error al enviar el mensaje. Por favor intenta de nuevo.';
       setError(errorMessage);
     } finally {
@@ -68,7 +68,7 @@ export default function ContactPage() {
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors"
+              className="bg-orange-600 text-white px-6 py-3 rounded-md hover:bg-orange-700 transition-colors font-bold shadow-lg"
             >
               Enviar Otro Mensaje
             </button>
@@ -82,7 +82,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-lg shadow-md p-8">
           <div className="text-center mb-12">
@@ -96,33 +96,31 @@ export default function ContactPage() {
             {/* Contact Information */}
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Ponte en Contacto</h2>
-              
+
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Correo Electrónico</h3>
-                  <p className="text-gray-600">contact@dondeoficial.com</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 font-bold">Correo Electrónico</h3>
+                  <p className="text-gray-600">dondeoficial@gmail.com</p>
                 </div>
-                
+
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Teléfono</h3>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 font-bold">Teléfono</h3>
+                  <p className="text-gray-600">+57 322 411 7575</p>
                 </div>
-                
+
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Dirección</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 font-bold">Dirección</h3>
                   <p className="text-gray-600">
-                    123 Business Street<br />
-                    City, State 12345<br />
-                    United States
+                    Tunja, Boyacá<br />
+                    Colombia
                   </p>
                 </div>
-                
+
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Horario de Atención</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 font-bold">Horario de Atención</h3>
                   <p className="text-gray-600">
-                    Lunes - Viernes: 9:00 AM - 6:00 PM<br />
-                    Sábado: 10:00 AM - 4:00 PM<br />
-                    Domingo: Cerrado
+                    Lunes - Domingo: 7:00 AM - 9:00 PM<br />
+                    (Siempre Abierto para ti)
                   </p>
                 </div>
               </div>
@@ -131,7 +129,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Envíanos un Mensaje</h2>
-              
+
               {error && (
                 <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
                   {error}
@@ -150,11 +148,11 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Tu nombre completo"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                     Correo Electrónico
@@ -166,11 +164,11 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="tu.correo@ejemplo.com"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
                     Asunto
@@ -182,11 +180,11 @@ export default function ContactPage() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="¿De qué se trata?"
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                     Mensaje
@@ -198,15 +196,15 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Cuéntanos más sobre tu consulta..."
                   ></textarea>
                 </div>
-                
+
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-orange-600 text-white py-3 px-6 rounded-md hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                 >
                   {loading ? 'Enviando...' : 'Enviar Mensaje'}
                 </button>

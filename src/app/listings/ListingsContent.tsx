@@ -49,18 +49,18 @@ export default function ListingsContent() {
   const loadInitialData = async (initialCategory?: string) => {
     try {
       const categoryToUse = initialCategory || selectedCategory;
-      
+
       const [businessesData, categoriesData] = await Promise.all([
-        businessApi.getAll({ 
+        businessApi.getAll({
           limit: 50,
           category: categoryToUse || undefined
         }).catch(() => []),
         categoryApi.getAll().catch(() => [])
       ]);
-      
+
       setBusinesses(businessesData);
       setCategories(categoriesData);
-      
+
       // Si hay una categoría inicial, actualizar el estado
       if (initialCategory) {
         setSelectedCategory(initialCategory);
@@ -101,7 +101,7 @@ export default function ListingsContent() {
     setSearchTerm(search);
     setSelectedCategory(category || '');
     setLocation(loc || '');
-    
+
     try {
       const results = await businessApi.getAll({
         search,
@@ -132,7 +132,7 @@ export default function ListingsContent() {
       color: '#FF6B35',
       filter: 'drop-shadow(0 0 1px rgba(255, 107, 53, 0.4))',
     };
-    
+
     const icons: { [key: string]: React.ReactElement } = {
       'Belleza': (
         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={iconStyle}>
@@ -191,16 +191,16 @@ export default function ListingsContent() {
   ];
 
   const getCategoryBackendName = (frontendName: string): string => {
-    const foundCategory = categories.find(cat => 
+    const foundCategory = categories.find(cat =>
       cat.name.toLowerCase() === frontendName.toLowerCase() ||
       cat.name.toLowerCase().includes(frontendName.toLowerCase()) ||
       frontendName.toLowerCase().includes(cat.name.toLowerCase())
     );
-    
+
     if (foundCategory) {
       return foundCategory.name;
     }
-    
+
     const categoryMap: { [key: string]: string } = {
       'Belleza': 'Belleza',
       'Entretenimiento': 'Entretenimiento',
@@ -265,11 +265,11 @@ export default function ListingsContent() {
       filtered = filtered.filter(business => {
         // Usar el precio con oferta si existe, sino el precio normal
         const businessPrice = Number(business.offer_price) || Number(business.price) || 0;
-        
+
         // Verificar si el precio del negocio está en alguno de los rangos seleccionados
         return priceFilters.some(priceFilter => {
           if (priceFilter === 'all') return true;
-          
+
           if (priceFilter === '0-25000') {
             return businessPrice > 0 && businessPrice <= 25000;
           } else if (priceFilter === '25000-35000') {
@@ -279,7 +279,7 @@ export default function ListingsContent() {
           } else if (priceFilter === '55000+') {
             return businessPrice > 55000;
           }
-          
+
           return false;
         });
       });
@@ -334,7 +334,7 @@ export default function ListingsContent() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Top Categories Bar */}
         <div className="bg-white border-b border-gray-200 pb-4 mb-4">
@@ -343,7 +343,7 @@ export default function ListingsContent() {
               {mainCategories.map((cat) => {
                 const backendCategoryName = getCategoryBackendName(cat);
                 const isSelected = selectedCategory.toLowerCase() === backendCategoryName.toLowerCase();
-                
+
                 return (
                   <button
                     key={cat}
@@ -355,17 +355,15 @@ export default function ListingsContent() {
                         handleCategoryFilter(backendCategoryName);
                       }
                     }}
-                    className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-all group ${
-                      isSelected
-                        ? 'bg-blue-600 text-white'
-                        : 'hover:bg-gray-50 text-gray-700'
-                    }`}
+                    className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-all group ${isSelected
+                      ? 'bg-blue-600 text-white'
+                      : 'hover:bg-gray-50 text-gray-700'
+                      }`}
                   >
-                    <div className={`rounded-xl flex items-center justify-center transition-all duration-300 ${
-                      isSelected
-                        ? 'w-14 h-14 bg-white/20'
-                        : 'w-14 h-14 bg-white shadow-md group-hover:shadow-lg group-hover:scale-110 border border-gray-100'
-                    }`}>
+                    <div className={`rounded-xl flex items-center justify-center transition-all duration-300 ${isSelected
+                      ? 'w-14 h-14 bg-white/20'
+                      : 'w-14 h-14 bg-white shadow-md group-hover:shadow-lg group-hover:scale-110 border border-gray-100'
+                      }`}>
                       {getCategoryIcon(cat)}
                     </div>
                     <span className="text-xs font-semibold whitespace-nowrap">{cat}</span>
@@ -374,7 +372,7 @@ export default function ListingsContent() {
               })}
             </div>
           </div>
-          
+
           {/* Sort Bar */}
           <div className="flex justify-end items-center pt-2">
             <div className="flex items-center space-x-2">
@@ -426,11 +424,10 @@ export default function ListingsContent() {
               <div className="bg-gray-100 flex border-b border-gray-200">
                 <button
                   onClick={() => setActiveTab('categories')}
-                  className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeTab === 'categories'
-                      ? 'text-gray-900 border-b-2 border-gray-900'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'categories'
+                    ? 'text-gray-900 border-b-2 border-gray-900'
+                    : 'text-gray-600 hover:text-gray-900'
+                    }`}
                 >
                   CATEGORIAS
                   {activeTab === 'categories' && (
@@ -441,11 +438,10 @@ export default function ListingsContent() {
                 </button>
                 <button
                   onClick={() => setActiveTab('featured')}
-                  className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeTab === 'featured'
-                      ? 'text-blue-600 border-b-2 border-blue-600'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'featured'
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                    }`}
                 >
                   Destacados
                 </button>
@@ -514,11 +510,10 @@ export default function ListingsContent() {
                         <button
                           key={category.id}
                           onClick={() => handleCategoryFilter(category.name)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded text-sm transition-all ${
-                            isActive
-                              ? 'bg-orange-500 text-white font-bold'
-                              : 'hover:bg-gray-100 text-gray-700 font-medium'
-                          }`}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded text-sm transition-all ${isActive
+                            ? 'bg-orange-500 text-white font-bold'
+                            : 'hover:bg-gray-100 text-gray-700 font-medium'
+                            }`}
                         >
                           <span className="uppercase truncate flex-1 text-left pr-2">{category.name}</span>
                           <div className="flex items-center space-x-2 flex-shrink-0">
@@ -538,9 +533,9 @@ export default function ListingsContent() {
 
               {/* Filters */}
               <div className="p-4 space-y-4 border-t border-gray-200">
-                {/* Localidades */}
+                {/* Barrios */}
                 <div>
-                  <h4 className="text-xs font-bold text-gray-900 mb-2">Localidades</h4>
+                  <h4 className="text-xs font-bold text-gray-900 mb-2">Barrios</h4>
                   <input
                     type="text"
                     placeholder="Buscar..."
@@ -635,175 +630,166 @@ export default function ListingsContent() {
             ) : (() => {
               const filteredBusinesses = getFilteredBusinesses();
               const initialDisplayCount = 9;
-              const displayedBusinesses = showAllBusinesses 
-                ? filteredBusinesses 
+              const displayedBusinesses = showAllBusinesses
+                ? filteredBusinesses
                 : filteredBusinesses.slice(0, initialDisplayCount);
               const hasMore = filteredBusinesses.length > initialDisplayCount;
-              
+
               return displayedBusinesses.length > 0 ? (
-              <>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {displayedBusinesses.map((business) => {
-                  const primaryImage = business.images?.find(img => img.is_primary) || business.images?.[0];
-                  // Usar precio real del negocio
-                  // Convertir has_offer correctamente (puede venir como string 'true', boolean true, etc.)
-                  const rawHasOffer = business.has_offer;
-                  const hasOffer = 
-                    (typeof rawHasOffer === 'boolean' && rawHasOffer) ||
-                    (typeof rawHasOffer === 'string' && ['true', 't'].includes(rawHasOffer.toLowerCase())) ||
-                    (typeof rawHasOffer === 'number' && rawHasOffer === 1) ||
-                    false;
-                  const currentPrice = Number(business.offer_price) || Number(business.price) || 0;
-                  const originalPrice = hasOffer && business.offer_price ? Number(business.price) : 0;
-                  const distance = (Math.random() * 200 + 10).toFixed(1);
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {displayedBusinesses.map((business) => {
+                      const primaryImage = business.images?.find(img => img.is_primary) || business.images?.[0];
+                      // Usar precio real del negocio
+                      // Convertir has_offer correctamente (puede venir como string 'true', boolean true, etc.)
+                      const rawHasOffer = business.has_offer;
+                      const hasOffer =
+                        (typeof rawHasOffer === 'boolean' && rawHasOffer) ||
+                        (typeof rawHasOffer === 'string' && ['true', 't'].includes(rawHasOffer.toLowerCase())) ||
+                        (typeof rawHasOffer === 'number' && rawHasOffer === 1) ||
+                        false;
+                      const currentPrice = Number(business.offer_price) || Number(business.price) || 0;
+                      const originalPrice = hasOffer && business.offer_price ? Number(business.price) : 0;
+                      const distance = (Math.random() * 200 + 10).toFixed(1);
 
-                  return (
-                    <div key={business.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-                      {/* Slider de imágenes (máximo 3) */}
-                      <div className="relative h-48">
-                        {business.images && business.images.length > 0 ? (
-                          <>
-                            <ImageSlider
-                              images={business.images}
-                              alt={business.name}
-                              maxImages={3}
-                              className="w-full h-full"
-                            />
-                            {/* Badge de Ofertas */}
-                            {hasOffer && (
-                              <div className="absolute top-2 left-2 px-3 py-1.5 rounded-md text-xs font-bold text-white z-20 bg-gradient-to-r from-red-500 to-orange-500 shadow-lg flex items-center space-x-1.5">
-                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.179 4.455a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.179-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-                                </svg>
-                                <span>OFERTA</span>
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
-                            <svg className="w-12 h-12 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {/* Badge de Ofertas para negocio sin imagen */}
-                            {hasOffer && (
-                              <div className="absolute top-2 left-2 px-3 py-1.5 rounded-md text-xs font-bold text-white z-20 bg-gradient-to-r from-red-500 to-orange-500 shadow-lg flex items-center space-x-1.5">
-                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.179 4.455a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.179-4.455A1 1 0 0112 2z" clipRule="evenodd" />
-                                </svg>
-                                <span>OFERTA</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-4">
-                        <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2">
-                          {business.name}
-                        </h3>
-
-                        {/* Location */}
-                        {business.address && (
-                          <div className="flex items-center text-xs text-gray-600 mb-2">
-                            <span className="font-medium">{distance} km, {business.address}</span>
-                          </div>
-                        )}
-
-                        {/* Services Icons */}
-                        <div className="flex items-center space-x-3 mb-3">
-                          {business.opening_hours && (
-                            <div className="flex items-center text-xs text-gray-600">
-                              <span className="font-medium">Alojamiento incluido</span>
-                            </div>
-                          )}
-                          {business.phone && (
-                            <div className="flex items-center text-xs text-gray-600">
-                              <span className="font-medium">Desayuno incluido</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Price */}
-                        {currentPrice > 0 && (
-                          <div className="flex items-baseline space-x-2 mb-2">
-                            <span className="text-xl font-bold text-gray-900">
-                              ${currentPrice.toLocaleString('es-CO')}
-                            </span>
-                            {hasOffer && originalPrice > 0 && (
+                      return (
+                        <div key={business.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                          {/* Slider de imágenes (máximo 3) */}
+                          <div className="relative h-48">
+                            {business.images && business.images.length > 0 ? (
                               <>
-                                <span className="text-sm text-gray-500 line-through">
-                                  ${originalPrice.toLocaleString('es-CO')}
-                                </span>
-                                <span className="text-xs font-bold text-red-500">
-                                  -{Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}%
-                                </span>
+                                <ImageSlider
+                                  images={business.images}
+                                  alt={business.name}
+                                  maxImages={3}
+                                  className="w-full h-full"
+                                />
+                                {/* Badge de Ofertas */}
+                                {hasOffer && (
+                                  <div className="absolute top-2 left-2 px-3 py-1.5 rounded-md text-xs font-bold text-white z-20 bg-gradient-to-r from-red-500 to-orange-500 shadow-lg flex items-center space-x-1.5">
+                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.179 4.455a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.179-4.455A1 1 0 0112 2z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>OFERTA</span>
+                                  </div>
+                                )}
                               </>
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
+                                <svg className="w-12 h-12 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {/* Badge de Ofertas para negocio sin imagen */}
+                                {hasOffer && (
+                                  <div className="absolute top-2 left-2 px-3 py-1.5 rounded-md text-xs font-bold text-white z-20 bg-gradient-to-r from-red-500 to-orange-500 shadow-lg flex items-center space-x-1.5">
+                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.179 4.455a1 1 0 01-1.934 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.179-4.455A1 1 0 0112 2z" clipRule="evenodd" />
+                                    </svg>
+                                    <span>OFERTA</span>
+                                  </div>
+                                )}
+                              </div>
                             )}
                           </div>
-                        )}
 
-                        {/* Offer Description */}
-                        {hasOffer && business.offer_description && (
-                          <div className="mb-2">
-                            <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                              {business.offer_description}
-                            </span>
+                          {/* Content */}
+                          <div className="p-4">
+                            <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2">
+                              {business.name}
+                            </h3>
+
+                            {/* Location */}
+                            {business.address && (
+                              <div className="flex items-center text-xs text-gray-600 mb-2">
+                                <span className="font-medium">{distance} km, {business.address}</span>
+                              </div>
+                            )}
+
+                            {/* Services Icons - Removed hardcoded labels */}
+                            <div className="flex items-center space-x-3 mb-3 h-5">
+                            </div>
+
+                            {/* Price */}
+                            {currentPrice > 0 && (
+                              <div className="flex items-baseline space-x-2 mb-2">
+                                <span className="text-xl font-bold text-gray-900">
+                                  ${currentPrice.toLocaleString('es-CO')}
+                                </span>
+                                {hasOffer && originalPrice > 0 && (
+                                  <>
+                                    <span className="text-sm text-gray-500 line-through">
+                                      ${originalPrice.toLocaleString('es-CO')}
+                                    </span>
+                                    <span className="text-xs font-bold text-red-500">
+                                      -{Math.round(((originalPrice - currentPrice) / originalPrice) * 100)}%
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Offer Description */}
+                            {hasOffer && business.offer_description && (
+                              <div className="mb-2">
+                                <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-1 rounded">
+                                  {business.offer_description}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Sold Count */}
+                            {business.total_reviews !== undefined && business.total_reviews > 0 && (
+                              <div className="mb-3">
+                                <span className="text-xs text-gray-600 font-medium">
+                                  {business.total_reviews} {business.total_reviews === 1 ? 'Reseña' : 'Reseñas'}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Button */}
+                            <button
+                              onClick={() => {
+                                setSelectedBusinessId(business.id);
+                                setIsModalOpen(true);
+                              }}
+                              className="block w-full text-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold text-sm"
+                            >
+                              VER OFERTA
+                            </button>
                           </div>
-                        )}
-
-                        {/* Sold Count */}
-                        {business.total_reviews !== undefined && business.total_reviews > 0 && (
-                          <div className="mb-3">
-                            <span className="text-xs text-gray-600 font-medium">
-                              {business.total_reviews} {business.total_reviews === 1 ? 'Reseña' : 'Reseñas'}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Button */}
-                        <button
-                          onClick={() => {
-                            setSelectedBusinessId(business.id);
-                            setIsModalOpen(true);
-                          }}
-                          className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
+                        </div>
+                      );
+                    })}
+                  </div >
+                  {hasMore && (
+                    <div className="text-center mt-12">
+                      <button
+                        onClick={() => setShowAllBusinesses(!showAllBusinesses)}
+                        className="inline-flex items-center space-x-2 bg-linear-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                      >
+                        <span>{showAllBusinesses ? 'Ver Menos' : 'Ver Más'}</span>
+                        <svg
+                          className={`w-5 h-5 transition-transform duration-200 ${showAllBusinesses ? 'rotate-180' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          VER OFERTA
-                        </button>
-                      </div>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
                     </div>
-                  );
-                })}
-              </div>
-              {hasMore && (
-                <div className="text-center mt-12">
-                  <button
-                    onClick={() => setShowAllBusinesses(!showAllBusinesses)}
-                    className="inline-flex items-center space-x-2 bg-linear-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                  >
-                    <span>{showAllBusinesses ? 'Ver Menos' : 'Ver Más'}</span>
-                    <svg 
-                      className={`w-5 h-5 transition-transform duration-200 ${showAllBusinesses ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
+                  )
+                  }
+                </>
+              ) : (
+                <div className="text-center py-20 bg-white rounded-lg border border-gray-200">
+                  <p className="text-gray-600">No se encontraron negocios con los filtros seleccionados</p>
                 </div>
-              )}
-              </>
-            ) : (
-              <div className="text-center py-20 bg-white rounded-lg border border-gray-200">
-                <p className="text-gray-600">No se encontraron negocios con los filtros seleccionados</p>
-              </div>
-            );
+              );
             })()}
           </div>
         </div>
-      </main>
+      </main >
 
       <Footer />
 
@@ -816,7 +802,7 @@ export default function ListingsContent() {
           setSelectedBusinessId(null);
         }}
       />
-    </div>
+    </div >
   );
 }
 
