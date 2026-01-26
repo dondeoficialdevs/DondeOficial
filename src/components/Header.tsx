@@ -26,7 +26,7 @@ export default function Header() {
                   src={logoUrl}
                   alt="DondeOficial Logo"
                   fill
-                  className="object-contain brightness-0" // Ensure black letters (Item 17)
+                  className="object-contain" // Keep aspect ratio
                   priority
                   sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
                   unoptimized={true}

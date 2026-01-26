@@ -49,7 +49,7 @@ export default function Footer() {
                   src={logoUrl}
                   alt="DondeOficial Logo"
                   fill
-                  className="object-contain brightness-0 invert"
+                  className="object-contain" // Keep aspect ratio
                   sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
                   unoptimized={true}
                 />

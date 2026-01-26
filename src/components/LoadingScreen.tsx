@@ -153,7 +153,7 @@ export default function LoadingScreen() {
                     src={logoUrl}
                     alt="DondeOficial Logo"
                     fill
-                    className="object-contain drop-shadow-2xl brightness-0 invert"
+                    className="object-contain drop-shadow-2xl"
                     priority
                     sizes="(max-width: 480px) 192px, (max-width: 640px) 256px, 320px"
                     unoptimized={true}
