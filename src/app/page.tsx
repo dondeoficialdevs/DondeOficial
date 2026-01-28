@@ -117,9 +117,6 @@ export default function Home() {
             onCategorySelect={(categoryName) => handleSearch('', categoryName)}
           />
 
-
-
-
           <ActionCards />
 
           {error && (

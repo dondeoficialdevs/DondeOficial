@@ -1,25 +1,6 @@
 import { supabase } from './supabase';
 import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings } from '@/types';
 
-// Utility to handle Supabase responses (Not currently used but kept for potential future use)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const handleSupabaseResponse = <T>(data: T | null, error: unknown): ApiResponse<T> => {
-  if (error) {
-    console.error('❌ Supabase error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Error occurred during database operation';
-    return {
-      success: false,
-      data: null as unknown as T,
-      message: errorMessage
-    };
-  }
-  return {
-    success: true,
-    data: data as T,
-    count: Array.isArray(data) ? data.length : undefined
-  };
-};
-
 export const businessApi = {
   // Obtener todos los negocios con filtros opcionales
   getAll: async (filters?: BusinessFilters): Promise<Business[]> => {
@@ -259,11 +240,6 @@ export const businessApi = {
       .eq('status', 'pending');
 
     if (error) throw error;
-
-    // Log para depuración en consola (F12)
-    console.group('🔍 Depuración de Negocios Pendientes');
-    console.log('Datos raw de Supabase:', data);
-    console.groupEnd();
 
     interface PendingBusiness extends Business {
       categories: { name: string } | null;
