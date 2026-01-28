@@ -5,9 +5,9 @@
         ],
         "target": {
             "namespace": "android_app",
-            "package_name": "com.dondeoficial.twa",
+            "package_name": "com.dondeoficial.app",
             "sha256_cert_fingerprints": [
-                "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"
+                "E3:9E:4C:54:11:E6:5D:A5:B6:8B:0B:D3:E6:A5:8E:7C:F5:31:14:D7:8B:79:ED:09:02:D6:CA:08:31:18:D7:15"
             ]
         }
     }
