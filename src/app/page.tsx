@@ -115,7 +115,6 @@ export default function Home() {
           <CategorySection
             categories={categories}
             onCategorySelect={(categoryName) => handleSearch('', categoryName)}
-            onRefresh={loadInitialData}
           />
 
 
