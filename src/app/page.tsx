@@ -9,7 +9,6 @@ import Header from '../components/Header';
 import ActionCards from '../components/ActionCards';
 import FeaturedListings from '../components/FeaturedListings';
 import CategorySection from '../components/CategorySection';
-import StatsSection from '../components/StatsSection';
 import Footer from '../components/Footer';
 import BusinessDetailModal from '../components/BusinessDetailModal';
 import PromotionsSlider from '../components/PromotionsSlider';
@@ -145,7 +144,6 @@ export default function Home() {
             }}
           />
 
-          <StatsSection />
           <AnnouncementPopup />
         </main>
 
