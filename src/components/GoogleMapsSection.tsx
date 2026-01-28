@@ -71,6 +71,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [showHint, setShowHint] = useState(true);
+  const [isMapActive, setIsMapActive] = useState(false);
 
   // Lista de ciudades comunes de Colombia
   const colombianCities = [
@@ -83,10 +84,10 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
   // Filtrar negocios que tienen coordenadas válidas
   const businessesWithCoords = useMemo(() => {
     return businesses.filter(
-      (business) => 
-        business.latitude != null && 
-        business.longitude != null && 
-        !isNaN(Number(business.latitude)) && 
+      (business) =>
+        business.latitude != null &&
+        business.longitude != null &&
+        !isNaN(Number(business.latitude)) &&
         !isNaN(Number(business.longitude)) &&
         Number(business.latitude) !== 0 &&
         Number(business.longitude) !== 0
@@ -96,12 +97,12 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
   // Función para calcular el centro de manera segura
   const calculateCenter = (businessesList: Business[]): [number, number] => {
     if (businessesList.length === 0) return defaultCenter;
-    
+
     const validBusinesses = businessesList.filter(
-      (b) => 
-        b.latitude != null && 
-        b.longitude != null && 
-        !isNaN(Number(b.latitude)) && 
+      (b) =>
+        b.latitude != null &&
+        b.longitude != null &&
+        !isNaN(Number(b.latitude)) &&
         !isNaN(Number(b.longitude)) &&
         Number(b.latitude) !== 0 &&
         Number(b.longitude) !== 0
@@ -194,16 +195,16 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
     // Si hay búsqueda activa, usar los negocios del prop (ya filtrados por la API)
     // Si no hay búsqueda, mostrar todos los negocios con coordenadas
     const businessesToFilter = (searchTerm || selectedCategory) ? businesses : businessesWithCoords;
-    
+
     // Filtrar solo los que tienen coordenadas para mostrar en el mapa
     return businessesToFilter.filter((business) => {
       if (!business.latitude || !business.longitude) return false;
-      
+
       // Si hay búsqueda activa, los negocios ya vienen filtrados del prop
       if (searchTerm || selectedCategory) {
         return true;
       }
-      
+
       // Si no hay búsqueda, mostrar todos
       return true;
     });
@@ -228,9 +229,9 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
   const handleMarkerClick = (business: Business) => {
     setSelectedBusiness(business);
     if (
-      business.latitude != null && 
-      business.longitude != null && 
-      !isNaN(Number(business.latitude)) && 
+      business.latitude != null &&
+      business.longitude != null &&
+      !isNaN(Number(business.latitude)) &&
       !isNaN(Number(business.longitude))
     ) {
       setMapCenter([Number(business.latitude), Number(business.longitude)]);
@@ -268,14 +269,14 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
     if (value.trim()) {
       setIsUsingCustomLocation(true);
       setLocation(value);
-      
+
       // Filtrar ciudades que coincidan con lo escrito
-      const filtered = colombianCities.filter(city => 
+      const filtered = colombianCities.filter(city =>
         city.toLowerCase().includes(value.toLowerCase())
       );
       setCitySuggestions(filtered);
       setShowCitySuggestions(filtered.length > 0 && value.length > 0);
-      
+
       // Buscar con la ciudad personalizada solo si no hay sugerencias o si es una ciudad exacta
       if (filtered.length === 0 || colombianCities.includes(value)) {
         onSearch(searchTerm || '', selectedCategory || undefined, value);
@@ -345,7 +346,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
   const handleGetDirections = (business: Business) => {
     if (!business.latitude || !business.longitude) return;
     const destination = `${business.latitude},${business.longitude}`;
-    const destinationParam = business.address 
+    const destinationParam = business.address
       ? encodeURIComponent(business.address)
       : destination;
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destinationParam}`;
@@ -361,7 +362,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
         (position) => {
           const origin = `${position.coords.latitude},${position.coords.longitude}`;
           const destination = `${business.latitude},${business.longitude}`;
-          const destinationParam = business.address 
+          const destinationParam = business.address
             ? encodeURIComponent(business.address)
             : destination;
           const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destinationParam}`;
@@ -402,6 +403,21 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
 
         {/* Mapa */}
         <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 map-container" style={{ height: '600px' }}>
+          {/* Overlay protector para móvil (evita que el mapa atrape el scroll) */}
+          {!isMapActive && L.Browser.mobile && (
+            <div
+              className="absolute inset-0 z-[1001] bg-black/10 backdrop-blur-[1px] flex items-center justify-center cursor-pointer group"
+              onClick={() => setIsMapActive(true)}
+            >
+              <div className="bg-white/90 px-6 py-3 rounded-full shadow-xl border border-white flex items-center space-x-3 transition-transform group-hover:scale-105">
+                <svg className="w-5 h-5 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+                <span className="text-sm font-bold text-gray-800">Toca para interactuar con el mapa</span>
+              </div>
+            </div>
+          )}
+
           {/* Buscador overlay que aparece encima del mapa */}
           {showSearchBar && (
             <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-[1000] search-bar-container">
@@ -423,7 +439,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
-                    
+
                     {showCategoryDropdown && (
                       <div className="absolute top-full left-0 mt-2 w-56 sm:w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-80 sm:max-h-96 overflow-y-auto">
                         {categories.length > 0 ? (
@@ -437,9 +453,8 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                                 const locationToUse = location === 'Cerca de mí' ? '' : location;
                                 onSearch(searchTerm, category.name, locationToUse);
                               }}
-                              className={`w-full text-left px-3 sm:px-4 py-2 hover:bg-gray-100 transition-colors text-xs sm:text-sm font-medium ${
-                                selectedCategory === category.name ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-900'
-                              }`}
+                              className={`w-full text-left px-3 sm:px-4 py-2 hover:bg-gray-100 transition-colors text-xs sm:text-sm font-medium ${selectedCategory === category.name ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-900'
+                                }`}
                             >
                               {category.name}
                             </button>
@@ -460,7 +475,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                       placeholder="¿Qué buscas?"
                       className="flex-1 px-2 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 bg-gray-200 md:bg-transparent rounded-lg md:rounded-l-xl md:rounded-r-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 md:focus:ring-blue-600 font-medium text-xs sm:text-sm md:text-base"
                     />
-                    
+
                     {/* Ubicación "Cerca de mí" o ciudad personalizada integrada en desktop */}
                     <div className="hidden md:flex items-center gap-0 border-l border-gray-300 min-w-0 flex-shrink">
                       {!isUsingCustomLocation ? (
@@ -594,7 +609,7 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                       </svg>
                     </button>
-                    
+
                     {showMenuDropdown && (
                       <div className="absolute top-full right-0 mt-2 w-56 sm:w-64 bg-teal-600 rounded-lg shadow-xl z-50">
                         <div className="py-2">
@@ -788,143 +803,146 @@ export default function GoogleMapsSection({ businesses, onSearch }: GoogleMapsSe
               zoom={mapZoom}
               style={{ height: '100%', width: '100%' }}
               className="z-0"
+              scrollWheelZoom={isMapActive} // Solo permitir zoom con rueda si el mapa está activo
+              dragging={isMapActive || !L.Browser.mobile} // En móvil, solo arrastrar si está activo. En desktop, siempre.
+              touchZoom={true}
             >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <MapUpdater center={mapCenter} zoom={mapZoom} />
-            <MapClickHandler onMapClick={() => {
-              setShowSearchBar(true);
-              setSelectedBusiness(null);
-              setShowHint(false);
-            }} />
-            
-            {/* Marcador de ubicación del usuario */}
-            {userLocation && (
-              <Marker
-                position={userLocation}
-                icon={L.divIcon({
-                  className: 'custom-user-marker',
-                  html: '<div style="background-color: #3b82f6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
-                  iconSize: [20, 20],
-                  iconAnchor: [10, 10]
-                })}
-              >
-                <Popup>
-                  <div className="text-sm font-medium text-gray-900">
-                    📍 Tu ubicación
-                  </div>
-                </Popup>
-              </Marker>
-            )}
-            
-            {/* Marcadores de negocios */}
-            {filteredBusinesses
-              .filter((b) => 
-                b.latitude != null && 
-                b.longitude != null && 
-                !isNaN(Number(b.latitude)) && 
-                !isNaN(Number(b.longitude))
-              )
-              .map((business) => (
-              <Marker
-                key={business.id}
-                position={[Number(business.latitude!), Number(business.longitude!)]}
-                eventHandlers={{
-                  click: () => handleMarkerClick(business),
-                }}
-              >
-                <Popup className="custom-popup" maxWidth={400}>
-                  <div className="p-4 min-w-[320px] max-w-[400px]">
-                    <h3 className="font-bold text-xl text-gray-900 mb-3">
-                      {business.name}
-                    </h3>
-                    
-                    {business.category_name && (
-                      <div className="mb-3">
-                        <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
-                          {business.category_name}
-                        </span>
-                      </div>
-                    )}
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <MapUpdater center={mapCenter} zoom={mapZoom} />
+              <MapClickHandler onMapClick={() => {
+                setShowSearchBar(true);
+                setSelectedBusiness(null);
+                setShowHint(false);
+              }} />
 
-                    {business.description && (
-                      <p className="text-sm text-gray-700 mb-4 leading-relaxed">
-                        {business.description}
-                      </p>
-                    )}
-
-                    <div className="space-y-2 mb-4 border-t border-gray-200 pt-3">
-                      {business.address && (
-                        <div className="flex items-start gap-2 text-sm text-gray-600">
-                          <svg className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <span className="flex-1">{business.address}</span>
-                        </div>
-                      )}
-                      
-                      {business.phone && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          <span className="font-medium">{business.phone}</span>
-                        </div>
-                      )}
-
-                      {business.opening_hours && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <svg className="w-4 h-4 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span>{business.opening_hours}</span>
-                        </div>
-                      )}
+              {/* Marcador de ubicación del usuario */}
+              {userLocation && (
+                <Marker
+                  position={userLocation}
+                  icon={L.divIcon({
+                    className: 'custom-user-marker',
+                    html: '<div style="background-color: #3b82f6; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                  })}
+                >
+                  <Popup>
+                    <div className="text-sm font-medium text-gray-900">
+                      📍 Tu ubicación
                     </div>
+                  </Popup>
+                </Marker>
+              )}
 
-                    <div className="flex flex-col gap-2 mt-4 pt-3 border-t border-gray-200">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleGetDirectionsFromCurrentLocation(business)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md hover:shadow-lg"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                          </svg>
-                          Cómo llegar
-                        </button>
-                        <button
-                          onClick={() => handleGetDirections(business)}
-                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                          </svg>
-                          Ver en Maps
-                        </button>
+              {/* Marcadores de negocios */}
+              {filteredBusinesses
+                .filter((b) =>
+                  b.latitude != null &&
+                  b.longitude != null &&
+                  !isNaN(Number(b.latitude)) &&
+                  !isNaN(Number(b.longitude))
+                )
+                .map((business) => (
+                  <Marker
+                    key={business.id}
+                    position={[Number(business.latitude!), Number(business.longitude!)]}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(business),
+                    }}
+                  >
+                    <Popup className="custom-popup" maxWidth={400}>
+                      <div className="p-4 min-w-[320px] max-w-[400px]">
+                        <h3 className="font-bold text-xl text-gray-900 mb-3">
+                          {business.name}
+                        </h3>
+
+                        {business.category_name && (
+                          <div className="mb-3">
+                            <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+                              {business.category_name}
+                            </span>
+                          </div>
+                        )}
+
+                        {business.description && (
+                          <p className="text-sm text-gray-700 mb-4 leading-relaxed">
+                            {business.description}
+                          </p>
+                        )}
+
+                        <div className="space-y-2 mb-4 border-t border-gray-200 pt-3">
+                          {business.address && (
+                            <div className="flex items-start gap-2 text-sm text-gray-600">
+                              <svg className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              <span className="flex-1">{business.address}</span>
+                            </div>
+                          )}
+
+                          {business.phone && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                              </svg>
+                              <span className="font-medium">{business.phone}</span>
+                            </div>
+                          )}
+
+                          {business.opening_hours && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <svg className="w-4 h-4 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span>{business.opening_hours}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col gap-2 mt-4 pt-3 border-t border-gray-200">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleGetDirectionsFromCurrentLocation(business)}
+                              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-md hover:shadow-lg"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                              </svg>
+                              Cómo llegar
+                            </button>
+                            <button
+                              onClick={() => handleGetDirections(business)}
+                              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                              </svg>
+                              Ver en Maps
+                            </button>
+                          </div>
+                          <a
+                            href={`/businesses/${business.id}`}
+                            className="block text-center px-4 py-2.5 bg-gray-100 text-blue-600 hover:bg-gray-200 text-sm font-semibold rounded-lg transition-colors"
+                          >
+                            Ver más detalles →
+                          </a>
+                        </div>
                       </div>
-                      <a
-                        href={`/businesses/${business.id}`}
-                        className="block text-center px-4 py-2.5 bg-gray-100 text-blue-600 hover:bg-gray-200 text-sm font-semibold rounded-lg transition-colors"
-                      >
-                        Ver más detalles →
-                      </a>
-                    </div>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+                    </Popup>
+                  </Marker>
+                ))}
+            </MapContainer>
           )}
         </div>
 
         {/* Información adicional */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            {businessesWithCoords.length > 0 
+            {businessesWithCoords.length > 0
               ? `${businessesWithCoords.length} negocios mostrados en el mapa`
               : 'No hay negocios con ubicación disponible para mostrar en el mapa'
             }
