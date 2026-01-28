@@ -365,6 +365,29 @@ export const categoryApi = {
     if (error) throw error;
     return data;
   },
+
+  // Actualizar categoría
+  update: async (id: number, categoryData: Partial<Category>): Promise<Category> => {
+    const { data, error } = await supabase
+      .from('categories')
+      .update(categoryData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Eliminar categoría
+  delete: async (id: number): Promise<void> => {
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  },
 };
 
 export const leadsApi = {

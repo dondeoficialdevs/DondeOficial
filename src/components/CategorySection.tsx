@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Category } from '../types';
+import { categoryApi } from '../lib/api';
 
 interface CategorySectionProps {
   categories: Category[];
   onCategorySelect?: (categoryName: string) => void;
+  onRefresh?: () => void;
 }
 
 const getCategoryIcon = (name: string) => {
@@ -13,7 +16,7 @@ const getCategoryIcon = (name: string) => {
     color: '#FF6B35',
     filter: 'drop-shadow(0 0 1px rgba(255, 107, 53, 0.4))',
   };
-  
+
   const icons: { [key: string]: React.ReactElement } = {
     'Belleza': (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={iconStyle}>
@@ -28,7 +31,8 @@ const getCategoryIcon = (name: string) => {
     ),
     'Gastronomía': (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={iconStyle}>
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253c0-.855-.917-1.545-2.05-1.545-1.133 0-2.05.69-2.05 1.545 0 .855.917 1.545 2.05 1.545 1.133 0 2.05-.69 2.05-1.545zM12 6.253c0-.855.917-1.545 2.05-1.545 1.133 0 2.05.69 2.05 1.545 0 .855-.917 1.545-2.05 1.545-1.133 0-2.05-.69-2.05-1.545zM12 6.253v12.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253c0-.855-.917-1.545-2.05-1.545-1.133 0-2.05.69-2.05 1.545 0 .855.917 1.545 2.05 1.545 1.133 0 2.05-.69 2.05-1.545z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
       </svg>
     ),
     'Viajes y turismo': (
@@ -66,63 +70,177 @@ const getCategoryIcon = (name: string) => {
   );
 };
 
-export default function CategorySection({ categories, onCategorySelect }: CategorySectionProps) {
+export default function CategorySection({ categories, onCategorySelect, onRefresh }: CategorySectionProps) {
   const router = useRouter();
-  
-  // Categorías principales que coinciden con la captura
-  const mainCategories = [
-    'Belleza', 'Entretenimiento', 'Gastronomía', 'Viajes y turismo',
-    'Bienestar y salud', 'Servicios', 'Productos', 'Cerca de mí'
-  ];
-
-  // Mapeo de categorías del frontend a nombres del backend
-  const getCategoryBackendName = (frontendName: string): string => {
-    const foundCategory = categories.find(cat => 
-      cat.name.toLowerCase() === frontendName.toLowerCase() ||
-      cat.name.toLowerCase().includes(frontendName.toLowerCase()) ||
-      frontendName.toLowerCase().includes(cat.name.toLowerCase())
-    );
-    
-    if (foundCategory) {
-      return foundCategory.name;
-    }
-    
-    return frontendName;
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleCategoryClick = (categoryName: string) => {
-    const backendCategoryName = getCategoryBackendName(categoryName);
-    
-    // Si hay un callback personalizado, usarlo primero
     if (onCategorySelect) {
-      onCategorySelect(backendCategoryName);
+      onCategorySelect(categoryName);
     }
-    
-    // Navegar a listings con el filtro de categoría
-    const encodedCategory = encodeURIComponent(backendCategoryName);
+    const encodedCategory = encodeURIComponent(categoryName);
     router.push(`/listings?category=${encodedCategory}`);
   };
 
+  const handleEditClick = (e: React.MouseEvent, category: Category) => {
+    e.stopPropagation();
+    setEditingCategory(category);
+    setNewCategoryName(category.name);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteClick = async (e: React.MouseEvent, categoryId: number) => {
+    e.stopPropagation();
+    if (confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
+      try {
+        setLoading(true);
+        await categoryApi.delete(categoryId);
+        if (onRefresh) onRefresh();
+      } catch (error) {
+        console.error('Error al eliminar categoría:', error);
+        alert('Error al eliminar la categoría');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleCreateClick = () => {
+    setEditingCategory(null);
+    setNewCategoryName('');
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+
+    try {
+      setLoading(true);
+      if (editingCategory) {
+        await categoryApi.update(editingCategory.id, { name: newCategoryName });
+      } else {
+        await categoryApi.create({ name: newCategoryName });
+      }
+      setIsModalOpen(false);
+      if (onRefresh) onRefresh();
+    } catch (error) {
+      console.error('Error al guardar categoría:', error);
+      alert('Error al guardar la categoría');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <section className="py-6 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center space-x-4 overflow-x-auto pb-2">
-          {mainCategories.map((cat) => {
-            return (
+    <section className="py-6 bg-white overflow-visible">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
+        <div className="flex items-center space-x-6 overflow-x-auto pt-5 pb-4 no-scrollbar">
+          {categories.map((cat) => (
+            <div key={cat.id} className="relative flex flex-col items-center flex-shrink-0">
               <button
-                key={cat}
-                onClick={() => handleCategoryClick(cat)}
-                className="flex flex-col items-center space-y-2 px-3 py-2 rounded-lg transition-all hover:bg-gray-50 text-gray-700 min-w-[80px] group"
+                onClick={() => handleCategoryClick(cat.name)}
+                className="flex flex-col items-center space-y-2 px-3 py-2 rounded-lg transition-all hover:bg-gray-50 text-gray-700 min-w-[85px] group/btn"
               >
-                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110 border border-gray-100">
-                  {getCategoryIcon(cat)}
+                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-md group-hover/btn:shadow-lg transition-all duration-300 group-hover/btn:scale-110 border border-gray-100">
+                  {getCategoryIcon(cat.name)}
                 </div>
-                <span className="text-xs font-semibold whitespace-nowrap">{cat}</span>
+                <span className="text-xs font-semibold whitespace-nowrap">{cat.name}</span>
               </button>
-            );
-          })}
+
+              {/* Botones de acción siempre visibles */}
+              <div className="absolute -top-2 -right-1 flex space-x-1 z-20">
+                <button
+                  onClick={(e) => handleEditClick(e, cat)}
+                  className="p-1.5 bg-white rounded-full shadow-md border border-blue-100 text-blue-500 hover:bg-blue-50 hover:text-blue-700 transition-all opacity-100"
+                  title="Editar"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={(e) => handleDeleteClick(e, cat.id)}
+                  className="p-1.5 bg-white rounded-full shadow-md border border-red-100 text-red-500 hover:bg-red-50 hover:text-red-700 transition-all opacity-100"
+                  title="Eliminar"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Botón Crear siempre visible */}
+          <button
+            onClick={handleCreateClick}
+            className="flex flex-col items-center space-y-2 px-3 py-2 rounded-lg transition-all hover:bg-orange-50 text-orange-600 min-w-[85px] group flex-shrink-0"
+          >
+            <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:scale-110 border border-orange-200 border-dashed">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <span className="text-xs font-bold whitespace-nowrap">Crear</span>
+          </button>
         </div>
       </div>
+
+      {/* Modal para Crear/Editar */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <input
+                  type="text"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="Ej: Restaurantes, Moda..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none"
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                  disabled={loading}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition-all shadow-md shadow-orange-200 disabled:opacity-50"
+                  disabled={loading}
+                >
+                  {loading ? 'Guardando...' : 'Guardar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }
