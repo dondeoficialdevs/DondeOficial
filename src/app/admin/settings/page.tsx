@@ -73,6 +73,10 @@ export default function SettingsPage() {
             });
 
             setSettings(updatedSettings);
+            // Cache locally to ensure preloader shows new logo immediately after reload
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('site_settings', JSON.stringify(updatedSettings));
+            }
             alert('Configuración guardada correctamente');
             window.location.reload();
         } catch (err: any) {
