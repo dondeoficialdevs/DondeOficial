@@ -56,7 +56,7 @@ android {
     defaultConfig {
         applicationId "com.dondeoficial.app"
         minSdkVersion 21
-        targetSdkVersion 35
+        targetSdkVersion 34
         versionCode 2
         versionName "2"
 
@@ -153,9 +153,38 @@ android {
 
         
     }
+    signingConfigs {
+        release {
+            // Configuración de signing - compatible con Bubblewrap CLI y Gradle directo
+            // Las credenciales pueden venir de:
+            // 1. archivo keystore.properties en el root del proyecto android
+            // 2. Variables de entorno KEYSTORE_PASSWORD y KEY_PASSWORD
+            // 3. gradle.properties (si se agregan las propiedades allí)
+            def keystorePropertiesFile = rootProject.file("keystore.properties")
+            def keystoreFile = rootProject.file('android.keystore')
+            
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                keyAlias 'android'
+                
+                if (keystorePropertiesFile.exists()) {
+                    def keystoreProperties = new Properties()
+                    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+                    storePassword keystoreProperties['storePassword'] ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
+                    keyPassword keystoreProperties['keyPassword'] ?: System.getenv("KEY_PASSWORD") ?: ""
+                } else {
+                    // Intentar desde variables de entorno o gradle.properties
+                    storePassword project.findProperty("KEYSTORE_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
+                    keyPassword project.findProperty("KEY_PASSWORD") ?: System.getenv("KEY_PASSWORD") ?: ""
+                }
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
