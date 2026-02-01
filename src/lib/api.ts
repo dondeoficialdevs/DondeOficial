@@ -615,30 +615,55 @@ export const promotionApi = {
 
   // Obtener promociones activas para el slider (que no sean popups)
   getActive: async (): Promise<Promotion[]> => {
-    const { data, error } = await supabase
-      .from('promotions')
-      .select('*')
-      .eq('active', true)
-      .or('is_popup.is.null,is_popup.eq.false')
-      .order('priority', { ascending: true });
+    try {
+      const { data, error } = await supabase
+        .from('promotions')
+        .select('*')
+        .eq('active', true)
+        .or('is_popup.is.null,is_popup.eq.false')
+        .order('priority', { ascending: true });
 
-    if (error) throw error;
-    return data || [];
+      if (error && error.message.includes('is_popup')) {
+        console.warn('is_popup column missing, falling back to generic fetch');
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('promotions')
+          .select('*')
+          .eq('active', true)
+          .order('priority', { ascending: true });
+        if (fallbackError) throw fallbackError;
+        return fallbackData || [];
+      }
+
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.error('Error in getActive:', err);
+      // Fallback final
+      const { data } = await supabase.from('promotions').select('*').eq('active', true);
+      return data || [];
+    }
   },
 
   // Obtener el popup activo actual
   getActivePopup: async (): Promise<Promotion | null> => {
-    const { data, error } = await supabase
-      .from('promotions')
-      .select('*')
-      .eq('active', true)
-      .eq('is_popup', true)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from('promotions')
+        .select('*')
+        .eq('active', true)
+        .eq('is_popup', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
-    if (error) throw error;
-    return data;
+      if (error) {
+        if (error.message.includes('is_popup')) return null;
+        throw error;
+      }
+      return data;
+    } catch (err) {
+      return null;
+    }
   },
 
   // Crear nueva promoción

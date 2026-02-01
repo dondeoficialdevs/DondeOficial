@@ -135,7 +135,13 @@ export default function VitrinaAdminPage() {
             let errorMessage = 'Error al procesar la solicitud';
             if (err.message) errorMessage = err.message;
             if (err.details) errorMessage += ` (${err.details})`;
-            alert(errorMessage);
+
+            // Error específico para la columna faltante
+            if (errorMessage.includes('is_popup')) {
+                alert('FALTA COLUMNA EN BASE DE DATOS:\n\nPara que los popups funcionen, debes ejecutar este SQL en Supabase:\n\nALTER TABLE promotions ADD COLUMN is_popup BOOLEAN DEFAULT FALSE;\n\nLuego recarga esta página.');
+            } else {
+                alert(errorMessage);
+            }
         } finally {
             setSaving(false);
         }
