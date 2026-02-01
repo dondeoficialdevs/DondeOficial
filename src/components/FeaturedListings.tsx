@@ -232,8 +232,8 @@ export default function FeaturedListings({ businesses, loading, onBusinessClick 
             </div>
 
             {/* Botón Ver Más */}
-            {hasMore && (
-              <div className="text-center mt-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12">
+              {hasMore && (
                 <button
                   onClick={() => setShowAll(!showAll)}
                   className="inline-flex items-center space-x-2 bg-orange-600 text-white px-8 py-4 rounded-lg hover:bg-orange-700 transition-all duration-200 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
@@ -248,8 +248,23 @@ export default function FeaturedListings({ businesses, loading, onBusinessClick 
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
-              </div>
-            )}
+              )}
+
+              <Link
+                href="/listings"
+                className="inline-flex items-center space-x-2 bg-white text-orange-600 border-2 border-orange-600 px-8 py-4 rounded-lg hover:bg-orange-50 transition-all duration-200 font-bold shadow-md hover:shadow-lg transform hover:-translate-y-1 group"
+              >
+                <span>Explorar Directorio Completo</span>
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
           </>
         ) : (
           <div className="text-center py-16">
