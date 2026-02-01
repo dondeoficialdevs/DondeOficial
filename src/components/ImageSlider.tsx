@@ -30,14 +30,20 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
     );
   }
 
-  // Si solo hay una imagen, mostrar sin controles pero con el mismo estilo
+  // Si solo hay una imagen, mostrar sin controles pero con el nuevo estilo
   if (displayImages.length === 1) {
     return (
-      <div className={`relative w-full h-full overflow-hidden ${className}`}>
+      <div className={`relative w-full h-full overflow-hidden bg-gray-100 ${className}`}>
+        {/* Fondo borroso para llenar el espacio */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center blur-md opacity-50 scale-110"
+          style={{ backgroundImage: `url(${displayImages[0].image_url})` }}
+        />
+        {/* Imagen principal contenida sin cortes */}
         <img
           src={displayImages[0].image_url}
           alt={alt}
-          className="w-full h-full object-cover"
+          className="relative w-full h-full object-contain z-10"
         />
       </div>
     );
@@ -62,20 +68,26 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
   };
 
   return (
-    <div className={`relative w-full h-full overflow-hidden group ${className}`}>
+    <div className={`relative w-full h-full overflow-hidden group bg-gray-100 ${className}`}>
       {/* Imágenes */}
       <div className="relative w-full h-full">
         {displayImages.map((image, index) => (
           <div
             key={image.id || index}
             className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentIndex ? 'opacity-100' : 'opacity-0'
+              index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
             }`}
           >
+            {/* Fondo borroso */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center blur-md opacity-50 scale-110"
+              style={{ backgroundImage: `url(${image.image_url})` }}
+            />
+            {/* Imagen principal */}
             <img
               src={image.image_url}
               alt={`${alt} - Imagen ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="relative w-full h-full object-contain z-10"
             />
           </div>
         ))}
@@ -87,7 +99,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
           {/* Botón anterior */}
           <button
             onClick={goToPrevious}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 active:bg-black/90 text-white p-2.5 rounded-full z-10 shadow-xl transition-all duration-200 flex items-center justify-center"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 active:bg-black/90 text-white p-2.5 rounded-full z-20 shadow-xl transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100"
             aria-label="Imagen anterior"
             type="button"
           >
@@ -99,7 +111,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
           {/* Botón siguiente */}
           <button
             onClick={goToNext}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 active:bg-black/90 text-white p-2.5 rounded-full z-10 shadow-xl transition-all duration-200 flex items-center justify-center"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 active:bg-black/90 text-white p-2.5 rounded-full z-20 shadow-xl transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100"
             aria-label="Imagen siguiente"
             type="button"
           >
@@ -112,7 +124,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
 
       {/* Indicadores de puntos - Siempre visibles */}
       {displayImages.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2 z-10 bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg">
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2 z-20 bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg">
           {displayImages.map((_, index) => (
             <button
               key={index}
@@ -134,7 +146,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
 
       {/* Contador de imágenes - Siempre visible */}
       {displayImages.length > 1 && (
-        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1.5 rounded-md z-10 shadow-xl border border-white/20">
+        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1.5 rounded-md z-20 shadow-xl border border-white/20">
           {currentIndex + 1} / {displayImages.length}
         </div>
       )}
