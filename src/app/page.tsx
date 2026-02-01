@@ -4,13 +4,11 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { businessApi, categoryApi } from '../lib/api';
 import { Business, Category } from '../types';
-import LoadingScreen from '../components/LoadingScreen';
 import ActionCards from '../components/ActionCards';
 import FeaturedListings from '../components/FeaturedListings';
 import CategorySection from '../components/CategorySection';
 import BusinessDetailModal from '../components/BusinessDetailModal';
 import PromotionsSlider from '../components/PromotionsSlider';
-import AnnouncementPopup from '../components/AnnouncementPopup';
 import SmartSearch from '../components/SmartSearch';
 
 
@@ -23,20 +21,12 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
-  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedBusinessId, setSelectedBusinessId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    // Mostrar loading screen por 2 segundos
-    const loadingTimer = setTimeout(() => {
-      setShowLoadingScreen(false);
-    }, 2000);
-
     loadInitialData();
-
-    return () => clearTimeout(loadingTimer);
   }, []);
 
   const loadInitialData = async () => {
@@ -102,10 +92,7 @@ export default function Home() {
 
   return (
     <>
-      {showLoadingScreen && <LoadingScreen />}
-
-      <div className={`min-h-screen bg-white transition-opacity duration-500 ${showLoadingScreen ? 'opacity-0' : 'opacity-100'
-        }`}>
+      <div className={`min-h-screen bg-white transition-opacity duration-500`}>
         <main>
           <PromotionsSlider />
 
@@ -141,8 +128,6 @@ export default function Home() {
               setIsModalOpen(true);
             }}
           />
-
-          <AnnouncementPopup />
         </main>
 
         <PWAInstaller />

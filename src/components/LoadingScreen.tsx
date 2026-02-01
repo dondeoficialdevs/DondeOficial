@@ -67,7 +67,7 @@ export default function LoadingScreen() {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-500 overflow-hidden"
+      className="fixed inset-0 flex items-center justify-center z-[999] transition-opacity duration-500 overflow-hidden"
       style={{
         background: 'linear-gradient(135deg, #161617 0%, #1a1a1b 50%, #161617 100%)',
         backgroundSize: '200% 200%',

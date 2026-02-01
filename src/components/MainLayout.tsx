@@ -4,8 +4,10 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileNavbar from "@/components/MobileNavbar";
+import LoadingScreen from "@/components/LoadingScreen";
 import ThemeManager from "@/components/ThemeManager";
 import UpdateNotificationClient from "@/components/UpdateNotificationClient";
+import AnnouncementPopup from "@/components/AnnouncementPopup";
 import { SettingsProvider } from "@/context/SettingsContext";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +21,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <main className="pb-24 lg:pb-0">
                     {children}
                 </main>
+                {pathname === '/' && <AnnouncementPopup />}
+                <LoadingScreen />
                 <MobileNavbar />
                 <Footer />
                 <ThemeManager />
