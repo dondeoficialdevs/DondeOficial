@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Business } from '../types';
+import { Business, BusinessImage } from '../types';
 import { businessApi } from '../lib/api';
 import { useFavorites } from '@/hooks/useFavorites';
 import ReviewsSection from './ReviewsSection';
+import Lightbox from './Lightbox';
+import { Maximize2 } from 'lucide-react';
 
 interface BusinessDetailModalProps {
   businessId: number | null;
@@ -15,6 +17,8 @@ interface BusinessDetailModalProps {
 export default function BusinessDetailModal({ businessId, isOpen, onClose }: BusinessDetailModalProps) {
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [allImages, setAllImages] = useState<BusinessImage[]>([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -42,6 +46,9 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
       setLoading(true);
       const businessData = await businessApi.getById(id);
       setBusiness(businessData);
+      if (businessData.images) {
+        setAllImages(businessData.images);
+      }
     } catch (error) {
       console.error('Error loading business:', error);
     } finally {
@@ -326,7 +333,13 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
               {/* Hero Image */}
               <div className="relative h-64 mb-6 rounded-xl overflow-hidden bg-gray-100">
                 {primaryImage ? (
-                  <div className="w-full h-full relative">
+                  <div
+                    className="w-full h-full relative cursor-pointer group"
+                    onClick={() => {
+                      const globalIndex = allImages.findIndex(img => img.id === primaryImage.id);
+                      setLightboxIndex(globalIndex !== -1 ? globalIndex : 0);
+                    }}
+                  >
                     {/* Blurred Background */}
                     <div
                       className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110"
@@ -336,8 +349,14 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
                     <img
                       src={primaryImage.image_url}
                       alt={business.name}
-                      className="relative w-full h-full object-contain z-10"
+                      className="relative w-full h-full object-contain z-10 group-hover:scale-105 transition-transform duration-500"
                     />
+                    {/* Hover Overlay Simple */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                      <div className="p-3 bg-white/20 backdrop-blur-md rounded-full border border-white/40 text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                        <Maximize2 size={32} />
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
@@ -381,13 +400,27 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
                         Galería
                       </h3>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {otherImages.map((image) => (
-                          <div key={image.id} className="relative group overflow-hidden rounded-lg">
+                        {otherImages.map((image, index) => (
+                          <div
+                            key={image.id}
+                            className="relative group overflow-hidden rounded-lg cursor-pointer aspect-square bg-gray-100"
+                            onClick={() => {
+                              // Find index in allImages
+                              const globalIndex = allImages.findIndex(img => img.id === image.id);
+                              setLightboxIndex(globalIndex);
+                            }}
+                          >
                             <img
                               src={image.image_url}
                               alt={`${business.name} - Imagen ${image.id}`}
-                              className="w-full h-32 object-cover group-hover:scale-110 transition-transform duration-300"
+                              className="w-full h-full object-cover group-hover:scale-110 group-hover:brightness-75 transition-all duration-500"
                             />
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <div className="p-2 bg-white/20 backdrop-blur-md rounded-full border border-white/40 text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                <Maximize2 size={24} />
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -601,6 +634,14 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
             </div>
           )}
         </div>
+
+        {/* Fullscreen Lightbox */}
+        <Lightbox
+          images={allImages}
+          initialIndex={lightboxIndex || 0}
+          isOpen={lightboxIndex !== null}
+          onClose={() => setLightboxIndex(null)}
+        />
       </div>
     </div>
   );
