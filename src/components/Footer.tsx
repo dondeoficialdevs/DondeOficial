@@ -38,8 +38,7 @@ export default function Footer() {
       className="relative text-white overflow-hidden"
       style={{ backgroundColor: '#0a0a0b' }}
     >
-      {/* Decorative top border glow */}
-      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-orange-500/50 to-transparent"></div>
+
 
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-96 h-96 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none"></div>
