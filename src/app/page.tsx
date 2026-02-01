@@ -13,6 +13,7 @@ import Footer from '../components/Footer';
 import BusinessDetailModal from '../components/BusinessDetailModal';
 import PromotionsSlider from '../components/PromotionsSlider';
 import AnnouncementPopup from '../components/AnnouncementPopup';
+import SmartSearch from '../components/SmartSearch';
 
 
 // Importar componentes que requieren APIs del navegador solo en el cliente
@@ -111,6 +112,10 @@ export default function Home() {
 
         <main>
           <PromotionsSlider />
+
+          <SmartSearch
+            onSearch={(term, loc) => handleSearch(term, '', loc)}
+          />
 
           <CategorySection
             categories={categories}
