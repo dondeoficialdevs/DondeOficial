@@ -13,7 +13,6 @@ export default function MobileNavbar() {
         { name: 'Inicio', href: '/', icon: Home },
         { name: 'Directorio', href: '/listings', icon: Search },
         { name: 'Favoritos', href: '/favorites', icon: Heart, badge: favoritesCount },
-        { name: 'Panel', href: '/admin', icon: User },
         { name: 'Contacto', href: '/contact', icon: Contact },
     ];
 

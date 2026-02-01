@@ -193,12 +193,16 @@ export default function Footer() {
             {[
               { name: 'Privacidad', href: '/privacy' },
               { name: 'Términos', href: '/terms' },
-              { name: 'Soporte', href: '/contact' }
+              { name: 'Soporte', href: '/contact' },
+              { name: 'Admin', href: '/admin' }
             ].map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-gray-500 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors"
+                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${link.name === 'Admin'
+                  ? 'text-gray-800 hover:text-gray-700' // Extremely subtle on dark bg
+                  : 'text-gray-500 hover:text-white'
+                  }`}
               >
                 {link.name}
               </Link>
