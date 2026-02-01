@@ -72,40 +72,42 @@ export default function CategorySection({ categories, onCategorySelect }: Catego
     <section className="py-8 bg-white overflow-hidden relative group/section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Professional "Tape" Gradient Overlays */}
-        <div className="absolute left-0 top-0 bottom-6 w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none lg:hidden opacity-0 group-hover/section:opacity-100 transition-opacity duration-300" />
-        <div className="absolute right-0 top-0 bottom-6 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden opacity-0 group-hover/section:opacity-100 transition-opacity duration-300" />
+        <div className="absolute left-0 top-0 bottom-6 w-20 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none opacity-100 transition-opacity duration-300" />
+        <div className="absolute right-0 top-0 bottom-6 w-20 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none opacity-100 transition-opacity duration-300" />
 
-        <div className="flex items-center lg:justify-center justify-start space-x-6 overflow-x-auto pb-6 no-scrollbar pt-2 snap-x snap-mandatory scroll-smooth touch-pan-x">
-          {categories.map((cat, index) => (
-            <div
-              key={cat.id}
-              className="flex flex-col items-center flex-shrink-0 animate-fade-in-up snap-center"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <button
-                onClick={() => handleCategoryClick(cat.name)}
-                className="group relative flex flex-col items-center space-y-3 p-2 rounded-2xl transition-all duration-500 hover:bg-orange-50/50 min-w-[100px]"
+        <div className="flex overflow-hidden no-scrollbar pt-2 mask-fade-edges">
+          {/* Marquee Wrapper - Doubled categories for seamless loop */}
+          <div className="flex items-center space-x-6 animate-marquee whitespace-nowrap py-4 group-hover:pause-marquee">
+            {[...categories, ...categories, ...categories].map((cat, index) => (
+              <div
+                key={`${cat.id}-${index}`}
+                className="flex flex-col items-center flex-shrink-0"
               >
-                {/* Icon Container with multi-layered animation */}
-                <div className="relative w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] group-hover:shadow-[0_10px_25px_-5px_rgba(255,107,53,0.3)] border border-gray-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-110 group-hover:border-orange-100">
-                  <div className="transition-transform duration-500 group-hover:rotate-12 group-active:scale-90">
-                    {getCategoryIcon(cat.name)}
+                <button
+                  onClick={() => handleCategoryClick(cat.name)}
+                  className="group relative flex flex-col items-center space-y-3 p-2 rounded-2xl transition-all duration-500 hover:bg-orange-50/50 min-w-[110px]"
+                >
+                  {/* Icon Container with multi-layered animation */}
+                  <div className="relative w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] group-hover:shadow-[0_10px_25px_-5px_rgba(255,107,53,0.3)] border border-gray-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-110 group-hover:border-orange-100">
+                    <div className="transition-transform duration-500 group-hover:rotate-12 group-active:scale-90">
+                      {getCategoryIcon(cat.name)}
+                    </div>
+
+                    {/* Subtle background glow on hover */}
+                    <div className="absolute inset-0 rounded-2xl bg-orange-400/0 group-hover:bg-orange-400/5 transition-colors duration-500" />
                   </div>
 
-                  {/* Subtle background glow on hover */}
-                  <div className="absolute inset-0 rounded-2xl bg-orange-400/0 group-hover:bg-orange-400/5 transition-colors duration-500" />
-                </div>
+                  {/* Text with elegant transition */}
+                  <span className="text-[11px] font-bold text-gray-600 tracking-tight transition-colors duration-300 group-hover:text-orange-600 whitespace-nowrap px-1">
+                    {cat.name}
+                  </span>
 
-                {/* Text with elegant transition */}
-                <span className="text-[11px] font-bold text-gray-600 tracking-tight transition-colors duration-300 group-hover:text-orange-600 whitespace-nowrap px-1">
-                  {cat.name}
-                </span>
-
-                {/* Selection indicator (bottom line) */}
-                <div className="absolute -bottom-1 w-0 h-0.5 bg-orange-500 rounded-full transition-all duration-300 group-hover:w-1/2" />
-              </button>
-            </div>
-          ))}
+                  {/* Selection indicator (bottom line) */}
+                  <div className="absolute -bottom-1 w-0 h-0.5 bg-orange-500 rounded-full transition-all duration-300 group-hover:w-1/2" />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -117,21 +119,30 @@ export default function CategorySection({ categories, onCategorySelect }: Catego
           -ms-overflow-style: none;
           scrollbar-width: none;
         }
-        
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
+
+        .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 40s linear infinite;
+        }
+
+        .group-hover\:pause-marquee:hover {
+          animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
+          100% {
+            transform: translateX(-33.33%);
           }
         }
 
-        .animate-fade-in-up {
-          opacity: 0;
-          animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        @media (max-width: 768px) {
+          .animate-marquee {
+            animation-duration: 25s;
+          }
         }
       `}</style>
     </section>
