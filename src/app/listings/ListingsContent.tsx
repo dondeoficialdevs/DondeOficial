@@ -17,7 +17,9 @@ import {
   Star,
   DollarSign,
   Store,
-  Navigation
+  Navigation,
+  ArrowUpDown,
+  ChevronDown
 } from 'lucide-react';
 
 export default function ListingsContent() {
@@ -258,7 +260,7 @@ export default function ListingsContent() {
 
   const mainCategories = [
     'Belleza', 'Entretenimiento', 'Gastronomía', 'Viajes y turismo',
-    'Bienestar y salud', 'Servicios', 'Productos', 'Cerca de mí'
+    'Bienestar y salud', 'Servicios', 'Productos'
   ];
 
   const getCategoryBackendName = (frontendName: string): string => {
@@ -409,7 +411,7 @@ export default function ListingsContent() {
         {/* Top Categories Bar */}
         <div className="bg-white border-b border-gray-200 pb-4 mb-4">
           <div className="flex items-center justify-between overflow-x-auto pb-2">
-            <div className="flex space-x-4 min-w-max">
+            <div className="flex space-x-6 min-w-max px-2">
               {mainCategories.map((cat) => {
                 const backendCategoryName = getCategoryBackendName(cat);
                 const isSelected = selectedCategory.toLowerCase() === backendCategoryName.toLowerCase();
@@ -418,46 +420,50 @@ export default function ListingsContent() {
                   <button
                     key={cat}
                     onClick={() => {
-                      if (cat === 'Cerca de mí') {
-                        handleSearch('', '', '');
-                        setSelectedCategory('');
-                      } else {
-                        handleCategoryFilter(backendCategoryName);
-                      }
+                      handleCategoryFilter(backendCategoryName);
                     }}
-                    className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-lg transition-all group ${isSelected
-                      ? 'bg-blue-600 text-white'
-                      : 'hover:bg-gray-50 text-gray-700'
-                      }`}
+                    className={`flex flex-col items-center gap-2 py-1 transition-all group relative`}
                   >
-                    <div className={`rounded-xl flex items-center justify-center transition-all duration-300 ${isSelected
-                      ? 'w-14 h-14 bg-white/20'
-                      : 'w-14 h-14 bg-white shadow-md group-hover:shadow-lg group-hover:scale-110 border border-gray-100'
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 scale-90 sm:scale-100 ${isSelected
+                      ? 'bg-orange-600 shadow-lg shadow-orange-600/20'
+                      : 'bg-white shadow-sm group-hover:shadow-md border border-gray-100'
                       }`}>
-                      {getCategoryIcon(cat)}
+                      <div className={isSelected ? 'text-white' : ''}>
+                        {getCategoryIcon(cat)}
+                      </div>
                     </div>
-                    <span className="text-xs font-semibold whitespace-nowrap">{cat}</span>
+                    <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isSelected ? 'text-orange-600' : 'text-gray-400 group-hover:text-gray-600'}`}>
+                      {cat}
+                    </span>
+                    {isSelected && (
+                      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-1 h-1 bg-orange-600 rounded-full"></div>
+                    )}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Sort Bar */}
-          <div className="flex justify-end items-center pt-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-700">Ordenar ofertas por:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-1.5 border border-gray-300 rounded text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="most_sold">Más vendido</option>
-                <option value="price_low">Precio: menor a mayor</option>
-                <option value="price_high">Precio: mayor a menor</option>
-                <option value="newest">Más recientes</option>
-                <option value="rating">Mejor calificados</option>
-              </select>
+          {/* Sort Bar (Professional Desktop Version) */}
+          <div className="hidden sm:flex justify-end items-center pt-6 border-t border-gray-50 mt-2">
+            <div className="flex items-center gap-4">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Ordenar por</span>
+              <div className="relative group">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-[11px] font-black uppercase tracking-widest text-gray-900 focus:outline-none focus:ring-4 focus:ring-orange-500/5 cursor-pointer transition-all hover:bg-white hover:border-orange-500/30"
+                >
+                  <option value="most_sold">Tendencias</option>
+                  <option value="price_low">Precio: Bajo</option>
+                  <option value="price_high">Precio: Alto</option>
+                  <option value="newest">Novedades</option>
+                  <option value="rating">Mejor Calificados</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-orange-600">
+                  <ChevronDown size={14} strokeWidth={3} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -466,10 +472,10 @@ export default function ListingsContent() {
         <div className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md -mx-4 px-4 py-3 border-b border-gray-100 flex gap-3">
           <button
             onClick={openMobileFilters}
-            className="flex-1 px-4 py-3.5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center space-x-3 shadow-lg shadow-orange-600/20 active:scale-[0.98] transition-all"
+            className="flex-1 px-4 py-3 bg-orange-600 text-white rounded-[1.25rem] font-black text-[10px] uppercase tracking-[0.15em] flex items-center justify-center space-x-3 shadow-lg shadow-orange-600/20 active:scale-[0.98] transition-all"
           >
-            <Filter size={18} />
-            <span>Refinar Búsqueda</span>
+            <Filter size={16} />
+            <span>Filtros y Orden</span>
           </button>
 
           {(selectedCategory || location || !priceFilters.includes('all') || !ratingFilters.includes('all')) && (
@@ -695,6 +701,36 @@ export default function ListingsContent() {
 
                 {/* Scrollable Filters Area */}
                 <div className="flex-1 overflow-y-auto px-8 py-6 space-y-12 no-scrollbar">
+
+                  {/* Sort Selection (Integrated into mobile drawer) */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-8 bg-gray-400 rounded-full"></div>
+                      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Ordenar por</h4>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { value: 'most_sold', label: 'Tendencias' },
+                        { value: 'newest', label: 'Novedades' },
+                        { value: 'rating', label: 'Mejor Calificados' },
+                        { value: 'price_low', label: 'Precio: Bajo' },
+                        { value: 'price_high', label: 'Precio: Alto' },
+                      ].map((item) => {
+                        const isSelected = tempSortBy === item.value;
+                        return (
+                          <button
+                            key={item.value}
+                            onClick={() => setTempSortBy(item.value)}
+                            className={`px-4 py-4 rounded-[1.5rem] font-black text-[10px] tracking-tight uppercase transition-all duration-300 border ${isSelected
+                              ? 'bg-gray-900 border-gray-900 text-white shadow-xl shadow-gray-900/10'
+                              : 'bg-white/50 border-gray-100 text-gray-500 hover:border-gray-200'}`}
+                          >
+                            {item.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
 
                   {/* Category Selection Carousel */}
                   <div className="space-y-5">
