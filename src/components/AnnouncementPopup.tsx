@@ -62,31 +62,37 @@ export default function AnnouncementPopup() {
 
                 <div className="flex flex-col">
                     {/* Imagen de la Oferta */}
-                    <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-orange-500">
+                    <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-orange-600">
                         {promotion.image_url && (
-                            <>
-                                {/* Blurred Background */}
+                            <div className="absolute inset-0">
+                                {/* Blurred Background Layer */}
                                 <div
-                                    className="absolute inset-0 bg-cover bg-center blur-xl opacity-50 scale-110"
+                                    className="absolute inset-0 bg-cover bg-center blur-2xl opacity-50 scale-110"
                                     style={{ backgroundImage: `url(${promotion.image_url})` }}
                                 />
-                                {/* Main Image */}
-                                <Image
-                                    src={promotion.image_url}
-                                    alt={promotion.title}
-                                    fill
-                                    className="relative object-contain z-10"
-                                />
-                            </>
+                                {/* Main Image Contained */}
+                                <div className="relative w-full h-full flex items-center justify-center p-2">
+                                    <Image
+                                        src={promotion.image_url}
+                                        alt={promotion.title}
+                                        fill
+                                        className="object-contain drop-shadow-2xl"
+                                        priority
+                                    />
+                                </div>
+                            </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div className="absolute bottom-6 left-6 right-6">
+                        {/* Gradient Overlay - Ensured on top with z-10 */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+
+                        {/* Text Content - Ensured on top with z-20 */}
+                        <div className="absolute bottom-6 left-6 right-6 z-20">
                             {(promotion.badge_text || promotion.is_discount) && (
-                                <span className="bg-orange-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter mb-2 inline-block">
+                                <span className="bg-orange-600/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter mb-2 inline-block border border-white/20">
                                     {promotion.badge_text || '¡Oferta Exclusiva!'}
                                 </span>
                             )}
-                            <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+                            <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight drop-shadow-lg">
                                 {promotion.title}
                             </h2>
                         </div>

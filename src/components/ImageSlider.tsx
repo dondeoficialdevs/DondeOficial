@@ -77,17 +77,19 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
             className={`absolute inset-0 transition-opacity duration-500 ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
               }`}
           >
-            {/* Fondo borroso */}
+            {/* Fondo borroso suave */}
             <div
-              className="absolute inset-0 bg-cover bg-center blur-md opacity-50 scale-110"
+              className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-125"
               style={{ backgroundImage: `url(${image.image_url})` }}
             />
-            {/* Imagen principal */}
-            <img
-              src={image.image_url}
-              alt={`${alt} - Imagen ${index + 1}`}
-              className="relative w-full h-full object-contain z-10"
-            />
+            {/* Imagen principal con padding para evitar bordes cortados */}
+            <div className="absolute inset-0 p-3 flex items-center justify-center">
+              <img
+                src={image.image_url}
+                alt={`${alt} - Imagen ${index + 1}`}
+                className="max-w-full max-h-full object-contain drop-shadow-lg z-10"
+              />
+            </div>
           </div>
         ))}
       </div>
@@ -132,8 +134,8 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
                 goToSlide(index);
               }}
               className={`rounded-full transition-all duration-300 cursor-pointer ${index === currentIndex
-                  ? 'bg-white w-8 h-2.5 shadow-md'
-                  : 'bg-white/70 hover:bg-white/90 w-2 h-2'
+                ? 'bg-white w-8 h-2.5 shadow-md'
+                : 'bg-white/70 hover:bg-white/90 w-2 h-2'
                 }`}
               aria-label={`Ir a imagen ${index + 1}`}
               type="button"

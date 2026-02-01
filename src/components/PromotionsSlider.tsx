@@ -101,49 +101,46 @@ export default function PromotionsSlider() {
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
                         }`}
                 >
-                    {/* Background Image with Overlay */}
-                    <div className="absolute inset-0">
+                    {/* Background Image Layer */}
+                    <div className="absolute inset-0 z-0">
                         {promo.image_url ? (
-                            <div className="relative w-full h-full">
+                            <div className="relative w-full h-full bg-gray-950">
                                 {/* Blurred Background Layer */}
                                 <div
-                                    className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-125"
+                                    className="absolute inset-0 bg-cover bg-center blur-3xl opacity-50 scale-125"
                                     style={{ backgroundImage: `url(${promo.image_url})` }}
                                 />
-                                {/* Main Image Contained */}
-                                <Image
-                                    src={promo.image_url}
-                                    alt={promo.title || 'Promoción'}
-                                    fill
-                                    className="object-contain transition-transform duration-[10s] group-hover:scale-105 z-10"
-                                    priority={index === 0}
-                                />
+                                {/* Main Image Contained - Added padding and drop shadow */}
+                                <div className="relative w-full h-full flex items-center justify-center p-4 md:p-12">
+                                    <Image
+                                        src={promo.image_url}
+                                        alt={promo.title || 'Promoción'}
+                                        fill
+                                        className="object-contain transition-transform duration-[10s] group-hover:scale-105 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                                        priority={index === 0}
+                                    />
+                                </div>
                             </div>
                         ) : (
                             <div className="absolute inset-0 bg-gray-900"></div>
                         )}
-                        {/* More intense gradient for guaranteed readability */}
-                        <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/40 to-transparent"></div>
-                        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent"></div>
-
-                        {/* Decorative light ray representing primary color */}
-                        <div
-                            className="absolute top-0 left-0 w-full h-1 opacity-50"
-                            style={{ background: 'linear-gradient(90deg, transparent, var(--primary-color), transparent)' }}
-                        ></div>
                     </div>
 
-                    {/* Content */}
-                    <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
+                    {/* Gradient Overlays - Increased z-index for readability */}
+                    <div className="absolute inset-0 z-10 bg-linear-to-r from-black/95 via-black/40 to-transparent"></div>
+                    <div className="absolute inset-0 z-10 bg-linear-to-t from-black/80 via-transparent to-transparent"></div>
+
+                    {/* Content - Ensured z-20 */}
+                    <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-20">
                         <div className={`max-w-3xl transition-all duration-1000 transform ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
                             }`}>
                             <div className="flex flex-wrap items-center gap-4 mb-8">
                                 <div
-                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/10 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : ''}`}
+                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/20 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : ''}`}
                                     style={!promo.is_discount ? {
-                                        backgroundColor: 'color-mix(in srgb, var(--primary-color) 20%, transparent)',
+                                        backgroundColor: 'color-mix(in srgb, var(--primary-color) 25%, transparent)',
                                         color: 'white',
-                                        borderColor: 'var(--primary-color)'
+                                        borderColor: 'rgba(255,255,255,0.2)'
                                     } : {}}
                                 >
                                     {promo.badge_text || (promo.is_discount ? 'OFERTA' : 'DESTACADO')}
