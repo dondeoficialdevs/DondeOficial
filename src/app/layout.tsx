@@ -4,6 +4,8 @@ import "./globals.css";
 import UpdateNotificationClient from "@/components/UpdateNotificationClient";
 import ThemeManager from "@/components/ThemeManager";
 import { SettingsProvider } from "@/context/SettingsContext";
+import Header from "@/components/Header";
+import MobileNavbar from "@/components/MobileNavbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,7 +70,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SettingsProvider>
-          {children}
+          <Header />
+          <main className="pb-20 lg:pb-0">
+            {children}
+          </main>
+          <MobileNavbar />
           <ThemeManager />
           <UpdateNotificationClient />
         </SettingsProvider>
