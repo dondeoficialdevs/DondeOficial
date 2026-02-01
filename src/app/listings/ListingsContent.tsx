@@ -664,7 +664,7 @@ export default function ListingsContent() {
           </aside>
 
           {/* Mobile Filter Drawer (Glassmorphism & UX Masterpiece) */}
-          <div className={`lg:hidden fixed inset-0 z-[100] transition-all duration-500 perspective-1000 ${showMobileFilters ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+          <div className={`lg:hidden fixed inset-0 z-[150] transition-all duration-500 perspective-1000 ${showMobileFilters ? 'pointer-events-auto' : 'pointer-events-none'}`}>
             {/* Backdrop Layer */}
             <div
               className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${showMobileFilters ? 'opacity-100' : 'opacity-0'}`}
@@ -870,7 +870,7 @@ export default function ListingsContent() {
                 </div>
 
                 {/* Sticky Action Footer */}
-                <div className="p-8 pb-10 border-t border-white/40 bg-white/40 backdrop-blur-3xl flex flex-col gap-4">
+                <div className="p-8 pb-32 border-t border-white/40 bg-white/40 backdrop-blur-3xl flex flex-col gap-4">
                   <div className="flex items-center gap-3">
                     <button
                       onClick={resetFilters}
