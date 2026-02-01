@@ -1,11 +1,22 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { businessApi, categoryApi } from '../../lib/api';
 import { Business, Category } from '../../types';
 import BusinessDetailModal from '../../components/BusinessDetailModal';
 import ImageSlider from '../../components/ImageSlider';
+import {
+  Filter,
+  X,
+  ChevronRight,
+  Check,
+  RotateCcw,
+  Search as SearchIcon,
+  MapPin,
+  Star,
+  DollarSign,
+  Store,
+  Navigation
+} from 'lucide-react';
 
 export default function ListingsContent() {
   const searchParams = useSearchParams();
@@ -23,6 +34,14 @@ export default function ListingsContent() {
   const [sellerFilters, setSellerFilters] = useState<string[]>(['Todas']);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [activeTab, setActiveTab] = useState<'categories' | 'featured'>('featured');
+
+  // Temporary states for filters (used in mobile drawer before applying)
+  const [tempSelectedCategory, setTempSelectedCategory] = useState<string>('');
+  const [tempLocation, setTempLocation] = useState('');
+  const [tempPriceFilters, setTempPriceFilters] = useState<string[]>(['all']);
+  const [tempRatingFilters, setTempRatingFilters] = useState<string[]>(['all']);
+  const [tempSellerFilters, setTempSellerFilters] = useState<string[]>(['Todas']);
+  const [tempSortBy, setTempSortBy] = useState('most_sold');
   const [selectedBusinessId, setSelectedBusinessId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAllBusinesses, setShowAllBusinesses] = useState(false);
@@ -89,10 +108,62 @@ export default function ListingsContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
-  // Resetear showAll cuando cambien los negocios o filtros
+  // Bloquear scroll cuando los filtros están abiertos en móvil
   useEffect(() => {
-    setShowAllBusinesses(false);
-  }, [businesses.length, priceFilters, ratingFilters, sellerFilters, sortBy]);
+    if (showMobileFilters) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showMobileFilters]);
+
+  // Sincronizar estados temporales cuando se abren los filtros en móvil
+  const openMobileFilters = () => {
+    setTempSelectedCategory(selectedCategory);
+    setTempLocation(location);
+    setTempPriceFilters(priceFilters);
+    setTempRatingFilters(ratingFilters);
+    setTempSellerFilters(sellerFilters);
+    setTempSortBy(sortBy);
+    setShowMobileFilters(true);
+  };
+
+  const applyMobileFilters = () => {
+    setSelectedCategory(tempSelectedCategory);
+    setLocation(tempLocation);
+    setPriceFilters(tempPriceFilters);
+    setRatingFilters(tempRatingFilters);
+    setSellerFilters(tempSellerFilters);
+    setSortBy(tempSortBy);
+
+    // Si cambió la categoría o ubicación, recargar datos
+    if (tempSelectedCategory !== selectedCategory || tempLocation !== location) {
+      handleSearch(searchTerm, tempSelectedCategory, tempLocation);
+    }
+
+    setShowMobileFilters(false);
+  };
+
+  const resetFilters = () => {
+    setTempSelectedCategory('');
+    setTempLocation('');
+    setTempPriceFilters(['all']);
+    setTempRatingFilters(['all']);
+    setTempSellerFilters(['Todas']);
+    setTempSortBy('most_sold');
+  };
+
+  const isFilterChanged = useMemo(() => {
+    return tempSelectedCategory !== selectedCategory ||
+      tempLocation !== location ||
+      JSON.stringify(tempPriceFilters) !== JSON.stringify(priceFilters) ||
+      JSON.stringify(tempRatingFilters) !== JSON.stringify(ratingFilters) ||
+      JSON.stringify(tempSellerFilters) !== JSON.stringify(sellerFilters) ||
+      tempSortBy !== sortBy;
+  }, [tempSelectedCategory, selectedCategory, tempLocation, location, tempPriceFilters, priceFilters, tempRatingFilters, ratingFilters, tempSellerFilters, sellerFilters, tempSortBy, sortBy]);
 
   const handleSearch = async (search: string, category?: string, loc?: string) => {
     setLoading(true);
@@ -390,64 +461,63 @@ export default function ListingsContent() {
         </div>
 
         {/* Mobile Filter Button */}
-        <button
-          onClick={() => setShowMobileFilters(!showMobileFilters)}
-          className="lg:hidden w-full mb-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all font-semibold flex items-center justify-center space-x-2"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-          </svg>
-          <span>Filtros</span>
-        </button>
+        <div className="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md -mx-4 px-4 py-3 border-b border-gray-100 flex gap-3">
+          <button
+            onClick={openMobileFilters}
+            className="flex-1 px-4 py-3.5 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center space-x-3 shadow-lg shadow-orange-600/20 active:scale-[0.98] transition-all"
+          >
+            <Filter size={18} />
+            <span>Refinar Búsqueda</span>
+          </button>
+
+          {(selectedCategory || location || !priceFilters.includes('all') || !ratingFilters.includes('all')) && (
+            <button
+              onClick={() => {
+                setSelectedCategory('');
+                setLocation('');
+                setPriceFilters(['all']);
+                setRatingFilters(['all']);
+                setSellerFilters(['Todas']);
+                handleSearch('', '', '');
+              }}
+              className="p-3.5 bg-gray-100 text-gray-500 rounded-2xl active:scale-[0.98] transition-all"
+              title="Limpiar Filtros"
+            >
+              <RotateCcw size={18} />
+            </button>
+          )}
+        </div>
 
         <div className="flex gap-4">
-          {/* Left Sidebar */}
-          <aside className={`w-72 shrink-0 ${showMobileFilters ? 'block fixed inset-0 z-50 bg-white overflow-y-auto lg:static lg:bg-transparent' : 'hidden lg:block'}`}>
-            {showMobileFilters && (
-              <div className="lg:hidden flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-bold text-gray-900">Filtros</h2>
-                <button
-                  onClick={() => setShowMobileFilters(false)}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            )}
-            <div className="bg-white lg:sticky lg:top-4">
+          {/* Desktop Sidebar (Legendary Style) */}
+          <aside className="hidden lg:block w-72 shrink-0 space-y-6">
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.1)]">
               {/* Tabs */}
-              <div className="bg-gray-100 flex border-b border-gray-200">
+              <div className="flex p-1.5 bg-gray-50/50">
                 <button
                   onClick={() => setActiveTab('categories')}
-                  className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'categories'
-                    ? 'text-gray-900 border-b-2 border-gray-900'
-                    : 'text-gray-600 hover:text-gray-900'
+                  className={`flex-1 px-4 py-2.5 text-[10px] font-black tracking-widest uppercase transition-all duration-300 rounded-xl ${activeTab === 'categories'
+                    ? 'bg-white text-orange-600 shadow-sm'
+                    : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  CATEGORIAS
-                  {activeTab === 'categories' && (
-                    <svg className="w-3 h-3 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  )}
+                  Categorías
                 </button>
                 <button
                   onClick={() => setActiveTab('featured')}
-                  className={`flex-1 px-4 py-2 text-sm font-semibold transition-colors ${activeTab === 'featured'
-                    ? 'text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
+                  className={`flex-1 px-4 py-2.5 text-[10px] font-black tracking-widest uppercase transition-all duration-300 rounded-xl ${activeTab === 'featured'
+                    ? 'bg-white text-orange-600 shadow-sm'
+                    : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  Destacados
+                  Explorar
                 </button>
               </div>
 
               {/* Categories List */}
-              <div className="p-0">
+              <div className="max-h-[400px] overflow-y-auto no-scrollbar">
                 {activeTab === 'featured' && (
-                  <div className="space-y-0">
+                  <div className="divide-y divide-gray-50">
                     {[
                       { name: 'BELLEZA' },
                       { name: 'ENTRETENIMIENTO' },
@@ -456,71 +526,42 @@ export default function ListingsContent() {
                       { name: 'BIENESTAR Y SALUD' },
                       { name: 'SERVICIOS' },
                       { name: 'PRODUCTOS' },
-                      { name: 'ESPECIALES' },
                     ].map((cat) => {
-                      const count = loadingCounts ? (
-                        <span className="inline-block w-8 h-4 bg-gray-200 animate-pulse rounded"></span>
-                      ) : (
-                        categoryCounts[cat.name] || 0
-                      );
+                      const count = loadingCounts ? "..." : (categoryCounts[cat.name] || 0);
+                      const isSelected = selectedCategory.toLowerCase() === cat.name.toLowerCase();
                       return (
                         <button
                           key={cat.name}
                           onClick={() => handleCategoryFilter(cat.name.toLowerCase())}
-                          className="w-full flex items-center justify-between px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                          className={`group w-full flex items-center justify-between px-5 py-4 text-xs tracking-tight transition-all ${isSelected ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50'}`}
                         >
-                          <span className="font-medium">{cat.name}</span>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-gray-500">
-                              {typeof count === 'number' ? `(${count})` : count}
-                            </span>
-                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                            </svg>
+                          <span className={`font-bold transition-transform duration-300 ${isSelected ? 'translate-x-1' : 'group-hover:translate-x-1'}`}>{cat.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-medium opacity-60`}>{count}</span>
+                            <ChevronRight size={14} className={`opacity-20 group-hover:opacity-100 transition-opacity ${isSelected ? 'opacity-100' : ''}`} />
                           </div>
                         </button>
                       );
                     })}
-                    <button
-                      onClick={() => handleSearch('', '', '')}
-                      className="w-full flex items-center justify-start px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
-                    >
-                      <svg className="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span className="font-medium">CERCA DE MÍ</span>
-                    </button>
                   </div>
                 )}
 
                 {activeTab === 'categories' && (
-                  <div className="p-4 space-y-0.5">
+                  <div className="p-2 space-y-1">
                     {categories.map((category) => {
-                      const count = loadingCounts ? (
-                        <span className="inline-block w-8 h-4 bg-gray-200 animate-pulse rounded"></span>
-                      ) : (
-                        categoryCounts[category.name.toUpperCase()] || 0
-                      );
+                      const count = loadingCounts ? "..." : (categoryCounts[category.name.toUpperCase()] || 0);
                       const isActive = selectedCategory === category.name;
                       return (
                         <button
                           key={category.id}
                           onClick={() => handleCategoryFilter(category.name)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded text-sm transition-all ${isActive
-                            ? 'bg-orange-500 text-white font-bold'
-                            : 'hover:bg-gray-100 text-gray-700 font-medium'
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs transition-all ${isActive
+                            ? 'bg-orange-600 text-white font-black shadow-lg shadow-orange-600/20'
+                            : 'hover:bg-gray-50 text-gray-500 font-bold'
                             }`}
                         >
-                          <span className="uppercase truncate flex-1 text-left pr-2">{category.name}</span>
-                          <div className="flex items-center space-x-2 flex-shrink-0">
-                            <span className={isActive ? 'text-white' : 'text-gray-500'}>
-                              {typeof count === 'number' ? `(${count})` : count}
-                            </span>
-                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
+                          <span className="uppercase truncate flex-1 text-left">{category.name}</span>
+                          <span className={`text-[10px] opacity-60 ml-2`}>({count})</span>
                         </button>
                       );
                     })}
@@ -528,94 +569,301 @@ export default function ListingsContent() {
                 )}
               </div>
 
-              {/* Filters */}
-              <div className="p-4 space-y-4 border-t border-gray-200">
-                {/* Barrios */}
-                <div>
-                  <h4 className="text-xs font-bold text-gray-900 mb-2">Barrios</h4>
-                  <input
-                    type="text"
-                    placeholder="Buscar..."
-                    value={location}
-                    onChange={(e) => {
-                      setLocation(e.target.value);
-                      handleSearch(searchTerm, selectedCategory, e.target.value);
-                    }}
-                    className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
+              {/* Sidebar Filters */}
+              <div className="p-6 space-y-8 border-t border-gray-50 bg-gray-50/10">
+                {/* Location Filter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Ubicación</h4>
+                    <MapPin size={12} className="text-gray-300" />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Barrio o ciudad..."
+                      value={location}
+                      onChange={(e) => {
+                        setLocation(e.target.value);
+                        handleSearch(searchTerm, selectedCategory, e.target.value);
+                      }}
+                      className="w-full pl-4 pr-4 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500/50 shadow-sm transition-all"
+                    />
+                  </div>
                 </div>
 
-                {/* Precio */}
-                <div>
-                  <h4 className="text-xs font-bold text-gray-900 mb-2">Precio</h4>
-                  <div className="space-y-1.5">
+                {/* Price Filter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Rango de Precio</h4>
+                    <DollarSign size={12} className="text-gray-300" />
+                  </div>
+                  <div className="space-y-2">
                     {[
-                      { value: 'all', label: 'Todas' },
-                      { value: '0-25000', label: 'Hasta $25.000' },
-                      { value: '25000-35000', label: '$25.000 a $35.000' },
-                      { value: '35000-55000', label: '$35.000 a $55.000' },
-                      { value: '55000+', label: 'Más de $55.000' }
+                      { value: 'all', label: 'Todas las ofertas' },
+                      { value: '0-25000', label: 'Inesperados (< $25k)' },
+                      { value: '25000-35000', label: '$25.000 - $35.000' },
+                      { value: '35000-55000', label: '$35.000 - $55.000' },
+                      { value: '55000+', label: 'Premium (> $55k)' }
                     ].map((price) => (
-                      <label key={price.value} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={priceFilters.includes(price.value)}
-                          onChange={() => togglePriceFilter(price.value)}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
-                        />
-                        <span className="text-sm text-gray-700">{price.label}</span>
+                      <label key={price.value} className="flex items-center group cursor-pointer">
+                        <div className="relative flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={priceFilters.includes(price.value)}
+                            onChange={() => togglePriceFilter(price.value)}
+                            className="peer sr-only"
+                          />
+                          <div className="w-5 h-5 border-2 border-gray-200 rounded-md transition-all peer-checked:bg-orange-600 peer-checked:border-orange-600 flex items-center justify-center group-hover:border-orange-200">
+                            <Check size={12} className="text-white scale-0 transition-transform duration-200 peer-checked:scale-100" strokeWidth={4} />
+                          </div>
+                        </div>
+                        <span className={`ml-3 text-xs font-bold transition-colors ${priceFilters.includes(price.value) ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-700'}`}>{price.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
-                {/* Calificación */}
-                <div>
-                  <h4 className="text-xs font-bold text-gray-900 mb-2">Calificación</h4>
-                  <div className="space-y-1.5">
+                {/* Rating Filter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Calificación</h4>
+                    <Star size={12} className="text-gray-300" />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
                     {[
-                      { value: 'all', label: 'Todas' },
+                      { value: 'all', label: 'Cualquiera' },
                       { value: '5', label: '5' },
-                      { value: '4', label: '4' },
-                      { value: '3', label: '3' },
-                      { value: '2', label: '2' },
-                      { value: '1', label: '1' }
+                      { value: '4', label: '4+' },
+                      { value: '3', label: '3+' },
+                      { value: '2', label: '2+' },
+                      { value: '1', label: '1+' }
                     ].map((rating) => (
-                      <label key={rating.value} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={ratingFilters.includes(rating.value)}
-                          onChange={() => toggleRatingFilter(rating.value)}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
-                        />
-                        <span className="text-sm text-gray-700">
-                          {rating.value === 'all' ? rating.label : `${rating.label} estrellas y más`}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Vendido por */}
-                <div>
-                  <h4 className="text-xs font-bold text-gray-900 mb-2">Vendido por</h4>
-                  <div className="space-y-1.5">
-                    {['Todas', 'Marketplace'].map((seller) => (
-                      <label key={seller} className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={sellerFilters.includes(seller)}
-                          onChange={() => toggleSellerFilter(seller)}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 rounded"
-                        />
-                        <span className="text-sm text-gray-700">{seller}</span>
-                      </label>
+                      <button
+                        key={rating.value}
+                        onClick={() => toggleRatingFilter(rating.value)}
+                        className={`py-2 rounded-xl text-[10px] font-black transition-all border ${ratingFilters.includes(rating.value)
+                          ? 'bg-orange-500 border-orange-500 text-white shadow-md'
+                          : 'bg-white border-gray-100 text-gray-400 hover:border-gray-300'
+                          }`}
+                      >
+                        {rating.label} {rating.value !== 'all' && '★'}
+                      </button>
                     ))}
                   </div>
                 </div>
               </div>
             </div>
           </aside>
+
+          {/* Mobile Filter Drawer (Glassmorphism & UX Masterpiece) */}
+          <div className={`lg:hidden fixed inset-0 z-[100] transition-all duration-500 perspective-1000 ${showMobileFilters ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+            {/* Backdrop Layer */}
+            <div
+              className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${showMobileFilters ? 'opacity-100' : 'opacity-0'}`}
+              onClick={() => setShowMobileFilters(false)}
+            />
+
+            {/* Drawer Container */}
+            <div className={`absolute bottom-0 left-0 right-0 h-[92vh] flex flex-col transition-all duration-700 ease-out transform origin-bottom ${showMobileFilters ? 'translate-y-0 scale-100 rounded-t-[3rem]' : 'translate-y-full scale-95 opacity-0'}`}>
+
+              {/* Animated Glowing Border for Drawer */}
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500/50 to-transparent"></div>
+
+              {/* Real Content Surface */}
+              <div className="h-full bg-white/80 backdrop-blur-3xl rounded-t-[3rem] shadow-[0_-20px_80px_-20px_rgba(0,0,0,0.5)] border-t border-white/40 flex flex-col overflow-hidden">
+
+                {/* Visual Handle */}
+                <div className="flex justify-center pt-5 pb-2">
+                  <div className="w-14 h-1.5 bg-gray-300/50 rounded-full"></div>
+                </div>
+
+                {/* Header */}
+                <div className="px-8 py-4 flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase leading-none">Filtros</h2>
+                    <span className="text-[10px] font-black text-orange-600 tracking-widest uppercase mt-1">Refina tu búsqueda</span>
+                  </div>
+                  <button
+                    onClick={() => setShowMobileFilters(false)}
+                    className="w-12 h-12 rounded-2xl bg-gray-100/50 flex items-center justify-center text-gray-500 active:scale-90 transition-transform"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                {/* Scrollable Filters Area */}
+                <div className="flex-1 overflow-y-auto px-8 py-6 space-y-12 no-scrollbar">
+
+                  {/* Category Selection Carousel */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-8 bg-orange-600 rounded-full"></div>
+                      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Categoría</h4>
+                    </div>
+                    <div className="flex overflow-x-auto gap-4 pb-2 no-scrollbar">
+                      {mainCategories.map((cat) => {
+                        const backendName = getCategoryBackendName(cat);
+                        const isSelected = tempSelectedCategory === backendName;
+                        return (
+                          <button
+                            key={cat}
+                            onClick={() => setTempSelectedCategory(isSelected ? '' : backendName)}
+                            className={`shrink-0 h-16 px-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 ${isSelected
+                              ? 'bg-orange-600 border-orange-600 text-white shadow-xl shadow-orange-600/30'
+                              : 'bg-white/50 border-gray-100 text-gray-600'}`}
+                          >
+                            <span className="text-[11px] font-black tracking-tight whitespace-nowrap uppercase">{cat}</span>
+                            {isSelected && <Check size={14} strokeWidth={4} />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Location with Auto-Suggestion Look */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-8 bg-blue-600 rounded-full"></div>
+                      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">¿En dónde buscas?</h4>
+                    </div>
+                    <div className="relative group">
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-blue-600 transition-transform duration-300 group-focus-within:scale-110">
+                        <Navigation size={22} strokeWidth={2.5} />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Ej: Tunja, Unicentro, Sur..."
+                        value={tempLocation}
+                        onChange={(e) => setTempLocation(e.target.value)}
+                        className="w-full pl-16 pr-6 py-5 bg-gray-100/50 border border-transparent rounded-[2rem] text-sm font-black text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:bg-white focus:border-blue-500/20 transition-all shadow-inner"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Price Grid */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-8 bg-emerald-600 rounded-full"></div>
+                      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Presupuesto</h4>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3">
+                      {[
+                        { value: 'all', label: 'Todas las ofertas', icon: RotateCcw },
+                        { value: '0-25000', label: 'Hasta $25.000', icon: DollarSign },
+                        { value: '25000-35000', label: '$25.000 - $35.000', icon: DollarSign },
+                        { value: '35000-55000', label: '$35.000 - $55.000', icon: DollarSign },
+                        { value: '55000+', label: 'Más de $55.000', icon: DollarSign }
+                      ].map((price) => {
+                        const isSelected = tempPriceFilters.includes(price.value);
+                        return (
+                          <button
+                            key={price.value}
+                            onClick={() => {
+                              if (price.value === 'all') {
+                                setTempPriceFilters(['all']);
+                              } else {
+                                setTempPriceFilters(prev => {
+                                  const newFilters = prev.filter(f => f !== 'all');
+                                  if (newFilters.includes(price.value)) {
+                                    return newFilters.length > 1 ? newFilters.filter(f => f !== price.value) : ['all'];
+                                  }
+                                  return [...newFilters, price.value];
+                                });
+                              }
+                            }}
+                            className={`flex items-center justify-between p-5 rounded-[2rem] transition-all duration-300 border ${isSelected
+                              ? 'bg-emerald-600 border-emerald-600 text-white shadow-xl shadow-emerald-600/30'
+                              : 'bg-white/50 border-gray-100 text-gray-900 hover:border-emerald-200'}`}
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className={`p-2 rounded-xl ${isSelected ? 'bg-white/20' : 'bg-emerald-50 text-emerald-600'}`}>
+                                <price.icon size={18} />
+                              </div>
+                              <span className="text-sm font-black">{price.label}</span>
+                            </div>
+                            {isSelected && <Check size={20} strokeWidth={4} />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Rating Selection */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-8 bg-yellow-500 rounded-full"></div>
+                      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Calificación</h4>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { value: 'all', label: 'Todas' },
+                        { value: '5', label: '5 ★' },
+                        { value: '4', label: '4+ ★' },
+                        { value: '3', label: '3+ ★' },
+                        { value: '2', label: '2+ ★' }
+                      ].map((rating) => {
+                        const isSelected = tempRatingFilters.includes(rating.value);
+                        return (
+                          <button
+                            key={rating.value}
+                            onClick={() => {
+                              if (rating.value === 'all') {
+                                setTempRatingFilters(['all']);
+                              } else {
+                                setTempRatingFilters(prev => {
+                                  const newFilters = prev.filter(f => f !== 'all');
+                                  if (newFilters.includes(rating.value)) {
+                                    return newFilters.length > 1 ? newFilters.filter(f => f !== rating.value) : ['all'];
+                                  }
+                                  return [...newFilters, rating.value];
+                                });
+                              }
+                            }}
+                            className={`px-6 py-4 rounded-2xl font-black text-xs transition-all border ${isSelected
+                              ? 'bg-yellow-500 border-yellow-500 text-white shadow-lg shadow-yellow-500/20'
+                              : 'bg-white/50 border-gray-100 text-gray-500'}`}
+                          >
+                            {rating.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sticky Action Footer */}
+                <div className="p-8 pb-10 border-t border-white/40 bg-white/40 backdrop-blur-3xl flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={resetFilters}
+                      className="flex-[0.3] h-16 bg-gray-100/50 text-gray-500 rounded-3xl flex items-center justify-center active:scale-95 transition-all"
+                      title="Reiniciar"
+                    >
+                      <RotateCcw size={20} />
+                    </button>
+                    <button
+                      onClick={applyMobileFilters}
+                      className={`flex-1 h-16 rounded-3xl font-black text-lg tracking-widest uppercase flex items-center justify-center gap-3 transition-all duration-500 ${isFilterChanged
+                        ? 'bg-orange-600 text-white shadow-[0_15px_40px_-10px_rgba(234,88,12,0.5)] scale-100'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                    >
+                      {isFilterChanged ? (
+                        <>
+                          <Check size={22} strokeWidth={4} />
+                          Guardar Cambios
+                        </>
+                      ) : (
+                        'Sin cambios'
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-center text-[10px] font-black text-gray-400 tracking-widest leading-none">
+                    Tus cambios se aplicarán instantáneamente
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Main Content */}
           <div className="flex-1">
