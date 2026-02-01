@@ -36,45 +36,46 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 ml-8">
-            <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
-              Inicio
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <Link href="/listings" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
-              Directorio
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
-              Contacto
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-          </nav>
+          {/* Desktop Navigation & Actions Grouped on the Right */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <nav className="flex items-center space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
+                Inicio
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
+              </Link>
+              <Link href="/listings" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
+                Directorio
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
+              </Link>
+              <Link href="/contact" className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 relative group py-2">
+                Contacto
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-200 group-hover:w-full"></span>
+              </Link>
+            </nav>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <Link
-              href="/favorites"
-              className="relative flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors duration-200 group"
-            >
-              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={favoritesCount > 0 ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              <span className="text-sm font-medium">Favoritos</span>
-              {favoritesCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                  {favoritesCount > 9 ? '9+' : favoritesCount}
-                </span>
-              )}
-            </Link>
-            <Link
-              href="/add-listing"
-              className="text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-              style={{ background: 'linear-gradient(var(--gradient-direction), var(--primary-color), var(--secondary-color))' }}
-            >
-              Agregar Negocio
-            </Link>
+            <div className="flex items-center space-x-6">
+              <Link
+                href="/favorites"
+                className="relative flex items-center space-x-2 text-gray-600 hover:text-red-500 transition-colors duration-200 group"
+              >
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill={favoritesCount > 0 ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span className="text-sm font-medium">Favoritos</span>
+                {favoritesCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                    {favoritesCount > 9 ? '9+' : favoritesCount}
+                  </span>
+                )}
+              </Link>
+              <Link
+                href="/add-listing"
+                className="text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                style={{ background: 'linear-gradient(var(--gradient-direction), var(--primary-color), var(--secondary-color))' }}
+              >
+                Agregar Negocio
+              </Link>
+            </div>
           </div>
 
           {/* Mobile actions */}
