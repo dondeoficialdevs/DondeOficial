@@ -69,18 +69,22 @@ export default function CategorySection({ categories, onCategorySelect }: Catego
   };
 
   return (
-    <section className="py-8 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center space-x-8 overflow-x-auto pb-6 no-scrollbar pt-2">
+    <section className="py-8 bg-white overflow-hidden relative group/section">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        {/* Professional "Tape" Gradient Overlays */}
+        <div className="absolute left-0 top-0 bottom-6 w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none lg:hidden opacity-0 group-hover/section:opacity-100 transition-opacity duration-300" />
+        <div className="absolute right-0 top-0 bottom-6 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden opacity-0 group-hover/section:opacity-100 transition-opacity duration-300" />
+
+        <div className="flex items-center lg:justify-center justify-start space-x-6 overflow-x-auto pb-6 no-scrollbar pt-2 snap-x snap-mandatory scroll-smooth touch-pan-x">
           {categories.map((cat, index) => (
             <div
               key={cat.id}
-              className="flex flex-col items-center flex-shrink-0 animate-fade-in-up"
+              className="flex flex-col items-center flex-shrink-0 animate-fade-in-up snap-center"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <button
                 onClick={() => handleCategoryClick(cat.name)}
-                className="group relative flex flex-col items-center space-y-3 p-2 rounded-2xl transition-all duration-500 hover:bg-orange-50/50 min-w-[95px]"
+                className="group relative flex flex-col items-center space-y-3 p-2 rounded-2xl transition-all duration-500 hover:bg-orange-50/50 min-w-[100px]"
               >
                 {/* Icon Container with multi-layered animation */}
                 <div className="relative w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] group-hover:shadow-[0_10px_25px_-5px_rgba(255,107,53,0.3)] border border-gray-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-110 group-hover:border-orange-100">
@@ -93,7 +97,7 @@ export default function CategorySection({ categories, onCategorySelect }: Catego
                 </div>
 
                 {/* Text with elegant transition */}
-                <span className="text-xs font-bold text-gray-600 tracking-tight transition-colors duration-300 group-hover:text-orange-600 whitespace-nowrap">
+                <span className="text-[11px] font-bold text-gray-600 tracking-tight transition-colors duration-300 group-hover:text-orange-600 whitespace-nowrap px-1">
                   {cat.name}
                 </span>
 
