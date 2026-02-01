@@ -11,7 +11,7 @@ interface ImageSliderProps {
 
 export default function ImageSlider({ images, alt, className = '', maxImages = 3 }: ImageSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+
   // Limitar a máximo 3 imágenes y ordenar por is_primary primero
   const sortedImages = [...images].sort((a, b) => {
     if (a.is_primary && !b.is_primary) return -1;
@@ -19,7 +19,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
     return 0;
   });
   const displayImages = sortedImages.slice(0, maxImages);
-  
+
   if (!displayImages || displayImages.length === 0) {
     return (
       <div className={`w-full h-full bg-gray-200 flex items-center justify-center ${className}`}>
@@ -35,7 +35,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
     return (
       <div className={`relative w-full h-full overflow-hidden bg-gray-100 ${className}`}>
         {/* Fondo borroso para llenar el espacio */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center blur-md opacity-50 scale-110"
           style={{ backgroundImage: `url(${displayImages[0].image_url})` }}
         />
@@ -51,14 +51,14 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
 
   const goToPrevious = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? displayImages.length - 1 : prevIndex - 1
     );
   };
 
   const goToNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === displayImages.length - 1 ? 0 : prevIndex + 1
     );
   };
@@ -74,12 +74,11 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
         {displayImages.map((image, index) => (
           <div
             key={image.id || index}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-500 ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
           >
             {/* Fondo borroso */}
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center blur-md opacity-50 scale-110"
               style={{ backgroundImage: `url(${image.image_url})` }}
             />
@@ -132,11 +131,10 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
                 e.stopPropagation();
                 goToSlide(index);
               }}
-              className={`rounded-full transition-all duration-300 cursor-pointer ${
-                index === currentIndex
+              className={`rounded-full transition-all duration-300 cursor-pointer ${index === currentIndex
                   ? 'bg-white w-8 h-2.5 shadow-md'
                   : 'bg-white/70 hover:bg-white/90 w-2 h-2'
-              }`}
+                }`}
               aria-label={`Ir a imagen ${index + 1}`}
               type="button"
             />
@@ -146,7 +144,7 @@ export default function ImageSlider({ images, alt, className = '', maxImages = 3
 
       {/* Contador de imágenes - Siempre visible */}
       {displayImages.length > 1 && (
-        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1.5 rounded-md z-20 shadow-xl border border-white/20">
+        <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1.5 rounded-md z-20 shadow-xl border border-white/20">
           {currentIndex + 1} / {displayImages.length}
         </div>
       )}

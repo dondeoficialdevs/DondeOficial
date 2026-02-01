@@ -324,13 +324,21 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
           ) : business ? (
             <div className="p-6">
               {/* Hero Image */}
-              <div className="relative h-64 mb-6 rounded-xl overflow-hidden">
+              <div className="relative h-64 mb-6 rounded-xl overflow-hidden bg-gray-100">
                 {primaryImage ? (
-                  <img
-                    src={primaryImage.image_url}
-                    alt={business.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="w-full h-full relative">
+                    {/* Blurred Background */}
+                    <div
+                      className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110"
+                      style={{ backgroundImage: `url(${primaryImage.image_url})` }}
+                    />
+                    {/* Main Image Contained */}
+                    <img
+                      src={primaryImage.image_url}
+                      alt={business.name}
+                      className="relative w-full h-full object-contain z-10"
+                    />
+                  </div>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center">
                     <svg className="w-16 h-16 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,8 +477,8 @@ export default function BusinessDetailModal({ businessId, isOpen, onClose }: Bus
                       <button
                         onClick={() => business && toggleFavorite(business)}
                         className={`w-full flex items-center justify-center px-4 py-3 rounded-lg transition-all font-bold text-sm ${business && isFavorite(business.id)
-                            ? 'bg-red-500 text-white hover:bg-red-600'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-gray-300'
+                          ? 'bg-red-500 text-white hover:bg-red-600'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-gray-300'
                           }`}
                         title={business && isFavorite(business.id) ? 'Eliminar de favoritos' : 'Agregar a favoritos'}
                       >

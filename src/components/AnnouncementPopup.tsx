@@ -62,14 +62,22 @@ export default function AnnouncementPopup() {
 
                 <div className="flex flex-col">
                     {/* Imagen de la Oferta */}
-                    <div className="relative h-64 sm:h-80 w-full bg-orange-500">
+                    <div className="relative h-64 sm:h-80 w-full overflow-hidden bg-orange-500">
                         {promotion.image_url && (
-                            <Image
-                                src={promotion.image_url}
-                                alt={promotion.title}
-                                fill
-                                className="object-cover"
-                            />
+                            <>
+                                {/* Blurred Background */}
+                                <div
+                                    className="absolute inset-0 bg-cover bg-center blur-xl opacity-50 scale-110"
+                                    style={{ backgroundImage: `url(${promotion.image_url})` }}
+                                />
+                                {/* Main Image */}
+                                <Image
+                                    src={promotion.image_url}
+                                    alt={promotion.title}
+                                    fill
+                                    className="relative object-contain z-10"
+                                />
+                            </>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <div className="absolute bottom-6 left-6 right-6">

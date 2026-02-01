@@ -104,13 +104,21 @@ export default function PromotionsSlider() {
                     {/* Background Image with Overlay */}
                     <div className="absolute inset-0">
                         {promo.image_url ? (
-                            <Image
-                                src={promo.image_url}
-                                alt={promo.title || 'Promoción'}
-                                fill
-                                className="object-cover transition-transform duration-[10s] group-hover:scale-105"
-                                priority={index === 0}
-                            />
+                            <div className="relative w-full h-full">
+                                {/* Blurred Background Layer */}
+                                <div
+                                    className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-125"
+                                    style={{ backgroundImage: `url(${promo.image_url})` }}
+                                />
+                                {/* Main Image Contained */}
+                                <Image
+                                    src={promo.image_url}
+                                    alt={promo.title || 'Promoción'}
+                                    fill
+                                    className="object-contain transition-transform duration-[10s] group-hover:scale-105 z-10"
+                                    priority={index === 0}
+                                />
+                            </div>
                         ) : (
                             <div className="absolute inset-0 bg-gray-900"></div>
                         )}
