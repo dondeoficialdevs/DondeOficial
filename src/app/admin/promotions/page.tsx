@@ -25,7 +25,8 @@ export default function VitrinaAdminPage() {
         is_discount: false,
         business_id: undefined as number | null | undefined,
         active: true,
-        priority: 0
+        priority: 0,
+        is_popup: false
     };
 
     const [formData, setFormData] = useState(initialFormState);
@@ -152,7 +153,8 @@ export default function VitrinaAdminPage() {
             is_discount: !!promo.is_discount,
             business_id: promo.business_id,
             active: promo.active,
-            priority: promo.priority
+            priority: promo.priority,
+            is_popup: !!promo.is_popup
         });
         loadBusinesses();
         setShowForm(true);
@@ -364,6 +366,20 @@ export default function VitrinaAdminPage() {
                                         <div className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full shadow-lg transition-transform duration-300 ${formData.active ? 'translate-x-[1.75rem]' : ''}`}></div>
                                     </div>
                                 </label>
+
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.is_popup}
+                                            onChange={(e) => setFormData({ ...formData, is_popup: e.target.checked })}
+                                            className="sr-only"
+                                        />
+                                        <div className={`w-14 h-7 rounded-full transition-all duration-300 ${formData.is_popup ? 'bg-amber-500 shadow-amber-500/20' : 'bg-gray-200'}`}></div>
+                                        <div className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full shadow-lg transition-transform duration-300 ${formData.is_popup ? 'translate-x-[1.75rem]' : ''}`}></div>
+                                    </div>
+                                    <span className="text-sm font-black text-gray-600 uppercase tracking-tighter">Es un Popup Emergente</span>
+                                </label>
                             </div>
 
                             <div className="md:col-span-2 pt-10">
@@ -416,6 +432,7 @@ export default function VitrinaAdminPage() {
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Prio {promo.priority}</span>
                                             {promo.is_discount && <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">• OFERTA</span>}
+                                            {promo.is_popup && <span className="text-[10px] font-black text-amber-400 uppercase tracking-widest">• POPUP</span>}
                                         </div>
                                     </div>
                                 </div>

@@ -115,6 +115,7 @@ export interface Promotion {
   button_link?: string;
   badge_text?: string;
   is_discount?: boolean;
+  is_popup?: boolean;
   business_id?: number | null;
   active: boolean;
   priority: number;

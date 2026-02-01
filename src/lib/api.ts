@@ -613,16 +613,32 @@ export const promotionApi = {
     return data || [];
   },
 
-  // Obtener promociones activas
+  // Obtener promociones activas para el slider (que no sean popups)
   getActive: async (): Promise<Promotion[]> => {
     const { data, error } = await supabase
       .from('promotions')
       .select('*')
       .eq('active', true)
+      .or('is_popup.is.null,is_popup.eq.false')
       .order('priority', { ascending: true });
 
     if (error) throw error;
     return data || [];
+  },
+
+  // Obtener el popup activo actual
+  getActivePopup: async (): Promise<Promotion | null> => {
+    const { data, error } = await supabase
+      .from('promotions')
+      .select('*')
+      .eq('active', true)
+      .eq('is_popup', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
   },
 
   // Crear nueva promoción
