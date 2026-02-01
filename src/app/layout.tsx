@@ -6,6 +6,8 @@ import ThemeManager from "@/components/ThemeManager";
 import { SettingsProvider } from "@/context/SettingsContext";
 import Header from "@/components/Header";
 import MobileNavbar from "@/components/MobileNavbar";
+import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,19 +68,29 @@ export default function RootLayout({
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SettingsProvider>
-          <Header />
-          <main className="pb-20 lg:pb-0">
-            {children}
-          </main>
-          <MobileNavbar />
-          <ThemeManager />
-          <UpdateNotificationClient />
-        </SettingsProvider>
-      </body>
+      <LayoutContent>{children}</LayoutContent>
     </html>
+  );
+}
+
+function LayoutContent({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAdminPath = pathname?.startsWith('/admin');
+
+  return (
+    <body
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    >
+      <SettingsProvider>
+        {!isAdminPath && <Header />}
+        <main className={!isAdminPath ? "pb-20 lg:pb-0" : ""}>
+          {children}
+        </main>
+        {!isAdminPath && <MobileNavbar />}
+        {!isAdminPath && <Footer />}
+        <ThemeManager />
+        <UpdateNotificationClient />
+      </SettingsProvider>
+    </body>
   );
 }

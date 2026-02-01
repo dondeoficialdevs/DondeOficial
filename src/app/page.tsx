@@ -108,8 +108,6 @@ export default function Home() {
 
       <div className={`min-h-screen bg-white transition-opacity duration-500 ${showLoadingScreen ? 'opacity-0' : 'opacity-100'
         }`}>
-        <Header />
-
         <main>
           <PromotionsSlider />
 
@@ -148,8 +146,6 @@ export default function Home() {
 
           <AnnouncementPopup />
         </main>
-
-        <Footer />
 
         <PWAInstaller />
 
