@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import { businessApi, categoryApi } from '../../lib/api';
 import { Category } from '../../types';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 
 export default function AddListingPage() {
   const [formData, setFormData] = useState({
@@ -247,7 +245,6 @@ export default function AddListingPage() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <main className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
             <div className="flex justify-center mb-6">
@@ -330,14 +327,12 @@ export default function AddListingPage() {
             </button>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-lg shadow-md p-8">
@@ -839,7 +834,7 @@ export default function AddListingPage() {
         </div>
       </main>
 
-      <Footer />
+
     </div>
   );
 }

@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import HealthCheck from '@/components/HealthCheck';
 import { authApi } from '@/lib/api';
 import { User } from '@/types';
@@ -150,7 +148,6 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20">
-      <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header mejorado */}
@@ -229,7 +226,6 @@ export default function AdminLayout({
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 }

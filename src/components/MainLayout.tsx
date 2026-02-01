@@ -15,12 +15,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     return (
         <body className="antialiased">
             <SettingsProvider>
-                {!isAdminPath && <Header />}
-                <main className={!isAdminPath ? "pb-24 lg:pb-0" : ""}>
+                <Header />
+                <main className="pb-24 lg:pb-0">
                     {children}
                 </main>
-                {!isAdminPath && <MobileNavbar />}
-                {!isAdminPath && <Footer />}
+                <MobileNavbar />
+                <Footer />
                 <ThemeManager />
                 <UpdateNotificationClient />
             </SettingsProvider>

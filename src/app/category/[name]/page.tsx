@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { businessApi, categoryApi } from '@/lib/api';
 import { Business, Category } from '@/types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import BusinessList from '@/components/BusinessList';
 import Link from 'next/link';
 
@@ -28,10 +26,10 @@ export default function CategoryPage() {
         businessApi.getAll({ category: categoryName, limit: 50 }).catch(() => []),
         categoryApi.getAll().catch(() => [])
       ]);
-      
+
       setBusinesses(businessesData);
       setCategories(categoriesData);
-      
+
       const category = categoriesData.find(
         (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
       );
@@ -61,8 +59,7 @@ export default function CategoryPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-4">
@@ -76,7 +73,7 @@ export default function CategoryPage() {
             <span>/</span>
             <span className="text-gray-900">{getCategoryDisplayName(categoryName)}</span>
           </nav>
-          
+
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             {getCategoryDisplayName(categoryName)}
           </h1>
@@ -86,7 +83,7 @@ export default function CategoryPage() {
         </div>
 
         <BusinessList businesses={businesses} loading={loading} />
-        
+
         {!loading && businesses.length === 0 && (
           <div className="text-center py-12">
             <svg
@@ -114,8 +111,6 @@ export default function CategoryPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

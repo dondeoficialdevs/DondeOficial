@@ -5,8 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Business } from '@/types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export default function FavoritesPage() {
   const { favorites, isLoading, removeFavorite, isFavorite, toggleFavorite, clearFavorites } = useFavorites();
@@ -24,7 +22,6 @@ export default function FavoritesPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-        <Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
@@ -33,14 +30,12 @@ export default function FavoritesPage() {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header de la página */}
@@ -196,8 +191,6 @@ export default function FavoritesPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

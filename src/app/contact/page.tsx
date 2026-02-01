@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import { leadsApi } from '@/lib/api';
 
 export default function ContactPage() {
@@ -58,7 +56,6 @@ export default function ContactPage() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
             <div className="text-green-600 text-6xl mb-4">✓</div>
@@ -74,14 +71,12 @@ export default function ContactPage() {
             </button>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-lg shadow-md p-8">
@@ -213,8 +208,6 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

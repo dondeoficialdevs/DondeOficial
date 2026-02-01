@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { businessApi, categoryApi, authApi } from '@/lib/api';
 import { Business, Category } from '@/types';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 export default function EditBusinessPage() {
@@ -240,7 +238,6 @@ export default function EditBusinessPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-lg shadow-md p-8">
@@ -672,8 +669,6 @@ export default function EditBusinessPage() {
           </form>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { businessApi, categoryApi } from '../../lib/api';
 import { Business, Category } from '../../types';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import BusinessDetailModal from '../../components/BusinessDetailModal';
 import ImageSlider from '../../components/ImageSlider';
 
@@ -333,7 +331,6 @@ export default function ListingsContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Top Categories Bar */}
@@ -790,8 +787,6 @@ export default function ListingsContent() {
           </div>
         </div>
       </main >
-
-      <Footer />
 
       {/* Business Detail Modal */}
       <BusinessDetailModal
