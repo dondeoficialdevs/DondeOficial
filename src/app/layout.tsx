@@ -1,13 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import UpdateNotificationClient from "@/components/UpdateNotificationClient";
-import ThemeManager from "@/components/ThemeManager";
-import { SettingsProvider } from "@/context/SettingsContext";
-import Header from "@/components/Header";
-import MobileNavbar from "@/components/MobileNavbar";
-import Footer from "@/components/Footer";
-import { usePathname } from "next/navigation";
+import MainLayout from "@/components/MainLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,36 +55,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
         {/* Prevenir caché del navegador */}
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
       </head>
-      <LayoutContent>{children}</LayoutContent>
+      <MainLayout>{children}</MainLayout>
     </html>
   );
 }
 
-function LayoutContent({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const isAdminPath = pathname?.startsWith('/admin');
-
-  return (
-    <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-      <SettingsProvider>
-        {!isAdminPath && <Header />}
-        <main className={!isAdminPath ? "pb-20 lg:pb-0" : ""}>
-          {children}
-        </main>
-        {!isAdminPath && <MobileNavbar />}
-        {!isAdminPath && <Footer />}
-        <ThemeManager />
-        <UpdateNotificationClient />
-      </SettingsProvider>
-    </body>
-  );
-}
