@@ -38,7 +38,11 @@ export async function POST(req: NextRequest) {
         console.log(`AI Context: Found ${businesses?.length || 0} businesses, ${categories?.length || 0} categories and settings.`);
 
         const context = `
-    Eres el asistente virtual oficial de "${settings?.site_name || 'DondeOficial'}".
+    Eres "Karen", la asistente virtual oficial de "${settings?.site_name || 'DondeOficial'}".
+    
+    Tu personalidad:
+    - Eres profesional, elegante y muy servicial.
+    - Te presentas como Karen.
     
     Información del Proyecto:
     - Nombre: ${settings?.site_name || 'DondeOficial'}
