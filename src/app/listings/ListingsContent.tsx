@@ -1065,8 +1065,29 @@ export default function ListingsContent() {
                   }
                 </>
               ) : (
-                <div className="text-center py-20 bg-white rounded-lg border border-gray-200">
-                  <p className="text-gray-600">No se encontraron negocios con los filtros seleccionados</p>
+                <div className="flex flex-col items-center justify-center py-20 px-4">
+                  <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mb-6">
+                    <SearchIcon className="w-12 h-12 text-orange-400" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No encontramos resultados</h3>
+                  <p className="text-gray-500 text-center max-w-md mb-6">
+                    No se encontraron negocios que coincidan con tu búsqueda. Intenta ajustar los filtros o buscar algo diferente.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSelectedCategory('');
+                      setLocation('');
+                      setPriceFilters(['all']);
+                      setRatingFilters(['all']);
+                      setSellerFilters(['Todas']);
+                      setSearchTerm('');
+                      handleSearch('', '', '');
+                    }}
+                    className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all active:scale-95 shadow-sm flex items-center gap-2"
+                  >
+                    <RotateCcw size={18} />
+                    <span>Limpiar Filtros</span>
+                  </button>
                 </div>
               );
             })()}
