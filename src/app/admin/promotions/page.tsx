@@ -14,6 +14,12 @@ export default function VitrinaAdminPage() {
     const [showForm, setShowForm] = useState(false);
     const [saving, setSaving] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [imageMetrics, setImageMetrics] = useState<{
+        width: number;
+        height: number;
+        status: 'excellent' | 'ok' | 'low' | 'idle';
+        aspectRatio: number;
+    }>({ width: 0, height: 0, status: 'idle', aspectRatio: 0 });
 
     const initialFormState = {
         title: '',
@@ -34,6 +40,27 @@ export default function VitrinaAdminPage() {
     useEffect(() => {
         loadPromotions();
     }, []);
+
+    useEffect(() => {
+        if (!formData.image_url) {
+            setImageMetrics({ width: 0, height: 0, status: 'idle', aspectRatio: 0 });
+            return;
+        }
+
+        const img = new (window as any).Image();
+        img.onload = () => {
+            const w = img.width;
+            const h = img.height;
+            const ratio = w / h;
+
+            let status: 'excellent' | 'ok' | 'low' = 'low';
+            if (w >= 1200 && Math.abs(ratio - 1.77) < 0.3) status = 'excellent';
+            else if (w >= 800) status = 'ok';
+
+            setImageMetrics({ width: w, height: h, status, aspectRatio: ratio });
+        };
+        img.src = formData.image_url;
+    }, [formData.image_url]);
 
     const loadPromotions = async () => {
         try {
@@ -217,44 +244,98 @@ export default function VitrinaAdminPage() {
 
             {showForm && (
                 <div className="mb-16 grid grid-cols-1 lg:grid-cols-3 gap-10 text-left">
-                    {/* Preview Card - Now matching the Slider design */}
+                    {/* Preview Card - 16:9 Landscape matching Slider */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-8 space-y-4">
-                            <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2 text-left">Vista Previa Real</h3>
-                            <div className="relative aspect-[4/5] lg:aspect-[3/4] rounded-[2rem] overflow-hidden shadow-2xl border border-gray-100 bg-gray-900 group">
+                        <div className="sticky top-8 space-y-6">
+                            <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2 text-left">Vista Previa (Portada)</h3>
+
+                            <div className="relative aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-gray-100 bg-gray-950 group">
                                 {formData.image_url ? (
-                                    <Image src={formData.image_url} fill alt="Preview" className="object-cover opacity-80" />
+                                    <div className="relative w-full h-full">
+                                        {/* Blurred Background Layer (Mismo que el slider) */}
+                                        <div
+                                            className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110"
+                                            style={{ backgroundImage: `url(${formData.image_url})` }}
+                                        />
+                                        {/* Main Image Layer */}
+                                        <div className="relative w-full h-full flex items-center justify-center p-4">
+                                            <Image
+                                                src={formData.image_url}
+                                                fill
+                                                alt="Preview"
+                                                className="object-contain drop-shadow-2xl"
+                                                unoptimized
+                                            />
+                                        </div>
+                                    </div>
                                 ) : (
-                                    <div className="absolute inset-0 bg-linear-to-br from-gray-800 to-gray-900 flex items-center justify-center text-gray-600 font-black uppercase tracking-tighter text-sm">Sin imagen de fondo</div>
+                                    <div className="absolute inset-0 bg-linear-to-br from-gray-900 to-black flex items-center justify-center text-gray-700 font-black uppercase tracking-tighter text-xs">Sin imagen</div>
                                 )}
 
                                 {/* Slidert-like Overlays */}
-                                <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent"></div>
-                                <div className="absolute inset-0 bg-linear-to-r from-black/60 to-transparent"></div>
+                                <div className="absolute inset-0 z-10 bg-linear-to-r from-black/90 via-black/30 to-transparent"></div>
+                                <div className="absolute inset-0 z-10 bg-linear-to-t from-black/60 via-transparent to-transparent"></div>
 
-                                <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                                    <div className="space-y-4">
-                                        <div className={`inline-block px-3 py-1 rounded-full text-[8px] font-black tracking-widest uppercase border ${formData.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-blue-600/20 text-blue-400 border-blue-500/20'
+                                <div className="absolute inset-0 z-20 p-6 flex flex-col justify-center">
+                                    <div className="max-w-[80%] space-y-2">
+                                        <div className={`inline-block px-2 py-0.5 rounded-full text-[7px] font-black tracking-widest uppercase border ${formData.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-blue-600/20 text-blue-400 border-blue-500/20'
                                             }`}>
                                             {formData.badge_text || (formData.is_discount ? 'OFERTA' : 'DESTACADO')}
                                         </div>
 
-                                        <h4 className="text-white font-black text-2xl leading-tight drop-shadow-lg uppercase tracking-tighter">
+                                        <h4 className="text-white font-black text-lg leading-none drop-shadow-lg uppercase tracking-tighter line-clamp-2">
                                             {formData.title || 'Nombre del Negocio'}
                                         </h4>
 
-                                        <p className="text-white/70 text-xs line-clamp-3 font-medium leading-relaxed">
-                                            {formData.description || 'Aquí aparecerá el mensaje publicitario que enganchará a tus clientes...'}
+                                        <p className="text-white/70 text-[9px] line-clamp-2 font-medium leading-tight">
+                                            {formData.description || 'Descripción publicitaria...'}
                                         </p>
 
-                                        <div className={`mt-2 py-2.5 px-6 rounded-xl text-[10px] font-black text-center uppercase tracking-widest border transition-all ${formData.is_discount ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-blue-600 border-blue-500 text-white'
-                                            }`}>
-                                            {formData.button_text || 'Ver Negocio'}
-                                        </div>
+                                        {formData.button_link && (
+                                            <div className="mt-2 inline-block py-1.5 px-4 rounded-lg text-[8px] font-black uppercase tracking-widest bg-blue-600 text-white">
+                                                {formData.button_text || 'Ver Negocio'}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-[10px] text-gray-400 font-medium px-4 italic text-center">Así se verá aproximadamente en la portada</p>
+
+                            {/* Suitability Badge */}
+                            {imageMetrics.status !== 'idle' && (
+                                <div className={`p-4 rounded-2xl border-2 flex flex-col gap-2 ${imageMetrics.status === 'excellent' ? 'bg-emerald-50 border-emerald-100 text-emerald-900' :
+                                        imageMetrics.status === 'ok' ? 'bg-amber-50 border-amber-100 text-amber-900' :
+                                            'bg-red-50 border-red-100 text-red-900'
+                                    }`}>
+                                    <div className="flex items-center justify-between font-black uppercase tracking-widest text-[10px]">
+                                        <span>Medidor de Calidad</span>
+                                        <span className={`px-2 py-0.5 rounded-md ${imageMetrics.status === 'excellent' ? 'bg-emerald-500 text-white' :
+                                                imageMetrics.status === 'ok' ? 'bg-amber-500 text-white' :
+                                                    'bg-red-500 text-white'
+                                            }`}>
+                                            {imageMetrics.status === 'excellent' ? 'Excelente' :
+                                                imageMetrics.status === 'ok' ? 'Aceptable' : 'Baja Calidad'}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between text-[11px] font-bold">
+                                        <span>Resolución: {imageMetrics.width}x{imageMetrics.height}</span>
+                                        <span>Aspecto: {imageMetrics.aspectRatio.toFixed(2)}</span>
+                                    </div>
+                                    <p className="text-[10px] font-medium opacity-80 italic">
+                                        {imageMetrics.status === 'excellent' ? '✓ Imagen perfecta para el slider panorámico.' :
+                                            imageMetrics.status === 'ok' ? '⚠ La imagen funcionará, pero una mayor resolución se vería mejor.' :
+                                                '✗ Imagen demasiado pequeña o vertical. Se verá borrosa en pantallas grandes.'}
+                                    </p>
+                                </div>
+                            )}
+
+                            <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50">
+                                <h4 className="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-2">Guía Profesional</h4>
+                                <ul className="text-[10px] space-y-1.5 font-medium text-blue-800">
+                                    <li className="flex gap-2"><span>•</span> <b>Ideal:</b> 1920x1080px (16:9)</li>
+                                    <li className="flex gap-2"><span>•</span> <b>Mínimo:</b> 1200px de ancho</li>
+                                    <li className="flex gap-2"><span>•</span> <b>Formato:</b> Mantén el sujeto al centro</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
