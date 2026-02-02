@@ -27,23 +27,31 @@ export async function POST(req: NextRequest) {
             .from('categories')
             .select('name');
 
+        const { data: settings } = await supabase
+            .from('site_settings')
+            .select('*')
+            .single();
+
         if (bError) console.error('Supabase Businesses Error:', bError);
         if (cError) console.error('Supabase Categories Error:', cError);
 
-        console.log(`AI Context: Found ${businesses?.length || 0} businesses and ${categories?.length || 0} categories.`);
+        console.log(`AI Context: Found ${businesses?.length || 0} businesses, ${categories?.length || 0} categories and settings.`);
 
         const context = `
-    Información del Directorio Comercial "DondeOficial":
-    Categorías disponibles: ${categories?.map(c => c.name).join(', ')}.
-    Algunos negocios destacados:
+    Eres el asistente virtual oficial de "${settings?.site_name || 'DondeOficial'}".
+    
+    Información del Proyecto:
+    - Nombre: ${settings?.site_name || 'DondeOficial'}
+    - Propósito: Directorio comercial para encontrar negocios y servicios.
+    - Categorías disponibles: ${categories?.map(c => c.name).join(', ')}.
+    - Algunos negocios destacados:
     ${businesses?.map(b => `- ${b.name}: ${b.description}. Dirección: ${b.address || 'No disponible'}. Contacto: ${b.phone || b.email || 'No disponible'}`).join('\n')}
     
     Instrucciones para el asistente:
-    - Eres el asistente virtual oficial de "DondeOficial".
     - Ayudas a los usuarios a encontrar negocios, contactos e información del proyecto.
-    - Si el usuario pregunta por soporte, indícale que puede contactarnos a través del formulario de contacto en el sitio.
-    - Mantén un tono amable, profesional y servicial.
-    - Si no conoces la respuesta específica sobre un negocio, invita al usuario a usar el buscador principal del sitio.
+    - Si el usuario pregunta por soporte o contacto con los dueños del proyecto, indícale que use el menú "Contacto" para enviarnos un mensaje directo.
+    - Sé amable, servicial y mantén las respuestas concisas pero completas.
+    - Si no conoces la respuesta específica sobre un negocio, invita al usuario a usar el buscador principal o la sección de categorías.
     `;
 
         // 2. Llamar a Groq con el modelo Llama 3

@@ -40,10 +40,11 @@ export default function VirtualAssistant() {
                 body: JSON.stringify({ message: userMessage, history: messages }),
             });
 
-            if (!response.ok) throw new Error('Error en la comunicación');
-
             const data = await response.json();
-            if (data.error) throw new Error(data.error);
+
+            if (!response.ok) {
+                throw new Error(data.error || `Error del servidor (${response.status})`);
+            }
 
             setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
         } catch (error) {
