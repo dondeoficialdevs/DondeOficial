@@ -33,6 +33,7 @@ export default function AdminLayout({
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -100,23 +101,29 @@ export default function AdminLayout({
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-[110] w-[280px] bg-black text-white px-6 py-10 transition-transform duration-500 ease-in-out lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-[110] bg-black text-white px-4 py-8 transition-all duration-500 ease-in-out lg:relative lg:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isCollapsed ? 'w-[80px]' : 'w-[280px]'}
       `}>
         <div className="flex flex-col h-full">
           {/* Brand */}
-          <div className="flex items-center gap-3 px-2 mb-12">
-            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
-              <ShieldCheck className="w-6 h-6" />
+          <div className={`flex items-center gap-3 mb-10 transition-all duration-500 ${isCollapsed ? 'justify-center px-0' : 'px-2'}`}>
+            <div className={`
+              bg-white/10 rounded-xl flex items-center justify-center border border-white/20 shrink-0 transition-all duration-500
+              ${isCollapsed ? 'w-12 h-12' : 'w-10 h-10'}
+            `}>
+              <ShieldCheck className={isCollapsed ? 'w-7 h-7' : 'w-6 h-6'} />
             </div>
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.2em]">DondeOficial</p>
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Panel de Control</p>
-            </div>
+            {!isCollapsed && (
+              <div className="animate-in fade-in slide-in-from-left-2 duration-500">
+                <p className="text-sm font-black uppercase tracking-[0.2em] leading-none mb-1">DondeOficial</p>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest leading-none">Panel de Control</p>
+              </div>
+            )}
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 overflow-y-auto pr-2 custom-scrollbar">
+          <nav className="flex-1 space-y-1 overflow-y-auto pr-0 custom-scrollbar overflow-x-hidden">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -125,43 +132,63 @@ export default function AdminLayout({
                   key={item.href}
                   href={item.href}
                   className={`
-                    group flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-300
+                    group flex items-center px-4 py-3.5 rounded-xl transition-all duration-300 relative
                     ${isActive ? 'bg-white text-black shadow-[0_10px_30px_rgba(255,255,255,0.1)]' : 'text-gray-400 hover:text-white hover:bg-white/5'}
+                    ${isCollapsed ? 'justify-center' : 'justify-between'}
                   `}
                   onClick={() => setIsSidebarOpen(false)}
+                  title={isCollapsed ? item.label : ''}
                 >
                   <div className="flex items-center gap-3">
                     <Icon size={20} className={isActive ? 'text-black' : 'text-gray-500 group-hover:text-white'} />
-                    <span className="text-sm font-bold uppercase tracking-tighter">{item.label}</span>
+                    {!isCollapsed && (
+                      <span className="text-sm font-bold uppercase tracking-tighter whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-500">
+                        {item.label}
+                      </span>
+                    )}
                   </div>
-                  {isActive && <ChevronRight size={14} />}
+                  {isActive && !isCollapsed && <ChevronRight size={14} className="animate-in fade-in zoom-in duration-300" />}
                 </Link>
               );
             })}
           </nav>
 
           {/* User Section */}
-          <div className="mt-8 pt-8 border-t border-white/10 space-y-4 px-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-linear-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center border border-white/20 font-black text-xs">
+          <div className="mt-8 pt-8 border-t border-white/10 space-y-4 px-0">
+            <div className={`flex items-center gap-3 mb-6 transition-all duration-500 ${isCollapsed ? 'justify-center' : 'px-2'}`}>
+              <div className="w-10 h-10 bg-linear-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center border border-white/20 font-black text-xs shrink-0">
                 {user?.full_name?.charAt(0)}
               </div>
-              <div className="min-w-0">
-                <p className="text-sm font-black truncate">{user?.full_name}</p>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Online</p>
+              {!isCollapsed && (
+                <div className="min-w-0 animate-in fade-in slide-in-from-left-2 duration-500">
+                  <p className="text-sm font-black truncate">{user?.full_name}</p>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                    <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Online</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-4 bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-gray-400 rounded-xl transition-all font-bold text-xs uppercase tracking-widest"
+              className={`
+                w-full flex items-center gap-3 py-4 bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-gray-400 rounded-xl transition-all font-bold text-xs uppercase tracking-widest
+                ${isCollapsed ? 'justify-center px-0' : 'px-4'}
+              `}
+              title={isCollapsed ? 'Cerrar Sesión' : ''}
             >
               <LogOut size={16} />
-              Cerrar Sesión
+              {!isCollapsed && <span className="animate-in fade-in slide-in-from-left-2 duration-500">Cerrar Sesión</span>}
             </button>
           </div>
+
+          {/* Collapse Toggle Button (Desktop Only) */}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hidden lg:flex absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-black border border-white/10 rounded-full items-center justify-center text-white hover:bg-white hover:text-black transition-all shadow-xl z-50 group"
+          >
+            <ChevronRight size={16} className={`transition-transform duration-500 ${isCollapsed ? '' : 'rotate-180'} group-hover:scale-110`} />
+          </button>
         </div>
       </aside>
 
