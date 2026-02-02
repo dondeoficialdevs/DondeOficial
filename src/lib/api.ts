@@ -636,8 +636,8 @@ export const promotionApi = {
 
         if (fallbackError) throw fallbackError;
 
-        // Filtrar manualmente los que sabemos que son popups si la columna existe en los datos
-        return (fallbackData || []).filter(p => !p.is_popup);
+        // Filtrar manualmente los que NO sean popups (p.is_popup !== true captura null, undefined y false)
+        return (fallbackData || []).filter(p => p.is_popup !== true);
       }
 
       return data || [];

@@ -8,7 +8,7 @@ import { promotionApi } from '@/lib/api';
 
 const MOCK_PROMOTIONS: Promotion[] = [
     {
-        id: 1,
+        id: -1,
         title: 'Sabor que Enamora',
         description: 'Disfruta de un 20% de descuento en todas nuestras hamburguesas gourmet seleccionadas.',
         image_url: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&q=80&w=1920',
@@ -21,7 +21,7 @@ const MOCK_PROMOTIONS: Promotion[] = [
         created_at: new Date().toISOString()
     },
     {
-        id: 2,
+        id: -2,
         title: 'Nueva Colección 2024',
         description: 'Descubre las últimas tendencias en moda con nuestra nueva colección exclusiva de temporada.',
         image_url: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1920',
@@ -34,7 +34,7 @@ const MOCK_PROMOTIONS: Promotion[] = [
         created_at: new Date().toISOString()
     },
     {
-        id: 3,
+        id: -3,
         title: 'Tecnología al Alcance',
         description: 'Encuentra los mejores expertos en soporte técnico y soluciones digitales para tu negocio.',
         image_url: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1920',
@@ -54,14 +54,16 @@ export default function PromotionsSlider() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
+    const displayPromotions = promotions.length > 0 ? promotions : MOCK_PROMOTIONS;
+
     const nextSlide = useCallback(() => {
-        if (promotions.length === 0) return;
-        setCurrentSlide((prev) => (prev === promotions.length - 1 ? 0 : prev + 1));
-    }, [promotions.length]);
+        if (displayPromotions.length === 0) return;
+        setCurrentSlide((prev: number) => (prev === displayPromotions.length - 1 ? 0 : prev + 1));
+    }, [displayPromotions.length]);
 
     const prevSlide = () => {
-        if (promotions.length === 0) return;
-        setCurrentSlide((prev) => (prev === 0 ? promotions.length - 1 : prev - 1));
+        if (displayPromotions.length === 0) return;
+        setCurrentSlide((prev: number) => (prev === 0 ? displayPromotions.length - 1 : prev - 1));
     };
 
     useEffect(() => {
@@ -81,21 +83,19 @@ export default function PromotionsSlider() {
     }, []);
 
     useEffect(() => {
-        if (!isPaused && promotions.length > 0) {
+        if (!isPaused && displayPromotions.length > 0) {
             const timer = setInterval(() => {
                 nextSlide();
-            }, 5000); // Cambiar cada 5 segundos
+            }, 5000);
             return () => clearInterval(timer);
         }
-    }, [nextSlide, isPaused, promotions.length]);
+    }, [nextSlide, isPaused, displayPromotions.length]);
 
     if (loading) return (
         <div className="w-full h-[300px] flex items-center justify-center bg-gray-950">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
         </div>
     );
-
-    if (!promotions || promotions.length === 0) return null;
 
     return (
         <section
@@ -104,7 +104,7 @@ export default function PromotionsSlider() {
             onMouseLeave={() => setIsPaused(false)}
         >
             {/* Slides */}
-            {promotions.map((promo, index) => (
+            {displayPromotions.map((promo, index) => (
                 <div
                     key={promo.id || index}
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
@@ -114,12 +114,10 @@ export default function PromotionsSlider() {
                     <div className="absolute inset-0 z-0">
                         {promo.image_url ? (
                             <div className="relative w-full h-full bg-gray-950">
-                                {/* Blurred Background Layer */}
                                 <div
                                     className="absolute inset-0 bg-cover bg-center blur-3xl opacity-50 scale-125"
                                     style={{ backgroundImage: `url(${promo.image_url})` }}
                                 />
-                                {/* Main Image Contained - Added padding and drop shadow */}
                                 <div className="relative w-full h-full flex items-center justify-center p-4 md:p-12">
                                     <Image
                                         src={promo.image_url}
@@ -127,6 +125,7 @@ export default function PromotionsSlider() {
                                         fill
                                         className="object-contain transition-transform duration-[10s] group-hover:scale-105 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
                                         priority={index === 0}
+                                        unoptimized
                                     />
                                 </div>
                             </div>
@@ -135,22 +134,15 @@ export default function PromotionsSlider() {
                         )}
                     </div>
 
-                    {/* Gradient Overlays - Increased z-index for readability */}
-                    <div className="absolute inset-0 z-10 bg-linear-to-r from-black/95 via-black/40 to-transparent"></div>
-                    <div className="absolute inset-0 z-10 bg-linear-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/95 via-black/40 to-transparent"></div>
+                    <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
-                    {/* Content - Ensured z-20 */}
                     <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-20">
                         <div className={`max-w-3xl transition-all duration-1000 transform ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
                             }`}>
                             <div className="flex flex-wrap items-center gap-4 mb-8">
                                 <div
-                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/20 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : ''}`}
-                                    style={!promo.is_discount ? {
-                                        backgroundColor: 'color-mix(in srgb, var(--primary-color) 25%, transparent)',
-                                        color: 'white',
-                                        borderColor: 'rgba(255,255,255,0.2)'
-                                    } : {}}
+                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/20 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-white/10 text-white'}`}
                                 >
                                     {promo.badge_text || (promo.is_discount ? 'OFERTA' : 'DESTACADO')}
                                 </div>
@@ -166,11 +158,7 @@ export default function PromotionsSlider() {
                             </div>
 
                             <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-8 leading-[0.9] tracking-tighter drop-shadow-2xl">
-                                {(promo.title || '').split(' ').map((word, i) => (
-                                    <span key={i} className="inline-block mr-2 sm:mr-4 last:mr-0 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
-                                        {word}
-                                    </span>
-                                ))}
+                                {promo.title}
                             </h2>
 
                             <p className="text-sm sm:text-lg md:text-2xl text-white/90 mb-6 sm:mb-12 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
@@ -181,8 +169,7 @@ export default function PromotionsSlider() {
                                 <div className="flex items-center gap-6">
                                     <Link
                                         href={promo.button_link}
-                                        className="group relative inline-flex items-center justify-center px-8 sm:px-12 py-3 sm:py-5 font-black text-white transition-all duration-500 rounded-xl sm:rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden"
-                                        style={{ backgroundColor: promo.is_discount ? '#10b981' : 'var(--primary-color)' }}
+                                        className="group relative inline-flex items-center justify-center px-8 sm:px-12 py-3 sm:py-5 font-black text-white transition-all duration-500 rounded-xl sm:rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden bg-orange-600"
                                     >
                                         <span className="relative z-10 flex items-center text-sm sm:text-lg uppercase tracking-wider">
                                             {promo.button_text || 'Explorar'}
@@ -190,18 +177,8 @@ export default function PromotionsSlider() {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>
                                         </span>
-                                        <div className="absolute inset-0 bg-linear-to-r from-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                                     </Link>
-
-                                    <div className="hidden md:flex flex-col">
-                                        <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Disponible ahora</span>
-                                        <span className="w-12 h-1 bg-white/20 rounded-full overflow-hidden">
-                                            <span
-                                                className="block h-full w-2/3"
-                                                style={{ backgroundColor: 'var(--primary-color)' }}
-                                            ></span>
-                                        </span>
-                                    </div>
                                 </div>
                             )}
                         </div>
@@ -231,9 +208,9 @@ export default function PromotionsSlider() {
                 </button>
             </div>
 
-            {/* Indicators / Progress Bar */}
+            {/* Indicators */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-end space-x-5">
-                {promotions.map((_, index) => (
+                {displayPromotions.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setCurrentSlide(index)}
@@ -244,24 +221,13 @@ export default function PromotionsSlider() {
                             }`}>
                             {index === currentSlide && (
                                 <div
-                                    className={`absolute inset-0 animate-slider-progress ${isPaused ? '[animation-play-state:paused]' : ''}`}
-                                    style={{ backgroundColor: 'var(--primary-color)' }}
+                                    className={`absolute inset-0 bg-orange-500`}
                                 ></div>
                             )}
                         </div>
                     </button>
                 ))}
             </div>
-
-            {/* Luxury Light Effects based on Theme */}
-            <div
-                className="absolute -bottom-60 -left-60 w-[500px] h-[500px] rounded-full blur-[150px] z-10 pointer-events-none animate-pulse opacity-20"
-                style={{ backgroundColor: 'var(--primary-color)' }}
-            ></div>
-            <div
-                className="absolute -top-60 -right-60 w-[500px] h-[500px] rounded-full blur-[150px] z-10 pointer-events-none animate-pulse opacity-20"
-                style={{ backgroundColor: 'var(--secondary-color)', animationDelay: '1s' }}
-            ></div>
         </section>
     );
 }
