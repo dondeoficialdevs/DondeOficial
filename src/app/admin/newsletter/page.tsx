@@ -121,150 +121,155 @@ export default function NewsletterPage() {
   }
 
   return (
-    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
-      {/* Header mejorado */}
-      <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Newsletter</h1>
-          <p className="text-gray-500 font-medium italic">Gestiona tus suscriptores</p>
+    <div className="max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700">
+      {/* Header Section Premium */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-10">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+              <Mail size={24} className="text-white" />
+            </div>
+            <h1 className="text-4xl font-black text-gray-900 tracking-tighter uppercase italic">
+              Newsletter<span className="text-blue-600 not-italic">.</span>
+            </h1>
+          </div>
+          <p className="text-sm font-bold text-gray-400 uppercase tracking-[0.4em] ml-1">
+            Subscriber List Database
+          </p>
         </div>
+
         <div className="flex items-center gap-4">
           <button
             onClick={exportToCSV}
-            className="group bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl transition-all hover:scale-105 active:scale-95"
+            className="group bg-blue-600 hover:bg-black text-white px-8 py-4 rounded-[1.5rem] flex items-center gap-3 shadow-2xl shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95 border-b-4 border-blue-800 hover:border-black"
           >
-            <Download size={20} className="group-hover:bounce" />
-            <span className="text-sm font-black uppercase tracking-widest">Exportar CSV</span>
+            <Download size={20} className="group-hover:animate-bounce" />
+            <span className="text-xs font-black uppercase tracking-[0.1em]">Export CSV</span>
           </button>
-          <div className="bg-black text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl">
-            <Mail size={20} className="text-gray-400" />
-            <span className="text-sm font-black uppercase tracking-widest">
-              {filteredSubscribers.length} Suscriptores
+
+          <div className="bg-white px-6 py-4 rounded-[1.5rem] border border-gray-100 shadow-sm flex items-center gap-4">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-xs font-black uppercase tracking-widest text-gray-500">
+              {filteredSubscribers.length} Global Members
             </span>
           </div>
         </div>
       </div>
 
-      {/* Barra de búsqueda mejorada */}
-      <div className="mb-10">
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-400 group-focus-within:text-black transition-colors">
-            <Search size={20} />
-          </div>
-          <input
-            type="text"
-            placeholder="Buscar por email..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full pl-14 pr-6 py-5 bg-white border-2 border-gray-100 focus:border-black rounded-[2rem] outline-none text-gray-800 placeholder-gray-400 shadow-sm transition-all font-bold"
-          />
+      {/* Advanced Search Bar */}
+      <div className="relative group">
+        <div className="absolute inset-y-0 left-0 pl-8 flex items-center pointer-events-none text-gray-300 group-focus-within:text-black transition-colors">
+          <Search size={22} strokeWidth={3} />
         </div>
+        <input
+          type="text"
+          placeholder="Lookup by email hash..."
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="w-full pl-16 pr-8 py-7 bg-white border-2 border-gray-50 focus:border-black rounded-[2.5rem] outline-none text-gray-900 placeholder-gray-300 shadow-sm transition-all font-black text-lg"
+        />
       </div>
 
       {paginatedSubscribers.length === 0 ? (
-        <div className="text-center py-24 bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full mb-6">
-            <Inbox size={40} className="text-gray-200" />
-          </div>
-          <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">Sin suscriptores</h3>
-          <p className="text-gray-500 font-medium italic">
-            {searchTerm ? 'No hay emails que coincidan con la búsqueda' : 'Aún no tienes suscriptores en tu lista'}
-          </p>
+        <div className="py-32 flex flex-col items-center justify-center bg-white rounded-[3.5rem] border-2 border-dashed border-gray-100 italic">
+          <Inbox size={64} className="text-gray-100 mb-6" />
+          <h3 className="text-2xl font-black text-gray-300 uppercase tracking-tighter">Null Data</h3>
+          <p className="text-gray-400 font-bold mt-2">No se encuentran coincidencias en el sistema</p>
         </div>
       ) : (
-        <>
-          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Email del Suscriptor
-                    </th>
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Fecha de Registro
-                    </th>
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Estado
-                    </th>
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {paginatedSubscribers.map((subscriber) => (
-                    <tr key={subscriber.id} className="hover:bg-gray-50/50 transition-colors group">
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-gray-50 rounded-lg text-gray-400 group-hover:text-black transition-colors">
-                            <Mail size={16} />
-                          </div>
-                          <span className="text-base font-black text-gray-900">{subscriber.email}</span>
+        <div className="bg-white rounded-[3.5rem] border border-gray-100 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-50/50">
+                  <th className="px-10 py-7 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                    MEMBER IDENTIFIER
+                  </th>
+                  <th className="px-10 py-7 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                    REGISTRATION DATE
+                  </th>
+                  <th className="px-10 py-7 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                    STATUS
+                  </th>
+                  <th className="px-10 py-7 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                    OPERATIONS
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {paginatedSubscribers.map((subscriber) => (
+                  <tr key={subscriber.id} className="hover:bg-gray-50/80 transition-all group">
+                    <td className="px-10 py-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:scale-110 group-hover:bg-white group-hover:shadow-xl transition-all duration-500">
+                          <Mail size={18} strokeWidth={2.5} />
                         </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                          <Calendar size={12} />
-                          {formatDate(subscriber.subscribed_at).split(' a ')[0]}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest">
-                          <CheckCircle2 size={10} />
-                          Activo
+                        <span className="text-lg font-black text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {subscriber.email}
                         </span>
-                      </td>
-                      <td className="px-8 py-6">
-                        <button
-                          onClick={() => handleDelete(subscriber.id, subscriber.email)}
-                          disabled={deletingId === subscriber.id}
-                          className="p-3 bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shadow-sm group/del"
-                          title="Eliminar suscriptor"
-                        >
-                          <Trash2 size={18} className="group-hover/del:scale-110 transition-transform" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Paginación */}
-            {totalPages > 1 && (
-              <div className="px-8 py-6 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
-                <div className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                  Mostrando {startIndex + 1}-{Math.min(endIndex, filteredSubscribers.length)} de {filteredSubscribers.length}
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="p-2 bg-white border-2 border-gray-100 rounded-xl text-gray-600 hover:border-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <div className="px-4 flex items-center text-sm font-black text-gray-900 uppercase tracking-widest bg-white border-2 border-gray-100 rounded-xl">
-                    {currentPage} / {totalPages}
-                  </div>
-                  <button
-                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className="p-2 bg-white border-2 border-gray-100 rounded-xl text-gray-600 hover:border-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-              </div>
-            )}
+                      </div>
+                    </td>
+                    <td className="px-10 py-8">
+                      <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <Calendar size={14} strokeWidth={2.5} />
+                        {formatDate(subscriber.subscribed_at).split(' a ')[0]}
+                      </div>
+                    </td>
+                    <td className="px-10 py-8">
+                      <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border border-green-100">
+                        <CheckCircle2 size={12} strokeWidth={3} />
+                        Active
+                      </span>
+                    </td>
+                    <td className="px-10 py-8 text-right">
+                      <button
+                        onClick={() => handleDelete(subscriber.id, subscriber.email)}
+                        disabled={deletingId === subscriber.id}
+                        className="w-12 h-12 bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-500 hover:bg-red-50 rounded-2xl flex items-center justify-center transition-all shadow-sm hover:shadow-red-100 group/btn"
+                      >
+                        <Trash2 size={20} className="group-hover/btn:rotate-12 transition-transform" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </>
+
+          {/* Pagination Refined */}
+          {totalPages > 1 && (
+            <div className="px-10 py-8 bg-gray-50/30 flex items-center justify-between border-t border-gray-50">
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                {startIndex + 1}-{Math.min(endIndex, filteredSubscribers.length)} OF {filteredSubscribers.length}
+              </span>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="p-3 bg-white border border-gray-100 rounded-xl hover:border-black transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="px-5 flex items-center text-sm font-black text-black bg-white border border-gray-100 rounded-xl shadow-sm tracking-widest">
+                  {currentPage} / {totalPages}
+                </div>
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-3 bg-white border border-gray-100 rounded-xl hover:border-black transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
+
 }
 
