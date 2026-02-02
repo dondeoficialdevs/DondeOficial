@@ -17,14 +17,20 @@ export async function POST(req: NextRequest) {
 
         // 1. Obtener contexto de la base de datos (Búsqueda semántica simple por ahora usando ILIKE)
         // En un futuro se podría usar pgvector para búsqueda semántica real
-        const { data: businesses } = await supabase
+        const { data: businesses, error: bError } = await supabase
             .from('businesses')
-            .select('name, description, address, phone, email, category_id')
-            .limit(5);
+            .select('name, description, address, phone, email')
+            .eq('status', 'approved')
+            .limit(10);
 
-        const { data: categories } = await supabase
+        const { data: categories, error: cError } = await supabase
             .from('categories')
             .select('name');
+
+        if (bError) console.error('Supabase Businesses Error:', bError);
+        if (cError) console.error('Supabase Categories Error:', cError);
+
+        console.log(`AI Context: Found ${businesses?.length || 0} businesses and ${categories?.length || 0} categories.`);
 
         const context = `
     Información del Directorio Comercial "DondeOficial":
@@ -44,14 +50,14 @@ export async function POST(req: NextRequest) {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
+                'Authorization': `Bearer ${GROQ_API_KEY.trim()}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 model: 'llama3-8b-8192',
                 messages: [
                     { role: 'system', content: context },
-                    ...history.slice(-5), // Enviar los últimos 5 mensajes para mantener el hilo
+                    ...history.map((m: any) => ({ role: m.role, content: m.content })).slice(-10),
                     { role: 'user', content: message }
                 ],
                 temperature: 0.7,
@@ -62,8 +68,13 @@ export async function POST(req: NextRequest) {
         const data = await response.json();
 
         if (data.error) {
-            console.error('Groq API Error:', data.error);
-            return NextResponse.json({ error: 'Error del modelo' }, { status: 500 });
+            console.error('Groq API Error Detail:', JSON.stringify(data.error));
+            return NextResponse.json({ error: 'Error del modelo: ' + (data.error.message || 'Error desconocido') }, { status: 500 });
+        }
+
+        if (!data.choices || !data.choices[0]) {
+            console.error('Unexpected Groq Response:', JSON.stringify(data));
+            return NextResponse.json({ error: 'Respuesta inesperada del modelo' }, { status: 500 });
         }
 
         const reply = data.choices[0].message.content;

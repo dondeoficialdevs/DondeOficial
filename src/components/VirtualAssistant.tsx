@@ -43,10 +43,13 @@ export default function VirtualAssistant() {
             if (!response.ok) throw new Error('Error en la comunicación');
 
             const data = await response.json();
+            if (data.error) throw new Error(data.error);
+
             setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
         } catch (error) {
             console.error('Error:', error);
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Lo siento, hubo un error al procesar tu mensaje. Por favor intenta de nuevo.' }]);
+            const errorMsg = error instanceof Error ? error.message : 'Error desconocido';
+            setMessages(prev => [...prev, { role: 'assistant', content: `Uppps! Tuvimos un problemita: ${errorMsg}. Por favor, verifica que tu conexión esté bien e intenta de nuevo.` }]);
         } finally {
             setIsLoading(false);
         }
@@ -81,8 +84,8 @@ export default function VirtualAssistant() {
                         {messages.map((m, i) => (
                             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${m.role === 'user'
-                                        ? 'bg-indigo-600 text-white rounded-tr-none'
-                                        : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-tl-none'
+                                    ? 'bg-indigo-600 text-white rounded-tr-none'
+                                    : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-tl-none'
                                     }`}>
                                     <div className="flex items-center gap-2 mb-1 opacity-70 text-[10px]">
                                         {m.role === 'user' ? <User size={10} /> : <Bot size={10} />}
