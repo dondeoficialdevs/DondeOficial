@@ -91,25 +91,21 @@ export default function HealthCheck() {
   };
 
   return (
-    <div className={`rounded-lg border p-4 ${getStatusColor()}`}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {getStatusIcon()}
-          <div>
-            <div className="font-semibold">Estado del Backend</div>
-            <div className="text-sm opacity-90">{healthStatus.message}</div>
-            {healthStatus.lastChecked && (
-              <div className="text-xs opacity-75 mt-1">
-                Última verificación: {healthStatus.lastChecked.toLocaleTimeString('es-ES')}
-              </div>
-            )}
-          </div>
+    <div className={`px-4 py-2 rounded-xl border transition-all duration-300 ${healthStatus.status === 'healthy'
+        ? 'bg-green-50/50 border-green-100/50 text-green-700'
+        : 'bg-red-50/50 border-red-100/50 text-red-700'
+      }`}>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${healthStatus.status === 'healthy' ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+            }`} />
+          <span className="text-[10px] font-black uppercase tracking-widest">
+            Supabase Connection {healthStatus.status === 'healthy' ? 'OK' : 'Error'}
+          </span>
         </div>
         <button
           onClick={checkHealth}
-          disabled={healthStatus.status === 'checking'}
-          className="px-3 py-1 text-sm font-medium rounded-md bg-white bg-opacity-50 hover:bg-opacity-75 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Verificar estado del API"
+          className="text-[9px] font-black uppercase tracking-widest bg-white px-3 py-1.5 rounded-lg border border-gray-100 hover:border-black transition-all shadow-sm"
         >
           Actualizar
         </button>

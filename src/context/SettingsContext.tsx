@@ -5,7 +5,7 @@ import { SiteSettings } from '@/types';
 import { settingsApi } from '@/lib/api';
 
 // Fallback values
-const DEFAULT_LOGO = '/images/logo/Logo_Dondel.png';
+const DEFAULT_LOGO = '/images/logo/Logo_Dondel.png'; // No lo cambio aquí pero me aseguro de que el estado inicial no lo fuerce si hay cache.
 
 const DEFAULT_SETTINGS: SiteSettings = {
     id: 0,
@@ -41,8 +41,8 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
     const [loading, setLoading] = useState(true);
-    const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO);
-    const [footerLogoUrl, setFooterLogoUrl] = useState(DEFAULT_LOGO);
+    const [logoUrl, setLogoUrl] = useState<string>('');
+    const [footerLogoUrl, setFooterLogoUrl] = useState<string>('');
 
     // Initialize from localStorage immediately to avoid flicker
     useEffect(() => {

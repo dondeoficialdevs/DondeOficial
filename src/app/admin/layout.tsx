@@ -176,20 +176,22 @@ export default function AdminLayout({
             >
               <Menu size={24} />
             </button>
-            <div className="hidden lg:flex items-center gap-3">
-              <Monitor size={18} className="text-gray-400" />
-              <p className="text-xs font-black uppercase tracking-widest text-gray-400 italic">Core Portal Access</p>
+            <div className="hidden lg:flex items-center gap-3 group">
+              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                <Monitor size={16} className="text-white" />
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 italic">Core Portal Access<span className="text-blue-600 not-italic">.</span></p>
             </div>
           </div>
 
           <div className="flex items-center gap-6">
             <HealthCheck />
             <div className="h-8 w-[1px] bg-gray-100 hidden sm:block"></div>
-            <div className="hidden sm:flex items-center gap-2">
-              <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Status</span>
-              <div className="flex items-center gap-1.5 bg-green-100 px-3 py-1 rounded-full">
-                <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
-                <span className="text-[10px] font-black text-green-700 uppercase">Live</span>
+            <div className="hidden sm:flex items-center gap-3">
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400">System Status</span>
+              <div className="flex items-center gap-2 bg-black/[0.03] px-4 py-2 rounded-xl border border-black/5 shadow-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">Live</span>
               </div>
             </div>
           </div>
