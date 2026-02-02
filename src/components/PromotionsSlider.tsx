@@ -49,7 +49,8 @@ const MOCK_PROMOTIONS: Promotion[] = [
 ];
 
 export default function PromotionsSlider() {
-    const [promotions, setPromotions] = useState<Promotion[]>(MOCK_PROMOTIONS);
+    const [promotions, setPromotions] = useState<Promotion[]>([]);
+    const [loading, setLoading] = useState(true);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -67,11 +68,13 @@ export default function PromotionsSlider() {
         const fetchPromotions = async () => {
             try {
                 const data = await promotionApi.getActive();
-                if (data && Array.isArray(data) && data.length > 0) {
+                if (data && Array.isArray(data)) {
                     setPromotions(data);
                 }
             } catch (error) {
-                console.log('Using mock promotions as fallback');
+                console.error('Error fetching promotions:', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchPromotions();
@@ -85,6 +88,12 @@ export default function PromotionsSlider() {
             return () => clearInterval(timer);
         }
     }, [nextSlide, isPaused, promotions.length]);
+
+    if (loading) return (
+        <div className="w-full h-[300px] flex items-center justify-center bg-gray-950">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+        </div>
+    );
 
     if (!promotions || promotions.length === 0) return null;
 

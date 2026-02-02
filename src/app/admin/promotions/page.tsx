@@ -112,10 +112,12 @@ export default function VitrinaAdminPage() {
         e.preventDefault();
         setSaving(true);
         try {
+            console.log('Saving promotion data:', formData);
             // Limpiar datos
             const dataToSave = {
                 ...formData,
                 business_id: formData.business_id || null, // Asegurar null si no hay id
+                priority: parseInt(formData.priority.toString()) || 0
             };
 
             if (editingId) {
@@ -126,6 +128,7 @@ export default function VitrinaAdminPage() {
                     created_at: new Date().toISOString()
                 });
             }
+            alert('Promoción guardada correctamente');
             setShowForm(false);
             setEditingId(null);
             setFormData(initialFormState);

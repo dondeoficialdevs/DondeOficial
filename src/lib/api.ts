@@ -616,6 +616,7 @@ export const promotionApi = {
   // Obtener promociones activas para el slider (que no sean popups)
   getActive: async (): Promise<Promotion[]> => {
     try {
+      // Intentar consulta completa con filtro de is_popup y orden por prioridad
       const { data, error } = await supabase
         .from('promotions')
         .select('*')
@@ -623,24 +624,32 @@ export const promotionApi = {
         .or('is_popup.is.null,is_popup.eq.false')
         .order('priority', { ascending: true });
 
-      if (error && error.message.includes('is_popup')) {
-        console.warn('is_popup column missing, falling back to generic fetch');
+      if (error) {
+        console.warn('Query with is_popup/priority failed, trying simplified fetch:', error.message);
+
+        // Fallback 1: Si falla el or() o el order(priority), intentamos solo active y created_at
         const { data: fallbackData, error: fallbackError } = await supabase
           .from('promotions')
           .select('*')
           .eq('active', true)
-          .order('priority', { ascending: true });
+          .order('created_at', { ascending: false });
+
         if (fallbackError) throw fallbackError;
-        return fallbackData || [];
+
+        // Filtrar manualmente los que sabemos que son popups si la columna existe en los datos
+        return (fallbackData || []).filter(p => !p.is_popup);
       }
 
-      if (error) throw error;
       return data || [];
     } catch (err) {
-      console.error('Error in getActive:', err);
-      // Fallback final
-      const { data } = await supabase.from('promotions').select('*').eq('active', true);
-      return data || [];
+      console.error('Final fallback error in getActive:', err);
+      // Fallback absoluto: traer todo lo activo sin filtros complejos
+      try {
+        const { data } = await supabase.from('promotions').select('*').eq('active', true);
+        return data || [];
+      } catch (e) {
+        return [];
+      }
     }
   },
 
@@ -657,11 +666,13 @@ export const promotionApi = {
         .maybeSingle();
 
       if (error) {
+        // Si la columna is_popup no existe, no hay popups
         if (error.message.includes('is_popup')) return null;
         throw error;
       }
       return data;
     } catch (err) {
+      console.error('Error in getActivePopup:', err);
       return null;
     }
   },

@@ -40,6 +40,18 @@ BEGIN
     END IF;
 END $$;
 
+-- Migration for promotions table
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'promotions' AND COLUMN_NAME = 'is_popup') THEN
+        ALTER TABLE promotions ADD COLUMN is_popup BOOLEAN DEFAULT FALSE;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'promotions' AND COLUMN_NAME = 'priority') THEN
+        ALTER TABLE promotions ADD COLUMN priority INTEGER DEFAULT 0;
+    END IF;
+END $$;
+
 -- Update existing row with default values if they are NULL (optional)
 UPDATE site_settings 
 SET 
