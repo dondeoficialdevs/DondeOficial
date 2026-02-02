@@ -757,9 +757,9 @@ export const settingsApi = {
   },
 
   // Subir nuevo logo
-  uploadLogo: async (file: File): Promise<string> => {
+  uploadLogo: async (file: File, prefix: string = 'site-logo'): Promise<string> => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `site-logo-${Math.random()}.${fileExt}`;
+    const fileName = `${prefix}-${Math.random()}.${fileExt}`;
     const filePath = `settings/${fileName}`;
 
     const { error: uploadError } = await supabase.storage

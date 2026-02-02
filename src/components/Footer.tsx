@@ -11,7 +11,7 @@ export default function Footer() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const { logoUrl, settings } = useSettings();
+  const { footerLogoUrl, settings } = useSettings();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,8 +52,8 @@ export default function Footer() {
             <div className="mb-8">
               <div className="relative w-40 h-14 transition-transform duration-300 hover:scale-105">
                 <Image
-                  src={logoUrl}
-                  alt="DondeOficial"
+                  src={footerLogoUrl}
+                  alt={settings.site_name}
                   fill
                   className="object-contain"
                   sizes="160px"
@@ -62,29 +62,45 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-xs">
-              La plataforma definitiva para descubrir los tesoros ocultos de tu ciudad.
-              Calidad, confianza y los mejores precios en un solo lugar.
+              {settings.footer_description || 'La plataforma definitiva para descubrir los tesoros ocultos de tu ciudad.'}
             </p>
 
             {/* Social Icons - Premium Style */}
             <div className="flex items-center gap-3">
               {[
                 {
-                  name: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61573619618382', icon: (
+                  name: 'Facebook',
+                  href: settings.facebook_url,
+                  enabled: !!settings.facebook_url && settings.facebook_url !== '#',
+                  icon: (
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                   )
                 },
                 {
-                  name: 'Instagram', href: 'https://www.instagram.com/dondeoficial', icon: (
+                  name: 'Instagram',
+                  href: settings.instagram_url,
+                  enabled: !!settings.instagram_url && settings.instagram_url !== '#',
+                  icon: (
                     <g><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></g>
                   )
                 },
                 {
-                  name: 'TikTok', href: '#', icon: (
+                  name: 'TikTok',
+                  href: settings.tiktok_url,
+                  enabled: !!settings.tiktok_url && settings.tiktok_url !== '#',
+                  icon: (
                     <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M15 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z M15 2v5a4 4 0 0 1-4 4" />
                   )
+                },
+                {
+                  name: 'YouTube',
+                  href: settings.youtube_url,
+                  enabled: !!settings.youtube_url && settings.youtube_url !== '#',
+                  icon: (
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z M9.75 15.02V8.48L15.45 11.75z" />
+                  )
                 }
-              ].map((social) => (
+              ].filter(social => social.enabled).map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
@@ -105,24 +121,30 @@ export default function Footer() {
           <div className="lg:ml-8">
             <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8">Contacto Directo</h4>
             <div className="space-y-5">
-              <a href="mailto:dondeoficial@gmail.com" className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20 group-hover:bg-orange-500 transition-colors">
-                  <svg className="w-4 h-4 text-orange-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              {settings.footer_email && (
+                <a href={`mailto:${settings.footer_email}`} className="flex items-center gap-4 group">
+                  <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20 group-hover:bg-orange-500 transition-colors">
+                    <svg className="w-4 h-4 text-orange-500 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  </div>
+                  <span className="text-gray-400 text-sm group-hover:text-white transition-colors">{settings.footer_email}</span>
+                </a>
+              )}
+              {settings.footer_phone && (
+                <div className="flex items-center gap-4 group">
+                  <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20">
+                    <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                  </div>
+                  <span className="text-gray-400 text-sm">{settings.footer_phone}</span>
                 </div>
-                <span className="text-gray-400 text-sm group-hover:text-white transition-colors">dondeoficial@gmail.com</span>
-              </a>
-              <div className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20">
-                  <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+              )}
+              {settings.footer_address && (
+                <div className="flex items-center gap-4 group">
+                  <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20">
+                    <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                  </div>
+                  <span className="text-gray-400 text-sm">{settings.footer_address}</span>
                 </div>
-                <span className="text-gray-400 text-sm">+57 322 411 7575</span>
-              </div>
-              <div className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center shrink-0 border border-orange-500/20">
-                  <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
-                </div>
-                <span className="text-gray-400 text-sm">Tunja, Boyacá</span>
-              </div>
+              )}
             </div>
           </div>
 
@@ -187,7 +209,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-gray-500 text-[11px] font-medium tracking-wider uppercase">
-            © 2026 DondeOficial • Todos los derechos reservados
+            © {new Date().getFullYear()} {settings.site_name} • Todos los derechos reservados
           </p>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             {[

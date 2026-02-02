@@ -126,6 +126,7 @@ export interface Promotion {
 export interface SiteSettings {
   id: number;
   logo_url: string;
+  footer_logo_url?: string;
   site_name: string;
   primary_color: string;
   secondary_color: string;
@@ -133,5 +134,13 @@ export interface SiteSettings {
   footer_color: string;
   bg_color: string;
   gradient_direction: 'horizontal' | 'vertical';
+  footer_description?: string;
+  footer_phone?: string;
+  footer_email?: string;
+  footer_address?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  tiktok_url?: string;
+  youtube_url?: string;
   updated_at?: string;
 }
