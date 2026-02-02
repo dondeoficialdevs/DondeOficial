@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import { newsletterApi } from '@/lib/api';
 import { NewsletterSubscriber } from '@/types';
-import { Search, Mail, Download, Trash2, Calendar, ChevronLeft, ChevronRight, Inbox, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Search, Mail, Download, Trash2, Calendar, ChevronLeft, ChevronRight, Inbox, CheckCircle2 } from 'lucide-react';
 
 export default function NewsletterPage() {
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
@@ -121,36 +121,36 @@ export default function NewsletterPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-10 animate-in fade-in duration-700 pb-10">
       {/* Header Section Premium */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-10">
-        <div className="space-y-3">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-6 sm:pb-10">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
-              <Mail size={24} className="text-white" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+              <Mail size={20} className="text-white sm:size-6" />
             </div>
-            <h1 className="text-4xl font-black text-gray-900 tracking-tighter uppercase italic">
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tighter uppercase italic">
               Newsletter<span className="text-blue-600 not-italic">.</span>
             </h1>
           </div>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-[0.4em] ml-1">
+          <p className="text-[10px] sm:text-sm font-bold text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.4em] ml-1">
             Subscriber List Database
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 self-start md:self-auto">
           <button
             onClick={exportToCSV}
-            className="group bg-blue-600 hover:bg-black text-white px-8 py-4 rounded-[1.5rem] flex items-center gap-3 shadow-2xl shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95 border-b-4 border-blue-800 hover:border-black"
+            className="group bg-blue-600 hover:bg-black text-white px-5 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-[1.5rem] flex items-center gap-2 sm:gap-3 shadow-2xl shadow-blue-200 transition-all hover:-translate-y-1 active:scale-95 border-b-4 border-blue-800 hover:border-black"
           >
-            <Download size={20} className="group-hover:animate-bounce" />
-            <span className="text-xs font-black uppercase tracking-[0.1em]">Export CSV</span>
+            <Download size={16} className="sm:size-5 group-hover:animate-bounce" />
+            <span className="text-[9px] sm:text-xs font-black uppercase tracking-[0.1em]">Export</span>
           </button>
 
-          <div className="bg-white px-6 py-4 rounded-[1.5rem] border border-gray-100 shadow-sm flex items-center gap-4">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs font-black uppercase tracking-widest text-gray-500">
-              {filteredSubscribers.length} Global Members
+          <div className="bg-white px-4 sm:px-6 py-2.5 sm:py-4 rounded-xl sm:rounded-[1.5rem] border border-gray-100 shadow-sm flex items-center gap-3 sm:gap-4">
+            <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-gray-500">
+              {filteredSubscribers.length} Members
             </span>
           </div>
         </div>
@@ -158,8 +158,8 @@ export default function NewsletterPage() {
 
       {/* Advanced Search Bar */}
       <div className="relative group">
-        <div className="absolute inset-y-0 left-0 pl-8 flex items-center pointer-events-none text-gray-300 group-focus-within:text-black transition-colors">
-          <Search size={22} strokeWidth={3} />
+        <div className="absolute inset-y-0 left-0 pl-6 sm:pl-8 flex items-center pointer-events-none text-gray-300 group-focus-within:text-black transition-colors">
+          <Search size={20} className="sm:size-[22px]" strokeWidth={3} />
         </div>
         <input
           type="text"
@@ -169,32 +169,32 @@ export default function NewsletterPage() {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
-          className="w-full pl-16 pr-8 py-7 bg-white border-2 border-gray-50 focus:border-black rounded-[2.5rem] outline-none text-gray-900 placeholder-gray-300 shadow-sm transition-all font-black text-lg"
+          className="w-full pl-14 sm:pl-16 pr-6 sm:pr-8 py-5 sm:py-7 bg-white border-2 border-gray-50 focus:border-black rounded-[2rem] sm:rounded-[2.5rem] outline-none text-gray-900 placeholder-gray-300 shadow-sm transition-all font-black text-base sm:text-lg"
         />
       </div>
 
       {paginatedSubscribers.length === 0 ? (
-        <div className="py-32 flex flex-col items-center justify-center bg-white rounded-[3.5rem] border-2 border-dashed border-gray-100 italic">
-          <Inbox size={64} className="text-gray-100 mb-6" />
-          <h3 className="text-2xl font-black text-gray-300 uppercase tracking-tighter">Null Data</h3>
-          <p className="text-gray-400 font-bold mt-2">No se encuentran coincidencias en el sistema</p>
+        <div className="py-20 sm:py-32 flex flex-col items-center justify-center bg-white rounded-[2.5rem] sm:rounded-[3.5rem] border-2 border-dashed border-gray-100 italic">
+          <Inbox size={48} className="text-gray-100 mb-4 sm:size-16 sm:mb-6" />
+          <h3 className="text-xl sm:text-2xl font-black text-gray-300 uppercase tracking-tighter">Null Data</h3>
+          <p className="text-xs sm:text-gray-400 font-bold mt-2">No se encuentran coincidencias en el sistema</p>
         </div>
       ) : (
-        <div className="bg-white rounded-[3.5rem] border border-gray-100 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+        <div className="bg-white rounded-[2.5rem] sm:rounded-[3.5rem] border border-gray-100 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] overflow-hidden">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full border-collapse min-w-[800px] lg:min-w-full">
               <thead>
                 <tr className="bg-gray-50/50">
-                  <th className="px-10 py-7 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                  <th className="px-6 md:px-10 py-5 sm:py-7 text-left text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
                     MEMBER IDENTIFIER
                   </th>
-                  <th className="px-10 py-7 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                  <th className="px-6 md:px-10 py-5 sm:py-7 text-left text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
                     REGISTRATION DATE
                   </th>
-                  <th className="px-10 py-7 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                  <th className="px-6 md:px-10 py-5 sm:py-7 text-left text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
                     STATUS
                   </th>
-                  <th className="px-10 py-7 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
+                  <th className="px-6 md:px-10 py-5 sm:py-7 text-right text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100">
                     OPERATIONS
                   </th>
                 </tr>
@@ -202,35 +202,35 @@ export default function NewsletterPage() {
               <tbody className="divide-y divide-gray-50">
                 {paginatedSubscribers.map((subscriber) => (
                   <tr key={subscriber.id} className="hover:bg-gray-50/80 transition-all group">
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:scale-110 group-hover:bg-white group-hover:shadow-xl transition-all duration-500">
-                          <Mail size={18} strokeWidth={2.5} />
+                    <td className="px-6 md:px-10 py-6 sm:py-8">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 rounded-[1.2rem] sm:rounded-2xl flex items-center justify-center text-gray-400 group-hover:scale-110 group-hover:bg-white group-hover:shadow-xl transition-all duration-500">
+                          <Mail size={16} className="sm:size-4.5" strokeWidth={2.5} />
                         </div>
-                        <span className="text-lg font-black text-gray-900 group-hover:text-blue-600 transition-colors">
+                        <span className="text-base sm:text-lg font-black text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
                           {subscriber.email}
                         </span>
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                        <Calendar size={14} strokeWidth={2.5} />
+                    <td className="px-6 md:px-10 py-6 sm:py-8">
+                      <div className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                        <Calendar size={12} className="sm:size-3.5" strokeWidth={2.5} />
                         {formatDate(subscriber.subscribed_at).split(' a ')[0]}
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border border-green-100">
-                        <CheckCircle2 size={12} strokeWidth={3} />
+                    <td className="px-6 md:px-10 py-6 sm:py-8">
+                      <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 bg-green-50 text-green-700 rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-[0.1em] border border-green-100">
+                        <CheckCircle2 size={10} className="sm:size-3" strokeWidth={3} />
                         Active
                       </span>
                     </td>
-                    <td className="px-10 py-8 text-right">
+                    <td className="px-6 md:px-10 py-6 sm:py-8 text-right">
                       <button
                         onClick={() => handleDelete(subscriber.id, subscriber.email)}
                         disabled={deletingId === subscriber.id}
-                        className="w-12 h-12 bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-500 hover:bg-red-50 rounded-2xl flex items-center justify-center transition-all shadow-sm hover:shadow-red-100 group/btn"
+                        className="w-10 h-10 sm:w-12 sm:h-12 bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-500 hover:bg-red-50 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all shadow-sm hover:shadow-red-100 group/btn"
                       >
-                        <Trash2 size={20} className="group-hover/btn:rotate-12 transition-transform" />
+                        <Trash2 size={18} className="sm:size-5 group-hover/btn:rotate-12 transition-transform" />
                       </button>
                     </td>
                   </tr>
@@ -241,27 +241,27 @@ export default function NewsletterPage() {
 
           {/* Pagination Refined */}
           {totalPages > 1 && (
-            <div className="px-10 py-8 bg-gray-50/30 flex items-center justify-between border-t border-gray-50">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+            <div className="px-6 sm:px-10 py-6 sm:py-8 bg-gray-50/30 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-50">
+              <span className="text-[9px] sm:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
                 {startIndex + 1}-{Math.min(endIndex, filteredSubscribers.length)} OF {filteredSubscribers.length}
               </span>
-              <div className="flex gap-4">
+              <div className="flex gap-2 sm:gap-4">
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="p-3 bg-white border border-gray-100 rounded-xl hover:border-black transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+                  className="p-2.5 sm:p-3 bg-white border border-gray-100 rounded-xl hover:border-black transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
                 >
-                  <ChevronLeft size={20} />
+                  <ChevronLeft size={18} className="sm:size-5" />
                 </button>
-                <div className="px-5 flex items-center text-sm font-black text-black bg-white border border-gray-100 rounded-xl shadow-sm tracking-widest">
+                <div className="px-4 sm:px-5 flex items-center text-xs sm:text-sm font-black text-black bg-white border border-gray-100 rounded-xl shadow-sm tracking-widest">
                   {currentPage} / {totalPages}
                 </div>
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="p-3 bg-white border border-gray-100 rounded-xl hover:border-black transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+                  className="p-2.5 sm:p-3 bg-white border border-gray-100 rounded-xl hover:border-black transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight size={18} className="sm:size-5" />
                 </button>
               </div>
             </div>
@@ -272,4 +272,3 @@ export default function NewsletterPage() {
   );
 
 }
-
