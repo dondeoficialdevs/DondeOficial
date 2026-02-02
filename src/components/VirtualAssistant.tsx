@@ -90,43 +90,43 @@ export default function VirtualAssistant() {
 
 
                     {/* Header Ultra-Premium */}
-                    <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 
-                        p-4 sm:p-5 md:p-6 text-white flex justify-between items-center relative overflow-hidden shrink-0">
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 
+                        p-3.5 sm:p-4 md:p-5 text-white flex justify-between items-center relative overflow-hidden shrink-0">
                         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)] pointer-events-none"></div>
 
                         <div className="flex items-center gap-3 sm:gap-4 relative z-10">
                             <div className="relative">
-                                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-500 to-orange-600 
-                                    rounded-xl sm:rounded-2xl overflow-hidden border-2 border-white/60 flex items-center justify-center shadow-lg relative">
+                                <div className="w-10 h-10 sm:w-11 sm:h-11 bg-white/95 
+                                    rounded-xl overflow-hidden border border-orange-200/50 flex items-center justify-center shadow-sm relative">
                                     {/* Custom Karen Icon */}
                                     <div className="relative">
-                                        <MessageCircle size={20} className="sm:w-6 sm:h-6 text-white fill-white/20" strokeWidth={2.5} />
-                                        <Sparkles size={10} className="sm:w-3 sm:h-3 text-yellow-300 fill-yellow-300 absolute -top-1 -right-1 animate-pulse" />
+                                        <MessageCircle size={18} className="sm:w-5 sm:h-5 text-orange-600" strokeWidth={2} />
+                                        <Sparkles size={8} className="sm:w-2 sm:h-2 text-orange-500 fill-orange-500 absolute -top-0.5 -right-0.5" />
                                     </div>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-emerald-400 border-[2.5px] sm:border-[3px] 
-                                    border-white rounded-full shadow-[0_0_15px_rgba(52,211,153,0.6)] animate-pulse"></div>
+                                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-500 border-2 
+                                    border-white rounded-full shadow-sm"></div>
                             </div>
                             <div>
-                                <h3 className="font-extrabold text-lg sm:text-xl tracking-tight leading-none flex items-center gap-2">
-                                    Karen <Sparkles size={14} className="sm:w-4 sm:h-4 text-yellow-300 animate-pulse fill-yellow-300" />
+                                <h3 className="font-bold text-base sm:text-lg tracking-tight leading-none flex items-center gap-1.5">
+                                    Karen AI
                                 </h3>
-                                <p className="text-[8px] sm:text-[9px] font-black text-white/70 uppercase tracking-[0.2em] mt-1 sm:mt-1.5">Soporte Premium</p>
+                                <p className="text-[10px] sm:text-[11px] font-medium text-white/80 mt-0.5">Asistente Virtual</p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-1.5 sm:gap-2 relative z-10">
                             <button
                                 onClick={() => setIsMuted(!isMuted)}
-                                className="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all active:scale-90"
+                                className="bg-white/15 hover:bg-white/25 p-1.5 rounded-lg transition-all active:scale-95"
                             >
-                                {isMuted ? <VolumeX size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Volume2 size={16} className="sm:w-[18px] sm:h-[18px]" />}
+                                {isMuted ? <VolumeX size={16} className="sm:w-[17px] sm:h-[17px]" /> : <Volume2 size={16} className="sm:w-[17px] sm:h-[17px]" />}
                             </button>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all active:scale-90"
+                                className="bg-white/15 hover:bg-white/25 p-1.5 rounded-lg transition-all active:scale-95"
                             >
-                                <X size={18} className="sm:w-5 sm:h-5" />
+                                <X size={17} className="sm:w-[18px] sm:h-[18px]" />
                             </button>
                         </div>
                     </div>
@@ -138,14 +138,14 @@ export default function VirtualAssistant() {
                         {messages.map((m: Message, i: number) => (
                             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} 
                                 animate-in slide-in-from-bottom-4 duration-500 ease-out`}>
-                                <div className={`max-w-[90%] sm:max-w-[85%] p-3.5 sm:p-4 md:p-4.5 
-                                    rounded-[1.5rem] sm:rounded-[1.8rem] md:rounded-[2rem] 
-                                    text-[12.5px] sm:text-[13px] md:text-[13.5px] leading-relaxed shadow-sm ${m.role === 'user'
-                                        ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-tr-none'
-                                        : 'bg-white text-slate-800 border border-slate-100 shadow-sm rounded-tl-none font-medium'
+                                <div className={`max-w-[85%] sm:max-w-[80%] p-3 sm:p-3.5 
+                                    rounded-2xl sm:rounded-[1.2rem] 
+                                    text-[13px] sm:text-[13.5px] leading-relaxed ${m.role === 'user'
+                                        ? 'bg-orange-500 text-white rounded-tr-md shadow-sm'
+                                        : 'bg-white text-slate-700 border border-slate-200/60 shadow-sm rounded-tl-md'
                                     }`}>
-                                    <div className="flex items-center gap-2 mb-1 sm:mb-1.5 opacity-40 
-                                        text-[7px] sm:text-[8px] font-black uppercase tracking-widest">
+                                    <div className="flex items-center gap-1.5 mb-1.5 opacity-50 
+                                        text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide">
                                         {m.role === 'user' ? 'Tú' : 'Karen'}
                                     </div>
                                     <div className="whitespace-pre-wrap">{m.content}</div>
@@ -154,13 +154,13 @@ export default function VirtualAssistant() {
                         ))}
                         {isLoading && (
                             <div className="flex justify-start animate-in fade-in duration-300">
-                                <div className="bg-white/90 backdrop-blur-md p-3.5 sm:p-4 
-                                    rounded-[1.5rem] sm:rounded-[1.8rem] rounded-tl-none border border-slate-100 
-                                    flex items-center gap-2.5 sm:gap-3 text-orange-600">
+                                <div className="bg-white p-3 sm:p-3.5 
+                                    rounded-2xl rounded-tl-md border border-slate-200/60 
+                                    flex items-center gap-2 sm:gap-2.5 text-orange-600 shadow-sm">
                                     <div className="flex space-x-1">
-                                        <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                        <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                        <div className="w-1.5 h-1.5 bg-orange-700 rounded-full animate-bounce"></div>
+                                        <div className="w-1 h-1 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                        <div className="w-1 h-1 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                        <div className="w-1 h-1 bg-orange-500 rounded-full animate-bounce"></div>
                                     </div>
                                     <span className="font-bold italic text-[10px] sm:text-[11px]">Karen escribe...</span>
                                 </div>
@@ -170,28 +170,28 @@ export default function VirtualAssistant() {
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-3 sm:p-4 md:p-6 bg-white/60 backdrop-blur-xl border-t border-slate-100 shrink-0">
-                        <div className="flex gap-2 sm:gap-2.5 md:gap-3 items-center bg-slate-100/50 p-1.5 sm:p-2 
-                            rounded-[1.2rem] sm:rounded-[1.5rem] border border-transparent focus-within:border-orange-300 
-                            focus-within:bg-white transition-all duration-300">
+                    <div className="p-3 sm:p-3.5 md:p-4 bg-white/80 backdrop-blur-xl border-t border-slate-200/60 shrink-0">
+                        <div className="flex gap-2 items-center bg-slate-50 p-2 
+                            rounded-xl border border-slate-200/60 focus-within:border-orange-400 
+                            focus-within:bg-white transition-all duration-200">
                             <input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                                 placeholder="Escribe a Karen..."
-                                className="flex-1 bg-transparent border-none rounded-xl px-2.5 sm:px-3 py-1.5 
-                                    text-[13px] sm:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400 font-bold"
+                                className="flex-1 bg-transparent border-none px-3 py-1.5 
+                                    text-sm focus:outline-none text-slate-700 placeholder:text-slate-400 font-medium"
                                 disabled={isLoading}
                             />
                             <button
                                 onClick={handleSend}
                                 disabled={isLoading || !input.trim()}
-                                className="bg-gradient-to-br from-orange-500 to-orange-600 text-white 
-                                    p-2 sm:p-2.5 rounded-xl sm:rounded-2xl shadow-lg active:scale-95 
-                                    disabled:opacity-20 transition-all duration-300"
+                                className="bg-orange-500 hover:bg-orange-600 text-white 
+                                    p-2 rounded-lg shadow-sm active:scale-95 
+                                    disabled:opacity-30 transition-all duration-200"
                             >
-                                <Send size={16} className="sm:w-[18px] sm:h-[18px]" strokeWidth={2.5} />
+                                <Send size={16} strokeWidth={2.5} />
                             </button>
                         </div>
                     </div>
@@ -201,29 +201,29 @@ export default function VirtualAssistant() {
             {/* Botón Flotante - Fijo para evitar overlap */}
             <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-24 md:right-6 z-[9999] group">
                 {!isOpen && (
-                    <div className="absolute inset-0 -m-1 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 
-                        rounded-[1.5rem] sm:rounded-[2rem] blur-md opacity-30 group-hover:opacity-100 animate-pulse transition-opacity duration-700"></div>
+                    <div className="absolute inset-0 -m-0.5 bg-orange-500/40 
+                        rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 )}
 
                 <button
                     onClick={handleInteraction}
-                    className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-[1.5rem] sm:rounded-[2rem] 
-                        shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden border-2
+                    className={`relative w-14 h-14 sm:w-[60px] sm:h-[60px] rounded-2xl 
+                        shadow-lg transition-all duration-300 flex items-center justify-center overflow-hidden
                     ${isOpen
-                            ? 'bg-white text-orange-600 scale-90 border-slate-100'
-                            : 'bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 text-white border-white/20 hover:scale-105 active:scale-95'}`}
+                            ? 'bg-white text-orange-600 scale-95 border-2 border-slate-200'
+                            : 'bg-orange-500 text-white border-2 border-orange-400/50 hover:bg-orange-600 hover:scale-105 active:scale-95'}`}
                 >
                     {isOpen ? (
-                        <X size={22} className="sm:w-[26px] sm:h-[26px] animate-in spin-in-90 duration-500" strokeWidth={2.5} />
+                        <X size={20} className="sm:w-[22px] sm:h-[22px]" strokeWidth={2.5} />
                     ) : (
-                        <div className={`relative w-full h-full flex items-center justify-center transition-all duration-500 ${isInteracting ? 'scale-125' : ''}`}>
+                        <div className={`relative w-full h-full flex items-center justify-center transition-all duration-300 ${isInteracting ? 'scale-110' : ''}`}>
                             {/* Custom Karen Icon for Floating Button */}
                             <div className="relative">
-                                <MessageCircle size={24} className="sm:w-7 sm:h-7 text-white fill-white/20" strokeWidth={2.5} />
-                                <Sparkles size={12} className="sm:w-3.5 sm:h-3.5 text-yellow-300 fill-yellow-300 absolute -top-0.5 -right-0.5 animate-pulse" />
+                                <MessageCircle size={22} className="sm:w-6 sm:h-6 text-white" strokeWidth={2.5} />
+                                <div className="absolute -top-1 -right-1 w-2 h-2 bg-white/30 rounded-full"></div>
                             </div>
-                            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-2.5 h-2.5 sm:w-3 sm:h-3 
-                                bg-emerald-400 border-2 border-white rounded-full shadow-lg animate-pulse"></div>
+                            <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 w-2 h-2 
+                                bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div>
                         </div>
                     )}
                 </button>
