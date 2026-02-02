@@ -653,27 +653,25 @@ export const promotionApi = {
     }
   },
 
-  // Obtener el popup activo actual
-  getActivePopup: async (): Promise<Promotion | null> => {
+  // Obtener todos los popups activos actuales
+  getActivePopups: async (): Promise<Promotion[]> => {
     try {
       const { data, error } = await supabase
         .from('promotions')
         .select('*')
         .eq('active', true)
         .eq('is_popup', true)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+        .order('created_at', { ascending: false });
 
       if (error) {
         // Si la columna is_popup no existe, no hay popups
-        if (error.message.includes('is_popup')) return null;
+        if (error.message.includes('is_popup')) return [];
         throw error;
       }
-      return data;
+      return data || [];
     } catch (err) {
-      console.error('Error in getActivePopup:', err);
-      return null;
+      console.error('Error in getActivePopups:', err);
+      return [];
     }
   },
 

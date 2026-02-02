@@ -96,9 +96,11 @@ export default function Home() {
         <main>
           <PromotionsSlider />
 
-          <SmartSearch
-            onSearch={(term, loc) => handleSearch(term, '', loc)}
-          />
+          <div className="hidden md:block">
+            <SmartSearch
+              onSearch={(term, loc) => handleSearch(term, '', loc)}
+            />
+          </div>
 
           <CategorySection
             categories={categories}
