@@ -144,3 +144,15 @@ export interface SiteSettings {
   youtube_url?: string;
   updated_at?: string;
 }
+
+export interface ActionCard {
+  id: number;
+  type: 'whatsapp' | 'directory';
+  title: string;
+  description: string;
+  badge_text: string;
+  image_url: string;
+  button_link: string;
+  icon_type: string;
+  updated_at?: string;
+}

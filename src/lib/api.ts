@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings } from '@/types';
+import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings, ActionCard } from '@/types';
 
 export const businessApi = {
   // Obtener todos los negocios con filtros opcionales
@@ -783,4 +783,40 @@ export const settingsApi = {
 
     return publicUrl;
   }
+};
+
+export const actionCardApi = {
+  // Obtener todas las tarjetas de acción
+  getAll: async (): Promise<ActionCard[]> => {
+    try {
+      const { data, error } = await supabase
+        .from('action_cards')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.error('Error in actionCardApi.getAll:', err);
+      return [];
+    }
+  },
+
+  // Actualizar una tarjeta por su tipo
+  update: async (type: string, updates: Partial<ActionCard>): Promise<ActionCard | null> => {
+    try {
+      const { data, error } = await supabase
+        .from('action_cards')
+        .update(updates)
+        .eq('type', type)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      console.error('Error in actionCardApi.update:', err);
+      return null;
+    }
+  },
 };
