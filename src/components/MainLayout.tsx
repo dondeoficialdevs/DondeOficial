@@ -8,6 +8,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import ThemeManager from "@/components/ThemeManager";
 import UpdateNotificationClient from "@/components/UpdateNotificationClient";
 import AnnouncementPopup from "@/components/AnnouncementPopup";
+import VirtualAssistant from "@/components/VirtualAssistant";
 import { SettingsProvider } from "@/context/SettingsContext";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <LoadingScreen />
                 <MobileNavbar />
                 <Footer />
+                <VirtualAssistant />
                 <ThemeManager />
                 <UpdateNotificationClient />
             </SettingsProvider>
