@@ -80,12 +80,19 @@ export default function VirtualAssistant() {
         <>
             {/* Ventana de Chat - Posicionada de forma independiente */}
             {isOpen && (
-                <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-24 md:right-6 z-[9999] 
-                    w-[calc(100vw-32px)] sm:w-[calc(100vw-48px)] md:w-[420px] lg:w-[440px]
-                    h-[calc(100vh-100px)] sm:h-[calc(100vh-140px)] md:h-[600px] lg:h-[650px]
-                    bg-white/95 backdrop-blur-3xl rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] 
-                    shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] md:shadow-[0_30px_90px_-15px_rgba(0,0,0,0.3)] 
-                    border border-white/50 flex flex-col overflow-hidden 
+                <div className="fixed z-[9999] flex flex-col overflow-hidden
+                    bottom-[72px] right-4 left-4
+                    sm:bottom-20 sm:right-6 sm:left-auto sm:w-[380px]
+                    md:bottom-24 md:right-6 md:w-[400px]
+                    lg:w-[420px]
+                    max-h-[calc(100vh-88px)]
+                    sm:max-h-[calc(100vh-112px)]
+                    md:max-h-[580px]
+                    lg:max-h-[620px]
+                    bg-white/95 backdrop-blur-3xl 
+                    rounded-2xl sm:rounded-[1.5rem] md:rounded-2xl
+                    shadow-[0_8px_32px_-8px_rgba(0,0,0,0.2)] md:shadow-[0_12px_48px_-12px_rgba(0,0,0,0.25)]
+                    border border-slate-200/60
                     animate-in fade-in zoom-in-95 slide-in-from-bottom-5 duration-500 origin-bottom-right">
 
 
