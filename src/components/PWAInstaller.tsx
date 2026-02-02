@@ -20,7 +20,7 @@ export default function PWAInstaller() {
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
     const isAndroidDevice = /android/.test(userAgent);
-    
+
     setIsIOS(isIOSDevice);
     setIsAndroid(isAndroidDevice);
 
@@ -99,7 +99,7 @@ export default function PWAInstaller() {
       // Para Android, usar el prompt nativo
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      
+
       console.log(`User response to install prompt: ${outcome}`);
       setDeferredPrompt(null);
       setIsInstallable(false);
@@ -109,7 +109,7 @@ export default function PWAInstaller() {
   if (!isInstallable) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 animate-bounce-in">
+    <div className="fixed bottom-[108px] sm:bottom-4 right-4 z-50 animate-bounce-in">
       {showIOSInstructions ? (
         <div className="bg-white rounded-lg shadow-2xl p-6 max-w-sm border border-gray-200">
           <button
