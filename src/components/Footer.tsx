@@ -156,6 +156,7 @@ export default function Footer() {
                 <li><Link href="/" className="text-gray-400 text-sm hover:text-orange-500 transition-colors">Inicio</Link></li>
                 <li><Link href="/listings" className="text-gray-400 text-sm hover:text-orange-500 transition-colors">Directorio</Link></li>
                 <li><Link href="/add-listing" className="text-gray-400 text-sm hover:text-orange-500 transition-colors font-bold text-orange-500/80">Anuncia aquí</Link></li>
+                <li><Link href="/admin" className="text-gray-400 text-sm hover:text-orange-500 transition-colors font-black uppercase tracking-widest text-[10px] mt-2 block opacity-50 hover:opacity-100">Acceso Admin</Link></li>
               </ul>
             </div>
             <div>
@@ -222,7 +223,7 @@ export default function Footer() {
                 key={link.name}
                 href={link.href}
                 className={`text-[10px] font-black uppercase tracking-widest transition-colors ${link.name === 'Admin'
-                  ? 'text-gray-800 hover:text-gray-700' // Extremely subtle on dark bg
+                  ? 'text-gray-400 hover:text-white' // More visible color
                   : 'text-gray-500 hover:text-white'
                   }`}
               >
