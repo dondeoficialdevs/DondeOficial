@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send, User, Loader2, Volume2, VolumeX, CircleUserRound, Sparkles } from 'lucide-react';
+import { X, Send, User, Loader2, Volume2, VolumeX, MessageCircle, Sparkles } from 'lucide-react';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -90,18 +90,22 @@ export default function VirtualAssistant() {
 
 
                     {/* Header Ultra-Premium */}
-                    <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-rose-500 
+                    <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 
                         p-4 sm:p-5 md:p-6 text-white flex justify-between items-center relative overflow-hidden shrink-0">
                         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent)] pointer-events-none"></div>
 
                         <div className="flex items-center gap-3 sm:gap-4 relative z-10">
                             <div className="relative">
-                                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-tr from-white/30 to-white/10 backdrop-blur-xl 
-                                    rounded-xl sm:rounded-2xl overflow-hidden border border-white/40 flex items-center justify-center shadow-inner">
-                                    <CircleUserRound size={32} className="sm:w-9 sm:h-9 text-white drop-shadow-xl" strokeWidth={1.5} />
+                                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-500 to-orange-600 
+                                    rounded-xl sm:rounded-2xl overflow-hidden border-2 border-white/60 flex items-center justify-center shadow-lg relative">
+                                    {/* Custom Karen Icon */}
+                                    <div className="relative">
+                                        <MessageCircle size={20} className="sm:w-6 sm:h-6 text-white fill-white/20" strokeWidth={2.5} />
+                                        <Sparkles size={10} className="sm:w-3 sm:h-3 text-yellow-300 fill-yellow-300 absolute -top-1 -right-1 animate-pulse" />
+                                    </div>
                                 </div>
                                 <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-emerald-400 border-[2.5px] sm:border-[3px] 
-                                    border-purple-700 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.6)] animate-pulse"></div>
+                                    border-white rounded-full shadow-[0_0_15px_rgba(52,211,153,0.6)] animate-pulse"></div>
                             </div>
                             <div>
                                 <h3 className="font-extrabold text-lg sm:text-xl tracking-tight leading-none flex items-center gap-2">
@@ -137,7 +141,7 @@ export default function VirtualAssistant() {
                                 <div className={`max-w-[90%] sm:max-w-[85%] p-3.5 sm:p-4 md:p-4.5 
                                     rounded-[1.5rem] sm:rounded-[1.8rem] md:rounded-[2rem] 
                                     text-[12.5px] sm:text-[13px] md:text-[13.5px] leading-relaxed shadow-sm ${m.role === 'user'
-                                        ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-tr-none'
+                                        ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-tr-none'
                                         : 'bg-white text-slate-800 border border-slate-100 shadow-sm rounded-tl-none font-medium'
                                     }`}>
                                     <div className="flex items-center gap-2 mb-1 sm:mb-1.5 opacity-40 
@@ -152,11 +156,11 @@ export default function VirtualAssistant() {
                             <div className="flex justify-start animate-in fade-in duration-300">
                                 <div className="bg-white/90 backdrop-blur-md p-3.5 sm:p-4 
                                     rounded-[1.5rem] sm:rounded-[1.8rem] rounded-tl-none border border-slate-100 
-                                    flex items-center gap-2.5 sm:gap-3 text-purple-600">
+                                    flex items-center gap-2.5 sm:gap-3 text-orange-600">
                                     <div className="flex space-x-1">
-                                        <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                        <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce"></div>
+                                        <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                        <div className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                        <div className="w-1.5 h-1.5 bg-orange-700 rounded-full animate-bounce"></div>
                                     </div>
                                     <span className="font-bold italic text-[10px] sm:text-[11px]">Karen escribe...</span>
                                 </div>
@@ -168,7 +172,7 @@ export default function VirtualAssistant() {
                     {/* Input Area */}
                     <div className="p-3 sm:p-4 md:p-6 bg-white/60 backdrop-blur-xl border-t border-slate-100 shrink-0">
                         <div className="flex gap-2 sm:gap-2.5 md:gap-3 items-center bg-slate-100/50 p-1.5 sm:p-2 
-                            rounded-[1.2rem] sm:rounded-[1.5rem] border border-transparent focus-within:border-purple-200 
+                            rounded-[1.2rem] sm:rounded-[1.5rem] border border-transparent focus-within:border-orange-300 
                             focus-within:bg-white transition-all duration-300">
                             <input
                                 type="text"
@@ -183,7 +187,7 @@ export default function VirtualAssistant() {
                             <button
                                 onClick={handleSend}
                                 disabled={isLoading || !input.trim()}
-                                className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white 
+                                className="bg-gradient-to-br from-orange-500 to-orange-600 text-white 
                                     p-2 sm:p-2.5 rounded-xl sm:rounded-2xl shadow-lg active:scale-95 
                                     disabled:opacity-20 transition-all duration-300"
                             >
@@ -197,7 +201,7 @@ export default function VirtualAssistant() {
             {/* Botón Flotante - Fijo para evitar overlap */}
             <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-24 md:right-6 z-[9999] group">
                 {!isOpen && (
-                    <div className="absolute inset-0 -m-1 bg-gradient-to-br from-indigo-500 via-purple-500 to-rose-500 
+                    <div className="absolute inset-0 -m-1 bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 
                         rounded-[1.5rem] sm:rounded-[2rem] blur-md opacity-30 group-hover:opacity-100 animate-pulse transition-opacity duration-700"></div>
                 )}
 
@@ -206,19 +210,20 @@ export default function VirtualAssistant() {
                     className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-[1.5rem] sm:rounded-[2rem] 
                         shadow-2xl transition-all duration-500 flex items-center justify-center overflow-hidden border-2
                     ${isOpen
-                            ? 'bg-white text-indigo-600 scale-90 border-slate-100'
-                            : 'bg-gradient-to-br from-indigo-600 via-purple-600 to-rose-500 text-white border-white/20 hover:scale-105 active:scale-95'}`}
+                            ? 'bg-white text-orange-600 scale-90 border-slate-100'
+                            : 'bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 text-white border-white/20 hover:scale-105 active:scale-95'}`}
                 >
                     {isOpen ? (
                         <X size={22} className="sm:w-[26px] sm:h-[26px] animate-in spin-in-90 duration-500" strokeWidth={2.5} />
                     ) : (
                         <div className={`relative w-full h-full flex items-center justify-center transition-all duration-500 ${isInteracting ? 'scale-125' : ''}`}>
-                            <div className="flex flex-col items-center gap-0.5">
-                                <CircleUserRound size={26} className="sm:w-[30px] sm:h-[30px]" strokeWidth={2} />
-                                <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-tight">Karen</span>
+                            {/* Custom Karen Icon for Floating Button */}
+                            <div className="relative">
+                                <MessageCircle size={24} className="sm:w-7 sm:h-7 text-white fill-white/20" strokeWidth={2.5} />
+                                <Sparkles size={12} className="sm:w-3.5 sm:h-3.5 text-yellow-300 fill-yellow-300 absolute -top-0.5 -right-0.5 animate-pulse" />
                             </div>
                             <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-2.5 h-2.5 sm:w-3 sm:h-3 
-                                bg-emerald-400 border-2 border-white rounded-full shadow-lg"></div>
+                                bg-emerald-400 border-2 border-white rounded-full shadow-lg animate-pulse"></div>
                         </div>
                     )}
                 </button>
