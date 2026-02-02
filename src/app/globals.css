@@ -57,6 +57,16 @@ body {
   overflow: hidden;
 }
 
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+
 /* Animaciones para el loading screen */
 @keyframes fade-in {
   0% {
