@@ -81,11 +81,11 @@ export default function VirtualAssistant() {
             {/* Ventana de Chat - Posicionada de forma independiente */}
             {isOpen && (
                 <div className="fixed z-[9999] flex flex-col overflow-hidden
-                    bottom-[72px] right-4 left-4
+                    bottom-[88px] right-4 left-4
                     sm:bottom-20 sm:right-6 sm:left-auto sm:w-[380px]
                     md:bottom-24 md:right-6 md:w-[400px]
                     lg:w-[420px]
-                    max-h-[calc(100vh-88px)]
+                    max-h-[calc(100vh-104px)]
                     sm:max-h-[calc(100vh-112px)]
                     md:max-h-[580px]
                     lg:max-h-[620px]
@@ -206,7 +206,7 @@ export default function VirtualAssistant() {
             )}
 
             {/* Botón Flotante - Fijo para evitar overlap */}
-            <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-24 md:right-6 z-[9999] group">
+            <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 md:bottom-24 md:right-6 z-[9999] group">
                 {!isOpen && (
                     <div className="absolute inset-0 -m-0.5 bg-orange-500/40 
                         rounded-2xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
