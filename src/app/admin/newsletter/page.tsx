@@ -1,8 +1,10 @@
 'use client';
-
 import { useState, useEffect } from 'react';
+
+
 import { newsletterApi } from '@/lib/api';
 import { NewsletterSubscriber } from '@/types';
+import { Search, Mail, Download, Trash2, Calendar, ChevronLeft, ChevronRight, Inbox, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function NewsletterPage() {
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
@@ -119,123 +121,147 @@ export default function NewsletterPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Suscriptores del Newsletter</h2>
-          <p className="text-gray-600 mt-1">
-            Total: {filteredSubscribers.length} suscriptor{filteredSubscribers.length !== 1 ? 'es' : ''}
-          </p>
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
+      {/* Header mejorado */}
+      <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Newsletter</h1>
+          <p className="text-gray-500 font-medium italic">Gestiona tus suscriptores</p>
         </div>
-        <div className="flex gap-3">
-          <div className="flex-1 max-w-md">
-            <input
-              type="text"
-              placeholder="Buscar por email..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+        <div className="flex items-center gap-4">
           <button
             onClick={exportToCSV}
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium whitespace-nowrap"
+            className="group bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl transition-all hover:scale-105 active:scale-95"
           >
-            Exportar CSV
+            <Download size={20} className="group-hover:bounce" />
+            <span className="text-sm font-black uppercase tracking-widest">Exportar CSV</span>
           </button>
+          <div className="bg-black text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl">
+            <Mail size={20} className="text-gray-400" />
+            <span className="text-sm font-black uppercase tracking-widest">
+              {filteredSubscribers.length} Suscriptores
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Barra de búsqueda mejorada */}
+      <div className="mb-10">
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-400 group-focus-within:text-black transition-colors">
+            <Search size={20} />
+          </div>
+          <input
+            type="text"
+            placeholder="Buscar por email..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full pl-14 pr-6 py-5 bg-white border-2 border-gray-100 focus:border-black rounded-[2rem] outline-none text-gray-800 placeholder-gray-400 shadow-sm transition-all font-bold"
+          />
         </div>
       </div>
 
       {paginatedSubscribers.length === 0 ? (
-        <div className="text-center py-12">
-          <svg
-            className="w-16 h-16 text-gray-400 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-          <p className="text-gray-500 text-lg">
-            {searchTerm ? 'No se encontraron suscriptores con ese email' : 'No hay suscriptores registrados'}
+        <div className="text-center py-24 bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full mb-6">
+            <Inbox size={40} className="text-gray-200" />
+          </div>
+          <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">Sin suscriptores</h3>
+          <p className="text-gray-500 font-medium italic">
+            {searchTerm ? 'No hay emails que coincidan con la búsqueda' : 'Aún no tienes suscriptores en tu lista'}
           </p>
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Fecha de Suscripción
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedSubscribers.map((subscriber) => (
-                  <tr key={subscriber.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{subscriber.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{formatDate(subscriber.subscribed_at)}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleDelete(subscriber.id, subscriber.email)}
-                        disabled={deletingId === subscriber.id}
-                        className="text-red-600 hover:text-red-900 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {deletingId === subscriber.id ? 'Eliminando...' : 'Eliminar'}
-                      </button>
-                    </td>
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Email del Suscriptor
+                    </th>
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Fecha de Registro
+                    </th>
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Estado
+                    </th>
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Acciones
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Paginación */}
-          {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
-                Mostrando {startIndex + 1} a {Math.min(endIndex, filteredSubscribers.length)} de {filteredSubscribers.length} suscriptores
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Anterior
-                </button>
-                <span className="px-4 py-2 text-sm font-medium text-gray-700">
-                  Página {currentPage} de {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Siguiente
-                </button>
-              </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {paginatedSubscribers.map((subscriber) => (
+                    <tr key={subscriber.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-gray-50 rounded-lg text-gray-400 group-hover:text-black transition-colors">
+                            <Mail size={16} />
+                          </div>
+                          <span className="text-base font-black text-gray-900">{subscriber.email}</span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                          <Calendar size={12} />
+                          {formatDate(subscriber.subscribed_at).split(' a ')[0]}
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest">
+                          <CheckCircle2 size={10} />
+                          Activo
+                        </span>
+                      </td>
+                      <td className="px-8 py-6">
+                        <button
+                          onClick={() => handleDelete(subscriber.id, subscriber.email)}
+                          disabled={deletingId === subscriber.id}
+                          className="p-3 bg-gray-50 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shadow-sm group/del"
+                          title="Eliminar suscriptor"
+                        >
+                          <Trash2 size={18} className="group-hover/del:scale-110 transition-transform" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
+
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="px-8 py-6 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                <div className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                  Mostrando {startIndex + 1}-{Math.min(endIndex, filteredSubscribers.length)} de {filteredSubscribers.length}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 bg-white border-2 border-gray-100 rounded-xl text-gray-600 hover:border-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <div className="px-4 flex items-center text-sm font-black text-gray-900 uppercase tracking-widest bg-white border-2 border-gray-100 rounded-xl">
+                    {currentPage} / {totalPages}
+                  </div>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 bg-white border-2 border-gray-100 rounded-xl text-gray-600 hover:border-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>

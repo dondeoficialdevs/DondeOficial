@@ -1,8 +1,10 @@
 'use client';
-
 import { useState, useEffect } from 'react';
+
+
 import { leadsApi } from '@/lib/api';
 import { Lead } from '@/types';
+import { Search, Mail, User, MessageSquare, Calendar, ChevronLeft, ChevronRight, Eye, X, Filter, Quote, ExternalLink, Inbox } from 'lucide-react';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -84,190 +86,207 @@ export default function LeadsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Leads</h2>
-          <p className="text-gray-600 mt-1">
-            Total: {filteredLeads.length} lead{filteredLeads.length !== 1 ? 's' : ''}
-          </p>
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
+      {/* Header mejorado */}
+      <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Leads</h1>
+          <p className="text-gray-500 font-medium italic">Gestión de mensajes y contactos</p>
         </div>
-        <div className="flex-1 max-w-md">
+        <div className="flex items-center gap-4">
+          <div className="bg-black text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl">
+            <Inbox size={20} className="text-gray-400" />
+            <span className="text-sm font-black uppercase tracking-widest">
+              {filteredLeads.length} Mensaje{filteredLeads.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Barra de búsqueda mejorada */}
+      <div className="mb-10">
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-400 group-focus-within:text-black transition-colors">
+            <Search size={20} />
+          </div>
           <input
             type="text"
-            placeholder="Buscar por nombre, email, asunto o mensaje..."
+            placeholder="Buscar por nombre, email, asunto o contenido..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-14 pr-6 py-5 bg-white border-2 border-gray-100 focus:border-black rounded-[2rem] outline-none text-gray-800 placeholder-gray-400 shadow-sm transition-all font-bold"
           />
         </div>
       </div>
 
       {paginatedLeads.length === 0 ? (
-        <div className="text-center py-12">
-          <svg
-            className="w-16 h-16 text-gray-400 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <p className="text-gray-500 text-lg">
-            {searchTerm ? 'No se encontraron leads con ese criterio' : 'No hay leads registrados'}
+        <div className="text-center py-24 bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100">
+          <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full mb-6">
+            <Inbox size={40} className="text-gray-200" />
+          </div>
+          <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">Buzón vacío</h3>
+          <p className="text-gray-500 font-medium italic">
+            {searchTerm ? 'No hay mensajes que coincidan con la búsqueda' : 'No has recibido mensajes todavía'}
           </p>
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nombre
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Asunto
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Fecha
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{lead.full_name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{lead.email}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-xs truncate" title={lead.subject}>
-                        {lead.subject || 'Sin asunto'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{formatDate(lead.created_at)}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => setSelectedLead(lead)}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
-                      >
-                        Ver detalles
-                      </button>
-                    </td>
+          <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Contacto
+                    </th>
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Asunto
+                    </th>
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Fecha
+                    </th>
+                    <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      Acciones
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Paginación */}
-          {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
-                Mostrando {startIndex + 1} a {Math.min(endIndex, filteredLeads.length)} de {filteredLeads.length} leads
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Anterior
-                </button>
-                <span className="px-4 py-2 text-sm font-medium text-gray-700">
-                  Página {currentPage} de {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Siguiente
-                </button>
-              </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {paginatedLeads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-8 py-6">
+                        <div className="flex flex-col">
+                          <span className="text-base font-black text-gray-900">{lead.full_name}</span>
+                          <span className="text-xs font-medium text-gray-400 flex items-center gap-1.5 mt-1 lowercase">
+                            <Mail size={12} />
+                            {lead.email}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="text-sm font-bold text-gray-600 max-w-xs truncate italic" title={lead.subject}>
+                          "{lead.subject || 'Sin asunto'}"
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                          <Calendar size={12} />
+                          {formatDate(lead.created_at).split(' a ')[0]}
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <button
+                          onClick={() => setSelectedLead(lead)}
+                          className="p-3 bg-gray-50 text-black hover:bg-black hover:text-white rounded-xl transition-all shadow-sm flex items-center gap-2 group/btn"
+                        >
+                          <Eye size={18} className="group-hover/btn:scale-110 transition-transform" />
+                          <span className="text-[10px] font-black uppercase tracking-widest">Leer</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
+
+            {/* Paginación */}
+            {totalPages > 1 && (
+              <div className="px-8 py-6 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+                <div className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                  Mostrando {startIndex + 1}-{Math.min(endIndex, filteredLeads.length)} de {filteredLeads.length}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 bg-white border-2 border-gray-100 rounded-xl text-gray-600 hover:border-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <div className="px-4 flex items-center text-sm font-black text-gray-900 uppercase tracking-widest bg-white border-2 border-gray-100 rounded-xl">
+                    {currentPage} / {totalPages}
+                  </div>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 bg-white border-2 border-gray-100 rounded-xl text-gray-600 hover:border-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </>
       )}
 
-      {/* Modal de detalles */}
+      {/* Modal de detalles Premium */}
       {selectedLead && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold text-gray-900">Detalles del Lead</h3>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[3rem] max-w-2xl w-full shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="relative">
+              {/* Header decorativo */}
+              <div className="h-32 bg-black flex items-center px-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-white flex items-center justify-center rounded-2xl shadow-xl">
+                    <User size={32} className="text-black" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-black text-white uppercase tracking-tight">{selectedLead.full_name}</h3>
+                    <p className="text-gray-400 text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                      <Mail size={12} />
+                      {selectedLead.email}
+                    </p>
+                  </div>
+                </div>
                 <button
                   onClick={() => setSelectedLead(null)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label="Cerrar"
+                  className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X size={24} />
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
-                  <p className="text-gray-900">{selectedLead.full_name}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <a
-                    href={`mailto:${selectedLead.email}`}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    {selectedLead.email}
-                  </a>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Asunto</label>
-                  <p className="text-gray-900">{selectedLead.subject || 'Sin asunto'}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Mensaje</label>
-                  <div className="bg-gray-50 rounded-md p-4">
-                    <p className="text-gray-900 whitespace-pre-wrap">{selectedLead.message}</p>
+              <div className="p-10 space-y-8">
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Asunto</div>
+                    <div className="text-sm font-bold text-gray-900">{selectedLead.subject || 'Sin asunto'}</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Fecha de Envío</div>
+                    <div className="text-sm font-bold text-gray-900">{formatDate(selectedLead.created_at)}</div>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de envío</label>
-                  <p className="text-gray-900">{formatDate(selectedLead.created_at)}</p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    <Quote size={12} />
+                    Mensaje
+                  </div>
+                  <div className="bg-gray-50 rounded-[2rem] p-8 border border-gray-100 italic">
+                    <p className="text-gray-700 font-medium leading-relaxed whitespace-pre-wrap">
+                      "{selectedLead.message}"
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setSelectedLead(null)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors font-medium"
-                >
-                  Cerrar
-                </button>
+                <div className="flex gap-4 pt-4">
+                  <a
+                    href={`mailto:${selectedLead.email}`}
+                    className="flex-1 bg-black text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] text-center hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
+                  >
+                    Responder por Email
+                  </a>
+                  <button
+                    onClick={() => setSelectedLead(null)}
+                    className="px-10 py-5 bg-gray-100 text-gray-400 hover:text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all"
+                  >
+                    Cerrar
+                  </button>
+                </div>
               </div>
             </div>
           </div>

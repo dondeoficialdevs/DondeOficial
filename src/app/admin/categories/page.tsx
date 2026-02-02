@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { categoryApi } from '@/lib/api';
 import { Category } from '@/types';
+import { Plus, Edit3, Trash2, Tag, Calendar, ChevronRight, X, AlertCircle } from 'lucide-react';
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -166,13 +167,11 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Categorías</h2>
-          <p className="text-gray-600 mt-1">
-            Total: {categories.length} categoría{categories.length !== 1 ? 's' : ''}
-          </p>
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
+      <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight">Categorías</h1>
+          <p className="text-gray-500 font-medium italic">Gestiona los sectores de los negocios</p>
         </div>
         <button
           onClick={() => {
@@ -183,60 +182,82 @@ export default function CategoriesPage() {
               setShowCreateForm(!showCreateForm);
             }
           }}
-          className={`px-4 py-2 text-white rounded-md transition-colors font-medium whitespace-nowrap ${showCreateForm ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'
+          className={`flex items-center gap-2 px-6 py-3 text-white rounded-full transition-all font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 ${showCreateForm ? 'bg-gray-800' : 'bg-black'
             }`}
         >
-          {showCreateForm ? 'Cancelar' : '+ Nueva Categoría'}
+          {showCreateForm ? (
+            <>
+              <X size={18} />
+              Cancelar
+            </>
+          ) : (
+            <>
+              <Plus size={18} />
+              Nueva Categoría
+            </>
+          )}
         </button>
       </div>
 
       {/* Formulario de creación/edición */}
       {showCreateForm && (
-        <div className="mb-6 bg-white rounded-xl p-6 border border-blue-100 shadow-sm animate-in slide-in-from-top duration-300">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
-            {isEditing ? 'Editar Categoría' : 'Crear Nueva Categoría'}
-          </h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="mb-12 bg-white rounded-[2.5rem] p-8 sm:p-10 border border-gray-100 shadow-2xl animate-in fade-in slide-in-from-top duration-500">
+          <div className="flex items-center gap-3 mb-8">
+            <div className={`p-3 rounded-2xl ${isEditing ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}`}>
+              {isEditing ? <Edit3 size={24} /> : <Plus size={24} />}
+            </div>
             <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                Nombre de la Categoría *
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all ${errors.name ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                placeholder="Ej: Restaurantes, Tiendas, etc."
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-              )}
+              <h3 className="text-xl font-black text-gray-900 uppercase tracking-tight">
+                {isEditing ? 'Editar Categoría' : 'Nueva Categoría'}
+              </h3>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Completa los campos requeridos</p>
+            </div>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">
+                  Nombre de la Categoría
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className={`w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 ${errors.name ? 'border-red-500' : ''}`}
+                  placeholder="Ej: Restaurantes, Tiendas, etc."
+                />
+                {errors.name && (
+                  <p className="mt-1 text-xs font-bold text-red-500 flex items-center gap-1">
+                    <AlertCircle size={12} />
+                    {errors.name}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="description" className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">
+                  Descripción (Opcional)
+                </label>
+                <input
+                  type="text"
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800"
+                  placeholder="Una breve descripción..."
+                />
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
-                Descripción (opcional)
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                placeholder="Descripción de la categoría..."
-              />
-            </div>
-
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-gray-100">
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-md shadow-blue-100 transition-all font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-4 bg-black text-white rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
                 {saving ? 'Guardando...' : (isEditing ? 'Actualizar Categoría' : 'Crear Categoría')}
               </button>
@@ -248,9 +269,9 @@ export default function CategoriesPage() {
                   setFormData({ name: '', description: '' });
                   setErrors({});
                 }}
-                className="px-6 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-all font-bold"
+                className="px-8 py-4 bg-gray-100 text-gray-600 rounded-2xl font-black uppercase tracking-widest hover:bg-gray-200 transition-all"
               >
-                Cancelar
+                Cerrar
               </button>
             </div>
           </form>
@@ -276,51 +297,57 @@ export default function CategoriesPage() {
           <p className="text-gray-500 text-lg">No hay categorías registradas</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="group bg-white rounded-xl p-6 border border-gray-200 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-50 transition-all duration-300 flex flex-col"
+              className="group bg-white rounded-[2rem] p-8 border border-gray-100 hover:border-black hover:shadow-2xl transition-all duration-500 flex flex-col relative overflow-hidden"
             >
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{category.name}</h3>
-                <div className="flex space-x-1">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-full -mr-16 -mt-16 group-hover:bg-black/5 transition-colors"></div>
+
+              <div className="flex justify-between items-start mb-6 relative z-10">
+                <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-black group-hover:text-white transition-all duration-500 shadow-inner">
+                  <Tag size={20} />
+                </div>
+                <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(category)}
-                    className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
                     title="Editar"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
+                    <Edit3 size={18} />
                   </button>
                   <button
                     onClick={() => handleDelete(category.id, category.name)}
-                    className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                     title="Eliminar"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
 
-              {category.description && (
-                <p className="text-sm text-gray-600 mb-6 line-clamp-3 bg-gray-50 p-3 rounded-lg border border-gray-100 flex-grow">
+              <h3 className="text-xl font-black text-gray-900 mb-3 group-hover:translate-x-1 transition-transform uppercase tracking-tight">{category.name}</h3>
+
+              {category.description ? (
+                <p className="text-sm text-gray-500 font-medium mb-8 flex-grow line-clamp-2">
                   {category.description}
                 </p>
+              ) : (
+                <div className="flex-grow mb-8 border-b-2 border-dashed border-gray-100"></div>
               )}
 
-              <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                <div className="text-[10px] uppercase tracking-wider font-bold text-gray-400">
-                  Creada {formatDate(category.created_at)}
+              <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-gray-400 border-t border-gray-50 pt-6">
+                <div className="flex items-center gap-2">
+                  <Calendar size={12} />
+                  {formatDate(category.created_at)}
                 </div>
                 <button
                   onClick={() => setSelectedCategory(category)}
-                  className="text-xs font-bold text-blue-600 hover:underline"
+                  className="flex items-center gap-1 text-black hover:gap-2 transition-all font-black"
                 >
                   Detalles
+                  <ChevronRight size={12} strokeWidth={3} />
                 </button>
               </div>
             </div>

@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { actionCardApi } from '@/lib/api';
 import { ActionCard } from '@/types';
-import { Save, AlertCircle, CheckCircle2, Info, ArrowLeft, Image as ImageIcon, Search as SearchIcon, MessageSquare } from 'lucide-react';
+import { Save, AlertCircle, CheckCircle2, Info, ArrowLeft, Image as ImageIcon, Search as SearchIcon, MessageSquare, ExternalLink } from 'lucide-react';
+import AdminImageUpload from '@/components/admin/AdminImageUpload';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -173,28 +174,17 @@ export default function ActionCardsAdmin() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2 text-left">
-                                <label className="text-sm font-black text-gray-400 uppercase tracking-widest px-2">URL de la Imagen de Fondo</label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={formData.image_url || ''}
-                                        onChange={(e) => {
-                                            setFormData({ ...formData, image_url: e.target.value });
-                                            analyzeImage(e.target.value);
-                                        }}
-                                        className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-orange-500 focus:bg-white rounded-2xl outline-none transition-all font-bold text-gray-800 pr-12"
-                                        placeholder="https://..."
-                                        required
-                                    />
-                                    <ImageIcon className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                                </div>
-                            </div>
+                            <AdminImageUpload
+                                onUploadComplete={(url) => setFormData({ ...formData, image_url: url })}
+                                currentImageUrl={formData.image_url}
+                                folder="action-cards"
+                                label="Imagen de Fondo"
+                            />
 
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="w-full py-5 bg-black text-white rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                                className="w-full py-5 bg-black text-white rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 mt-4"
                             >
                                 {saving ? (
                                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -213,7 +203,7 @@ export default function ActionCardsAdmin() {
                         <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-gray-100 flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${imageMetrics?.quality === 'excellent' ? 'bg-green-100 text-green-600' :
-                                        imageMetrics?.quality === 'ok' ? 'bg-orange-100 text-orange-600' : 'bg-red-100 text-red-600'
+                                    imageMetrics?.quality === 'ok' ? 'bg-orange-100 text-orange-600' : 'bg-red-100 text-red-600'
                                     }`}>
                                     {imageMetrics?.quality === 'excellent' ? <CheckCircle2 size={24} /> :
                                         imageMetrics?.quality === 'ok' ? <Info size={24} /> : <AlertCircle size={24} />}

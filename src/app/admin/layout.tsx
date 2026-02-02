@@ -6,6 +6,22 @@ import Link from 'next/link';
 import HealthCheck from '@/components/HealthCheck';
 import { authApi } from '@/lib/api';
 import { User } from '@/types';
+import {
+  ShieldCheck,
+  LayoutDashboard,
+  Users,
+  Mail,
+  Tags,
+  Gift,
+  CreditCard,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  ChevronRight,
+  Monitor,
+  Loader2
+} from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -14,13 +30,12 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      // Si estamos en la página de login, no verificar autenticación
       if (pathname === '/admin/login') {
         setLoading(false);
         return;
@@ -33,19 +48,11 @@ export default function AdminLayout({
       }
 
       try {
-        // Verificar que el token sea válido
         const currentUser = await authApi.verify();
         setUser(currentUser);
-        setIsAuthenticated(true);
       } catch (error) {
-        console.error('Error verificando autenticación:', error);
-        // Si hay error, limpiar y redirigir a login
-        try {
-          await authApi.logout();
-        } catch (logoutError) {
-          // Ignorar errores de logout
-          console.error('Error en logout:', logoutError);
-        }
+        console.error('Auth verification error:', error);
+        await authApi.logout();
         router.push('/admin/login');
       } finally {
         setLoading(false);
@@ -53,8 +60,7 @@ export default function AdminLayout({
     };
 
     checkAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, router]);
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -62,180 +68,140 @@ export default function AdminLayout({
   };
 
   const navItems = [
-    {
-      href: '/admin/verification',
-      label: 'Verificación',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/businesses',
-      label: 'Directorios',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/leads',
-      label: 'Leads',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/newsletter',
-      label: 'Newsletter',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/categories',
-      label: 'Categorías',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/promotions',
-      label: 'Promociones',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0h4l1 3H7l1-3h4z" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/action-cards',
-      label: 'Tarjetas Acción',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-        </svg>
-      )
-    },
-    {
-      href: '/admin/settings',
-      label: 'Configuración',
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      )
-    },
+    { href: '/admin/verification', label: 'Verificación', icon: ShieldCheck },
+    { href: '/admin/businesses', label: 'Directorio', icon: LayoutDashboard },
+    { href: '/admin/leads', label: 'Leads', icon: Users },
+    { href: '/admin/newsletter', label: 'Newsletter', icon: Mail },
+    { href: '/admin/categories', label: 'Categorías', icon: Tags },
+    { href: '/admin/promotions', label: 'Promociones', icon: Gift },
+    { href: '/admin/action-cards', label: 'Tarjetas Acción', icon: CreditCard },
+    { href: '/admin/settings', label: 'Configuración', icon: Settings },
   ];
 
+  if (pathname === '/admin/login') return <>{children}</>;
 
-  // Si estamos en login, no mostrar el layout de admin
-  if (pathname === '/admin/login') {
-    return <>{children}</>;
-  }
-
-  // Mostrar loading mientras se verifica autenticación
-  if (loading || !isAuthenticated) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Verificando autenticación...</p>
-        </div>
+        <Loader2 className="w-10 h-10 text-black animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-[#F8F9FA] flex">
+      {/* Mobile Drawer Backdrop */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] lg:hidden animate-in fade-in duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Header mejorado */}
-        <div className="mb-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200/50 p-6 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="hidden sm:flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg shadow-md">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                    Panel de Administración
-                  </h1>
-                  <p className="text-gray-600 text-sm sm:text-base mt-1">
-                    {user && (
-                      <span className="inline-flex items-center gap-2">
-                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                        {user.full_name}
-                      </span>
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden sm:block">
-                  <HealthCheck />
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-200 font-medium text-sm shadow-md hover:shadow-lg"
+      {/* Sidebar */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-[110] w-[280px] bg-black text-white px-6 py-10 transition-transform duration-500 ease-in-out lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="flex flex-col h-full">
+          {/* Brand */}
+          <div className="flex items-center gap-3 px-2 mb-12">
+            <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.2em]">DondeOficial</p>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Admin Control</p>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 space-y-1 overflow-y-auto pr-2 custom-scrollbar">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    group flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-300
+                    ${isActive ? 'bg-white text-black shadow-[0_10px_30px_rgba(255,255,255,0.1)]' : 'text-gray-400 hover:text-white hover:bg-white/5'}
+                  `}
+                  onClick={() => setIsSidebarOpen(false)}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  Cerrar Sesión
-                </button>
+                  <div className="flex items-center gap-3">
+                    <Icon size={20} className={isActive ? 'text-black' : 'text-gray-500 group-hover:text-white'} />
+                    <span className="text-sm font-bold uppercase tracking-tighter">{item.label}</span>
+                  </div>
+                  {isActive && <ChevronRight size={14} />}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User Section */}
+          <div className="mt-8 pt-8 border-t border-white/10 space-y-4 px-2">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-linear-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center border border-white/20 font-black text-xs">
+                {user?.full_name?.charAt(0)}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-black truncate">{user?.full_name}</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                  <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Online</p>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-4 bg-white/5 hover:bg-red-500/10 hover:text-red-500 text-gray-400 rounded-xl transition-all font-bold text-xs uppercase tracking-widest"
+            >
+              <LogOut size={16} />
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-screen bg-gray-50">
+        {/* Top Header */}
+        <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-6 lg:px-10 shrink-0">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-all"
+            >
+              <Menu size={24} />
+            </button>
+            <div className="hidden lg:flex items-center gap-3">
+              <Monitor size={18} className="text-gray-400" />
+              <p className="text-xs font-black uppercase tracking-widest text-gray-400 italic">Core Portal Access</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <HealthCheck />
+            <div className="h-8 w-[1px] bg-gray-100 hidden sm:block"></div>
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Status</span>
+              <div className="flex items-center gap-1.5 bg-green-100 px-3 py-1 rounded-full">
+                <div className="w-1.5 h-1.5 bg-green-600 rounded-full"></div>
+                <span className="text-[10px] font-black text-green-700 uppercase">Live</span>
               </div>
             </div>
           </div>
-        </div>
+        </header>
 
-        {/* Navegación mejorada */}
-        <nav className="mb-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200/50 p-2">
-            <div className="flex flex-wrap gap-2">
-              {navItems.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${isActive
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                      }`}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                    {isActive && (
-                      <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full"></div>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
+        {/* Content Canvas */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-12 scroll-smooth">
+          <div className="max-w-6xl mx-auto animate-in fade-in duration-700">
+            {children}
           </div>
-        </nav>
-
-        {/* Contenido mejorado */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200/50 overflow-hidden">
-          {children}
-        </div>
+        </main>
       </div>
-
     </div>
   );
 }
-

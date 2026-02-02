@@ -5,6 +5,8 @@ import { promotionApi } from '@/lib/api';
 import { supabase } from '@/lib/supabase';
 import { Promotion, Business } from '@/types';
 import Image from 'next/image';
+import AdminImageUpload from '@/components/admin/AdminImageUpload';
+import { Plus, LayoutGrid, List, Trash2, Power, Edit3, ArrowLeft, ExternalLink, AlertCircle } from 'lucide-react';
 
 export default function VitrinaAdminPage() {
     const [promotions, setPromotions] = useState<Promotion[]>([]);
@@ -303,14 +305,14 @@ export default function VitrinaAdminPage() {
                             {/* Suitability Badge */}
                             {imageMetrics.status !== 'idle' && (
                                 <div className={`p-4 rounded-2xl border-2 flex flex-col gap-2 ${imageMetrics.status === 'excellent' ? 'bg-emerald-50 border-emerald-100 text-emerald-900' :
-                                        imageMetrics.status === 'ok' ? 'bg-amber-50 border-amber-100 text-amber-900' :
-                                            'bg-red-50 border-red-100 text-red-900'
+                                    imageMetrics.status === 'ok' ? 'bg-amber-50 border-amber-100 text-amber-900' :
+                                        'bg-red-50 border-red-100 text-red-900'
                                     }`}>
                                     <div className="flex items-center justify-between font-black uppercase tracking-widest text-[10px]">
                                         <span>Medidor de Calidad</span>
                                         <span className={`px-2 py-0.5 rounded-md ${imageMetrics.status === 'excellent' ? 'bg-emerald-500 text-white' :
-                                                imageMetrics.status === 'ok' ? 'bg-amber-500 text-white' :
-                                                    'bg-red-500 text-white'
+                                            imageMetrics.status === 'ok' ? 'bg-amber-500 text-white' :
+                                                'bg-red-500 text-white'
                                             }`}>
                                             {imageMetrics.status === 'excellent' ? 'Excelente' :
                                                 imageMetrics.status === 'ok' ? 'Aceptable' : 'Baja Calidad'}
@@ -386,16 +388,27 @@ export default function VitrinaAdminPage() {
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-black text-gray-700 uppercase tracking-wider block">URL de Imagen</label>
-                                <input
-                                    type="url"
-                                    required
-                                    value={formData.image_url}
-                                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                                    className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-blue-500 rounded-2xl outline-none transition-all font-bold text-gray-900"
-                                    placeholder="https://..."
+                            <div className="space-y-6">
+                                <AdminImageUpload
+                                    onUploadComplete={(url) => setFormData({ ...formData, image_url: url })}
+                                    currentImageUrl={formData.image_url}
+                                    folder="promotions"
+                                    label="Imagen de la Promoción"
                                 />
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest px-1">Negocio Vinculado (Opcional)</label>
+                                    <select
+                                        value={formData.business_id || ''}
+                                        onChange={(e) => setFormData({ ...formData, business_id: e.target.value ? Number(e.target.value) : null })}
+                                        className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 appearance-none"
+                                    >
+                                        <option value="">Seleccionar negocio...</option>
+                                        {businesses.map((b) => (
+                                            <option key={b.id} value={b.id}>{b.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="space-y-2">
