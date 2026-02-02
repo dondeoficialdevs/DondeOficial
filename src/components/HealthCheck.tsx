@@ -92,15 +92,15 @@ export default function HealthCheck() {
 
   return (
     <div className={`px-4 py-2 rounded-xl border transition-all duration-300 ${healthStatus.status === 'healthy'
-        ? 'bg-green-50/50 border-green-100/50 text-green-700'
-        : 'bg-red-50/50 border-red-100/50 text-red-700'
+      ? 'bg-green-50/50 border-green-100/50 text-green-700'
+      : 'bg-red-50/50 border-red-100/50 text-red-700'
       }`}>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${healthStatus.status === 'healthy' ? 'bg-green-500 animate-pulse' : 'bg-red-500'
             }`} />
           <span className="text-[10px] font-black uppercase tracking-widest">
-            Supabase Connection {healthStatus.status === 'healthy' ? 'OK' : 'Error'}
+            Conexión con Supabase {healthStatus.status === 'healthy' ? 'Estable' : 'Error'}
           </span>
         </div>
         <button

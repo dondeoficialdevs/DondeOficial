@@ -111,7 +111,7 @@ export default function AdminLayout({
             </div>
             <div>
               <p className="text-sm font-black uppercase tracking-[0.2em]">DondeOficial</p>
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Admin Control</p>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Panel de Control</p>
             </div>
           </div>
 
@@ -180,7 +180,7 @@ export default function AdminLayout({
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300">
                 <Monitor size={16} className="text-white" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 italic">Core Portal Access<span className="text-blue-600 not-italic">.</span></p>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-900 italic">Acceso al Portal Principal<span className="text-blue-600 not-italic">.</span></p>
             </div>
           </div>
 
@@ -188,10 +188,10 @@ export default function AdminLayout({
             <HealthCheck />
             <div className="h-8 w-[1px] bg-gray-100 hidden sm:block"></div>
             <div className="hidden sm:flex items-center gap-3">
-              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400">System Status</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400">Estado del Sistema</span>
               <div className="flex items-center gap-2 bg-black/[0.03] px-4 py-2 rounded-xl border border-black/5 shadow-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-                <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">Live</span>
+                <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">EN LINEA</span>
               </div>
             </div>
           </div>
