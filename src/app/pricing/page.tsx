@@ -34,6 +34,14 @@ export default function PricingPage() {
         }
     };
 
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            maximumFractionDigits: 0
+        }).format(price);
+    };
+
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-white">
             <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
@@ -111,12 +119,12 @@ export default function PricingPage() {
                             </div>
 
                             <div className="mb-10 text-center">
-                                <div className="flex items-baseline justify-center gap-2">
-                                    <span className="text-6xl font-black tracking-tighter">
-                                        ${billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price}
+                                <div className="flex flex-col items-center gap-1">
+                                    <span className="text-5xl font-black tracking-tighter">
+                                        {formatPrice(billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price)}
                                     </span>
-                                    <span className={`text-xs font-black uppercase tracking-widest opacity-60`}>
-                                        / {billingCycle === 'monthly' ? 'mes' : 'año'}
+                                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">
+                                        COP / {billingCycle === 'monthly' ? 'mes' : 'año'}
                                     </span>
                                 </div>
                             </div>

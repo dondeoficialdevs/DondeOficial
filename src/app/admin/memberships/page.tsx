@@ -304,9 +304,11 @@ export default function MembershipsPage() {
                         </div>
 
                         <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">{plan.name}</h3>
-                        <div className="flex items-center gap-2 mb-6">
-                            <span className="text-3xl font-black text-black">${plan.monthly_price}</span>
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">/ Mes</span>
+                        <div className="flex flex-col mb-6">
+                            <span className="text-2xl font-black text-black">
+                                {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(plan.monthly_price)}
+                            </span>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">COP / Mes</span>
                         </div>
 
                         <p className="text-sm text-gray-500 font-medium mb-8 leading-relaxed italic">{plan.description}</p>

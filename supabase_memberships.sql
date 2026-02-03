@@ -29,7 +29,7 @@ END $$;
 -- Seed initial plans
 INSERT INTO membership_plans (name, level, monthly_price, yearly_price, description, features, badge_text, is_popular)
 VALUES 
-('Básico', 1, 0.00, 0.00, 'Presencia esencial en nuestro directorio comercial.', ARRAY['Listado estandard', 'Información de contacto', '1 Foto de perfil', 'Mapa de ubicación'], 'GRATIS', false),
-('Destacado (Slider)', 2, 49.90, 490.00, 'Visibilidad premium en nuestro carrusel principal.', ARRAY['Todo lo del plan Básico', 'Presencia en el Slider principal', 'Hasta 10 fotos', 'Botón directo a WhatsApp', 'Soporte prioritario'], 'RECOMENDADO', true),
-('Elite (Pop-up)', 3, 99.90, 990.00, 'Máximo impacto con anuncios emergentes exclusivos.', ARRAY['Todo lo del plan Slider', 'Anuncios Pop-up emergentes', 'Perfil verificado premium', 'Estadísticas de visitas', 'Publicidad en Redes Sociales'], 'MÁXIMO NIVEL', false)
+('Básico', 1, 0, 0, 'Presencia esencial en nuestro directorio comercial.', ARRAY['Listado estandard', 'Información de contacto', '1 Foto de perfil', 'Mapa de ubicación'], 'GRATIS', false),
+('Destacado (Slider)', 2, 49900, 499000, 'Visibilidad premium en nuestro carrusel principal.', ARRAY['Todo lo del plan Básico', 'Presencia en el Slider principal', 'Hasta 10 fotos', 'Botón directo a WhatsApp', 'Soporte prioritario'], 'RECOMENDADO', true),
+('Elite (Pop-up)', 3, 99900, 999000, 'Máximo impacto con anuncios emergentes exclusivos.', ARRAY['Todo lo del plan Slider', 'Anuncios Pop-up emergentes', 'Perfil verificado premium', 'Estadísticas de visitas', 'Publicidad en Redes Sociales'], 'MÁXIMO NIVEL', false)
 ON CONFLICT DO NOTHING;
