@@ -41,8 +41,8 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
     const [loading, setLoading] = useState(true);
-    const [logoUrl, setLogoUrl] = useState<string>('');
-    const [footerLogoUrl, setFooterLogoUrl] = useState<string>('');
+    const [logoUrl, setLogoUrl] = useState<string>(DEFAULT_LOGO);
+    const [footerLogoUrl, setFooterLogoUrl] = useState<string>(DEFAULT_LOGO);
 
     // Initialize from localStorage immediately to avoid flicker
     useEffect(() => {

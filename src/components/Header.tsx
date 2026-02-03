@@ -24,15 +24,17 @@ export default function Header() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center group">
               <div className="relative w-32 h-10 sm:w-40 sm:h-12 md:w-48 md:h-16 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
-                <Image
-                  src={logoUrl}
-                  alt="DondeOficial Logo"
-                  fill
-                  className="object-contain" // Keep aspect ratio
-                  priority
-                  sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
-                  unoptimized={true}
-                />
+                {logoUrl && (
+                  <Image
+                    src={logoUrl}
+                    alt="DondeOficial Logo"
+                    fill
+                    className="object-contain" // Keep aspect ratio
+                    priority
+                    sizes="(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
+                    unoptimized={true}
+                  />
+                )}
                 <span className="sr-only">DondeOficial</span>
               </div>
             </Link>

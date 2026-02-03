@@ -51,14 +51,16 @@ export default function Footer() {
           <div className="col-span-1 lg:col-span-1">
             <div className="mb-8">
               <div className="relative w-40 h-14 transition-transform duration-300 hover:scale-105">
-                <Image
-                  src={footerLogoUrl}
-                  alt={settings.site_name}
-                  fill
-                  className="object-contain"
-                  sizes="160px"
-                  unoptimized={true}
-                />
+                {footerLogoUrl && (
+                  <Image
+                    src={footerLogoUrl}
+                    alt={settings.site_name}
+                    fill
+                    className="object-contain"
+                    sizes="160px"
+                    unoptimized={true}
+                  />
+                )}
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-8 max-w-xs">
