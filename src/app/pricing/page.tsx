@@ -141,7 +141,7 @@ export default function PricingPage() {
                             </div>
 
                             <Link
-                                href={`/admin/businesses/new?plan=${plan.id}`}
+                                href={`/checkout/${plan.id}?cycle=${billingCycle}`}
                                 className={`
                   w-full py-5 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all duration-300
                   ${plan.is_popular

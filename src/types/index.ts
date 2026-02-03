@@ -52,6 +52,21 @@ export interface MembershipPlan {
   updated_at: string;
 }
 
+export interface MembershipRequest {
+  id: string;
+  business_name: string;
+  client_email: string;
+  client_phone?: string;
+  plan_id: number;
+  billing_cycle: 'monthly' | 'yearly';
+  total_price: number;
+  status: 'pending' | 'completed' | 'cancelled';
+  business_id?: number;
+  created_at: string;
+  updated_at: string;
+  plan?: MembershipPlan;
+}
+
 export interface Category {
   id: number;
   name: string;

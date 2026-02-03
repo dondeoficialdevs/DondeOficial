@@ -78,6 +78,7 @@ export default function AdminLayout({
     { href: '/admin/promotions', label: 'Promociones', icon: Gift },
     { href: '/admin/action-cards', label: 'Tarjetas Acción', icon: CreditCard },
     { href: '/admin/memberships', label: 'Membresías', icon: Crown },
+    { href: '/admin/payments', label: 'Pagos', icon: CreditCard },
     { href: '/admin/settings', label: 'Configuración', icon: Settings },
   ];
 

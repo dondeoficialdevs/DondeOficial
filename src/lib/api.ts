@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings, ActionCard, MembershipPlan } from '@/types';
+import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings, ActionCard, MembershipPlan, MembershipRequest } from '@/types';
 
 export const businessApi = {
   // Obtener todos los negocios con filtros opcionales
@@ -901,6 +901,51 @@ export const membershipApi = {
       .from('membership_plans')
       .delete()
       .eq('id', id);
+    if (error) throw error;
+  }
+};
+
+export const membershipRequestApi = {
+  // Crear una solicitud de membresía
+  create: async (request: Partial<MembershipRequest>): Promise<MembershipRequest> => {
+    const { data, error } = await supabase
+      .from('membership_requests')
+      .insert([request])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as MembershipRequest;
+  },
+
+  // Obtener todas las solicitudes (admin)
+  getAll: async (): Promise<MembershipRequest[]> => {
+    const { data, error } = await supabase
+      .from('membership_requests')
+      .select('*, plan:membership_plans(*)')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return (data || []) as MembershipRequest[];
+  },
+
+  // Actualizar estado de la solicitud
+  updateStatus: async (id: string, status: 'pending' | 'completed' | 'cancelled'): Promise<void> => {
+    const { error } = await supabase
+      .from('membership_requests')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) throw error;
+  },
+
+  // Eliminar solicitud
+  delete: async (id: string): Promise<void> => {
+    const { error } = await supabase
+      .from('membership_requests')
+      .delete()
+      .eq('id', id);
+
     if (error) throw error;
   }
 };

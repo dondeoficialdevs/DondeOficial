@@ -26,6 +26,26 @@ BEGIN
     END IF;
 END $$;
 
+-- Ensure membership_plans.level is unique (required for ON CONFLICT)
+DO $$
+BEGIN
+    -- Optional: Clean up duplicates if they exist (keep only the first one of each level)
+    DELETE FROM membership_plans 
+    WHERE id NOT IN (
+      SELECT min(id) FROM membership_plans GROUP BY level
+    );
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint 
+        WHERE conname = 'membership_plans_level_key' 
+        OR (contype = 'u' AND conrelid = 'membership_plans'::regclass AND (pg_get_constraintdef(oid) LIKE '%(level)%'))
+    ) THEN
+        ALTER TABLE membership_plans ADD CONSTRAINT membership_plans_level_key UNIQUE (level);
+    END IF;
+EXCEPTION
+    WHEN others THEN NULL; -- Ignore if already exists or other issues
+END $$;
+
 -- Seed initial plans
 INSERT INTO membership_plans (name, level, monthly_price, yearly_price, description, features, badge_text, is_popular)
 VALUES 
@@ -41,3 +61,18 @@ ON CONFLICT (level) DO UPDATE SET
     badge_text = EXCLUDED.badge_text,
     is_popular = EXCLUDED.is_popular,
     updated_at = CURRENT_TIMESTAMP;
+
+-- Create membership_requests table for checkout flow
+CREATE TABLE IF NOT EXISTS membership_requests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    business_name TEXT NOT NULL,
+    client_email TEXT NOT NULL,
+    client_phone TEXT,
+    plan_id INTEGER NOT NULL REFERENCES membership_plans(id),
+    billing_cycle TEXT NOT NULL CHECK (billing_cycle IN ('monthly', 'yearly')),
+    total_price DECIMAL(15, 2) NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'cancelled')),
+    business_id INTEGER,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
