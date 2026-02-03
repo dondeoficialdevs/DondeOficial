@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings, ActionCard } from '@/types';
+import { Business, BusinessImage, Category, ApiResponse, BusinessFilters, Lead, NewsletterSubscriber, LoginResponse, User, Review, ReviewRating, Promotion, SiteSettings, ActionCard, MembershipPlan } from '@/types';
 
 export const businessApi = {
   // Obtener todos los negocios con filtros opcionales
@@ -41,7 +41,8 @@ export const businessApi = {
     return ((data as unknown as BusinessWithRelations[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
-      images: b.business_images
+      images: b.business_images,
+      level: b.level || 1
     }));
   },
 
@@ -224,7 +225,8 @@ export const businessApi = {
     return ((data as unknown as AdminBusiness[]) || []).map((b) => ({
       ...b,
       category_name: b.categories?.name,
-      images: b.business_images || b.images || []
+      images: b.business_images || b.images || [],
+      level: b.level || 1
     }));
   },
 
@@ -253,7 +255,8 @@ export const businessApi = {
       return {
         ...b,
         category_name: b.categories?.name,
-        images: Array.isArray(foundImages) ? foundImages : []
+        images: Array.isArray(foundImages) ? foundImages : [],
+        level: b.level || 1
       };
     });
   },
@@ -844,4 +847,60 @@ export const storageApi = {
       return null;
     }
   },
+};
+
+export const membershipApi = {
+  // Obtener todos los planes de membresía
+  getAll: async (): Promise<MembershipPlan[]> => {
+    const { data, error } = await supabase
+      .from('membership_plans')
+      .select('*')
+      .order('level', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Obtener un plan por ID
+  getById: async (id: number): Promise<MembershipPlan> => {
+    const { data, error } = await supabase
+      .from('membership_plans')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  // Crear o actualizar un plan
+  save: async (plan: Partial<MembershipPlan>): Promise<MembershipPlan> => {
+    if (plan.id) {
+      const { data, error } = await supabase
+        .from('membership_plans')
+        .update(plan)
+        .eq('id', plan.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    } else {
+      const { data, error } = await supabase
+        .from('membership_plans')
+        .insert([plan])
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    }
+  },
+
+  // Eliminar un plan
+  delete: async (id: number): Promise<void> => {
+    const { error } = await supabase
+      .from('membership_plans')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  }
 };

@@ -165,7 +165,7 @@ export default function LoginPage() {
                   <Loader2 className="w-6 h-6 animate-spin text-orange-500 group-hover/btn:text-white" />
                 ) : (
                   <>
-                    <span>Initialize Portal</span>
+                    <span>Acceder</span>
                     <LogIn size={20} strokeWidth={3} className="group-hover/btn:translate-x-1 transition-transform" />
                   </>
                 )}

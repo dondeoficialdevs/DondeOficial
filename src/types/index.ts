@@ -31,6 +31,23 @@ export interface Business {
   offer_price?: number;
   has_offer?: boolean | string | number;
   offer_description?: string;
+  level?: 1 | 2 | 3;
+  membership_id?: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MembershipPlan {
+  id: number;
+  name: string;
+  level: 1 | 2 | 3;
+  monthly_price: number;
+  yearly_price: number;
+  description: string;
+  features: string[];
+  badge_text?: string;
+  is_popular?: boolean;
+  active: boolean;
   created_at: string;
   updated_at: string;
 }

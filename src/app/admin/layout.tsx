@@ -20,7 +20,8 @@ import {
   X,
   ChevronRight,
   Monitor,
-  Loader2
+  Loader2,
+  Crown
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -76,6 +77,7 @@ export default function AdminLayout({
     { href: '/admin/categories', label: 'Categorías', icon: Tags },
     { href: '/admin/promotions', label: 'Promociones', icon: Gift },
     { href: '/admin/action-cards', label: 'Tarjetas Acción', icon: CreditCard },
+    { href: '/admin/memberships', label: 'Membresías', icon: Crown },
     { href: '/admin/settings', label: 'Configuración', icon: Settings },
   ];
 
