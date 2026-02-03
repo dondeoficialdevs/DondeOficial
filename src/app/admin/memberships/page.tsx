@@ -114,11 +114,9 @@ export default function MembershipsPage() {
         }
     };
 
-    if (loading) return (
-        <div className="p-8 flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
-        </div>
-    );
+    <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+    </div>
 
     return (
         <div className="p-4 sm:p-8 max-w-7xl mx-auto">
@@ -296,7 +294,7 @@ export default function MembershipsPage() {
                         )}
 
                         <div className="flex justify-between items-start mb-6">
-                            <div className={`p-4 rounded-2xl ${plan.level === 3 ? 'bg-purple-100 text-purple-600' : plan.level === 2 ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+                            <div className={`p-4 rounded-2xl ${plan.level === 3 ? 'bg-orange-600 text-white' : plan.level === 2 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
                                 <Crown size={24} />
                             </div>
                             <div className="flex gap-2">
@@ -316,7 +314,7 @@ export default function MembershipsPage() {
                         <div className="space-y-3 mb-8 flex-grow">
                             {plan.features.map((f, i) => (
                                 <div key={i} className="flex items-center gap-3 text-sm font-bold text-gray-700">
-                                    <CheckCircle2 size={16} className="text-emerald-500" />
+                                    <CheckCircle2 size={16} className="text-orange-500" />
                                     {f}
                                 </div>
                             ))}
@@ -327,7 +325,7 @@ export default function MembershipsPage() {
                                 <Calendar size={12} />
                                 Nivel {plan.level}
                             </div>
-                            <div className={`flex items-center gap-1 ${plan.active ? 'text-emerald-500' : 'text-red-500'}`}>
+                            <div className={`flex items-center gap-1 ${plan.active ? 'text-orange-600' : 'text-gray-400'}`}>
                                 {plan.active ? 'Activo' : 'Inactivo'}
                             </div>
                         </div>

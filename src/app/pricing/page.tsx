@@ -29,14 +29,14 @@ export default function PricingPage() {
         switch (level) {
             case 1: return <Shield className="w-10 h-10 text-gray-400" />;
             case 2: return <Star className="w-10 h-10 text-orange-500" />;
-            case 3: return <Crown className="w-10 h-10 text-purple-600" />;
-            default: return <Zap className="w-10 h-10 text-blue-500" />;
+            case 3: return <Crown className="w-10 h-10 text-orange-500" />;
+            default: return <Zap className="w-10 h-10 text-orange-500" />;
         }
     };
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-white">
-            <Loader2 className="w-12 h-12 text-black animate-spin" />
+            <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
         </div>
     );
 
@@ -44,15 +44,15 @@ export default function PricingPage() {
         <div className="min-h-screen bg-white">
             {/* Hero Section */}
             <section className="relative pt-24 pb-20 overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-linear-to-b from-gray-50 to-transparent rounded-full blur-3xl -z-10 opacity-60"></div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-linear-to-b from-orange-50 to-transparent rounded-full blur-3xl -z-10 opacity-40"></div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-8 animate-in fade-in slide-in-from-bottom duration-700">
                         <Zap size={14} className="text-orange-500" />
                         Impulsa tu Negocio
                     </div>
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 mb-8 tracking-tighter leading-[0.9] animate-in fade-in slide-in-from-bottom duration-700 delay-100">
-                        Planes de <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-600 to-purple-600">Publicidad</span>
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 mb-8 tracking-tighter leading-[0.9] animate-in fade-in slide-in-from-bottom duration-700 delay-100 uppercase">
+                        Planes de <span className="text-orange-600">Publicidad</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto mb-12 font-medium leading-relaxed animate-in fade-in slide-in-from-bottom duration-700 delay-200">
                         Elige el nivel de visibilidad perfecto para tu negocio y empieza a recibir más clientes hoy mismo.
@@ -69,7 +69,7 @@ export default function PricingPage() {
                         </button>
                         <div className="flex items-center gap-3">
                             <span className={`text-sm font-black uppercase tracking-widest ${billingCycle === 'yearly' ? 'text-black' : 'text-gray-400'}`}>Anual</span>
-                            <span className="px-3 py-1 bg-emerald-100 text-emerald-600 text-[10px] font-black rounded-full uppercase tracking-tighter">Ahorra 20%</span>
+                            <span className="px-3 py-1 bg-orange-100 text-orange-600 text-[10px] font-black rounded-full uppercase tracking-tighter border border-orange-200">Ahorra 20%</span>
                         </div>
                     </div>
                 </div>
@@ -97,21 +97,21 @@ export default function PricingPage() {
                                 </div>
                             )}
 
-                            <div className="mb-10">
+                            <div className="mb-10 text-center">
                                 <div className={`
-                  mb-8 w-16 h-16 rounded-3xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6
-                  ${plan.is_popular ? 'bg-white/10' : 'bg-gray-50 shadow-inner'}
+                  mb-8 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6
+                  ${plan.is_popular ? 'bg-white/10' : 'bg-orange-50 shadow-inner'}
                 `}>
                                     {getIcon(plan.level)}
                                 </div>
                                 <h3 className="text-3xl font-black uppercase tracking-tight mb-4">{plan.name}</h3>
-                                <p className={`text-sm font-medium leading-relaxed opacity-70 ${plan.is_popular ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <p className={`text-sm font-medium leading-relaxed opacity-70 italic ${plan.is_popular ? 'text-gray-400' : 'text-gray-600'}`}>
                                     {plan.description}
                                 </p>
                             </div>
 
-                            <div className="mb-10">
-                                <div className="flex items-baseline gap-2">
+                            <div className="mb-10 text-center">
+                                <div className="flex items-baseline justify-center gap-2">
                                     <span className="text-6xl font-black tracking-tighter">
                                         ${billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price}
                                     </span>
@@ -137,8 +137,8 @@ export default function PricingPage() {
                                 className={`
                   w-full py-5 rounded-[2rem] font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 transition-all duration-300
                   ${plan.is_popular
-                                        ? 'bg-white text-black hover:bg-orange-500 hover:text-white'
-                                        : 'bg-black text-white hover:bg-gray-800 shadow-xl'
+                                        ? 'bg-orange-600 text-white hover:bg-orange-500 shadow-[0_10px_20px_rgba(234,88,12,0.3)]'
+                                        : 'bg-black text-white hover:bg-orange-600 shadow-xl'
                                     }
                 `}
                             >
@@ -151,23 +151,23 @@ export default function PricingPage() {
             </section>
 
             {/* Comparison Section (Simplified) */}
-            <section className="py-32 bg-gray-50">
+            <section className="py-32 bg-gray-50 border-y border-gray-100">
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <h2 className="text-4xl font-black mb-16 uppercase tracking-tight">¿Por qué anunciarte con nosotros?</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
-                        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm">
+                        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:border-orange-200 transition-colors">
                             <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
                                 <Rocket size={24} />
                             </div>
                             <h4 className="text-xl font-black mb-4 uppercase">Visibilidad Masiva</h4>
-                            <p className="text-gray-500 font-medium italic">Tu negocio llegará a miles de personas que buscan servicios en tu zona diariamente.</p>
+                            <p className="text-gray-500 font-medium italic leading-relaxed">Tu negocio llegará a miles de personas que buscan servicios en tu zona diariamente.</p>
                         </div>
-                        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm">
-                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 hover:border-orange-200 transition-colors">
+                            <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
                                 <Shield size={24} />
                             </div>
                             <h4 className="text-xl font-black mb-4 uppercase">Confianza Total</h4>
-                            <p className="text-gray-500 font-medium italic">Un perfil en nuestro directorio otorga autoridad y confianza a tus clientes potenciales.</p>
+                            <p className="text-gray-500 font-medium italic leading-relaxed">Un perfil en nuestro directorio otorga autoridad y confianza a tus clientes potenciales.</p>
                         </div>
                     </div>
                 </div>
@@ -175,11 +175,11 @@ export default function PricingPage() {
 
             {/* Footer CTA */}
             <section className="py-24 bg-black text-white text-center overflow-hidden relative">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(255,165,0,0.1)_0%,_transparent_70%)]"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_rgba(234,88,12,0.15)_0%,_transparent_70%)]"></div>
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter uppercase italic">¿Listo para <span className="text-orange-500">crecer?</span></h2>
                     <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 font-medium">No esperes más para darle a su negocio la importancia que se merece.</p>
-                    <button className="px-12 py-6 bg-white text-black font-black uppercase tracking-widest rounded-full hover:scale-110 active:scale-95 transition-all shadow-2xl">
+                    <button className="px-12 py-6 bg-orange-600 text-white font-black uppercase tracking-widest rounded-full hover:scale-110 active:scale-95 transition-all shadow-2xl hover:bg-orange-500">
                         Contactar Soporte
                     </button>
                 </div>
