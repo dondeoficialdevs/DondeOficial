@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS membership_plans (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    level INTEGER NOT NULL CHECK (level IN (1, 2, 3)),
+    level INTEGER NOT NULL UNIQUE CHECK (level IN (1, 2, 3)),
     monthly_price DECIMAL(10, 2) NOT NULL,
     yearly_price DECIMAL(10, 2) NOT NULL,
     description TEXT,
@@ -32,4 +32,12 @@ VALUES
 ('Básico', 1, 0, 0, 'Presencia esencial en nuestro directorio comercial.', ARRAY['Listado estandard', 'Información de contacto', '1 Foto de perfil', 'Mapa de ubicación'], 'GRATIS', false),
 ('Destacado (Slider)', 2, 49900, 499000, 'Visibilidad premium en nuestro carrusel principal.', ARRAY['Todo lo del plan Básico', 'Presencia en el Slider principal', 'Hasta 10 fotos', 'Botón directo a WhatsApp', 'Soporte prioritario'], 'RECOMENDADO', true),
 ('Elite (Pop-up)', 3, 99900, 999000, 'Máximo impacto con anuncios emergentes exclusivos.', ARRAY['Todo lo del plan Slider', 'Anuncios Pop-up emergentes', 'Perfil verificado premium', 'Estadísticas de visitas', 'Publicidad en Redes Sociales'], 'MÁXIMO NIVEL', false)
-ON CONFLICT DO NOTHING;
+ON CONFLICT (level) DO UPDATE SET
+    name = EXCLUDED.name,
+    monthly_price = EXCLUDED.monthly_price,
+    yearly_price = EXCLUDED.yearly_price,
+    description = EXCLUDED.description,
+    features = EXCLUDED.features,
+    badge_text = EXCLUDED.badge_text,
+    is_popular = EXCLUDED.is_popular,
+    updated_at = CURRENT_TIMESTAMP;

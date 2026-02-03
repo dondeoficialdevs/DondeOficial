@@ -51,6 +51,14 @@ export default function MembershipsPage() {
         setFormData(prev => ({ ...prev, [name]: val }));
     };
 
+    const formatCOP = (val: number) => {
+        return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            maximumFractionDigits: 0
+        }).format(val || 0);
+    };
+
     const addFeature = () => {
         if (featureInput.trim()) {
             setFormData(prev => ({
@@ -183,26 +191,40 @@ export default function MembershipsPage() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Precio Mensual ($)</label>
-                                <input
-                                    type="number"
-                                    name="monthly_price"
-                                    value={formData.monthly_price}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800"
-                                />
+                                <div className="flex justify-between items-center">
+                                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Precio Mensual</label>
+                                    <span className="text-xs font-bold text-orange-600 italic">{formatCOP(formData.monthly_price || 0)}</span>
+                                </div>
+                                <div className="relative">
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">COP $</span>
+                                    <input
+                                        type="number"
+                                        name="monthly_price"
+                                        value={formData.monthly_price}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full pl-20 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800"
+                                        placeholder="0"
+                                    />
+                                </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Precio Anual ($)</label>
-                                <input
-                                    type="number"
-                                    name="yearly_price"
-                                    value={formData.yearly_price}
-                                    onChange={handleInputChange}
-                                    required
-                                    className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800"
-                                />
+                                <div className="flex justify-between items-center">
+                                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Precio Anual</label>
+                                    <span className="text-xs font-bold text-orange-600 italic">{formatCOP(formData.yearly_price || 0)}</span>
+                                </div>
+                                <div className="relative">
+                                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">COP $</span>
+                                    <input
+                                        type="number"
+                                        name="yearly_price"
+                                        value={formData.yearly_price}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full pl-20 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800"
+                                        placeholder="0"
+                                    />
+                                </div>
                             </div>
                         </div>
 
