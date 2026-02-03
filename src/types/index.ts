@@ -62,6 +62,8 @@ export interface MembershipRequest {
   total_price: number;
   status: 'pending' | 'completed' | 'cancelled';
   business_id?: number;
+  transaction_id?: string;
+  payment_method?: string;
   created_at: string;
   updated_at: string;
   plan?: MembershipPlan;

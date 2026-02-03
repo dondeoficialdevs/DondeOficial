@@ -73,6 +73,8 @@ CREATE TABLE IF NOT EXISTS membership_requests (
     total_price DECIMAL(15, 2) NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'cancelled')),
     business_id INTEGER,
+    transaction_id TEXT,
+    payment_method TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
