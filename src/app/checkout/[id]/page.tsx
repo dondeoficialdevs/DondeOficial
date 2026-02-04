@@ -6,7 +6,6 @@ import { membershipApi, membershipRequestApi } from '@/lib/api';
 import { MembershipPlan } from '@/types';
 import { Check, ArrowLeft, Loader2, ShieldCheck, Zap, Star, Crown, Phone, Mail, Building } from 'lucide-react';
 import Link from 'next/link';
-import Script from 'next/script';
 
 export default function CheckoutPage() {
     const params = useParams();
@@ -19,6 +18,7 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [scriptReady, setScriptReady] = useState(false);
 
     const [formData, setFormData] = useState({
         business_name: '',
@@ -38,6 +38,39 @@ export default function CheckoutPage() {
             }
         };
         if (planId) loadPlan();
+
+        // INYECCIÓN MANUAL DEL SCRIPT DE WOMPI (Más robusta)
+        const scriptId = 'wompi-widget-script';
+        let script = document.getElementById(scriptId) as HTMLScriptElement;
+
+        const onScriptLoad = () => {
+            console.log('Script de Wompi cargado y listo');
+            setScriptReady(true);
+        };
+
+        if (!script) {
+            script = document.createElement('script');
+            script.id = scriptId;
+            script.src = 'https://checkout.wompi.co/widget.js';
+            script.async = true;
+            script.onload = onScriptLoad;
+            document.body.appendChild(script);
+        } else {
+            if ((window as any).WidgetCheckout) {
+                setScriptReady(true);
+            } else {
+                script.onload = onScriptLoad;
+            }
+        }
+
+        const interval = setInterval(() => {
+            if ((window as any).WidgetCheckout) {
+                setScriptReady(true);
+                clearInterval(interval);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
     }, [planId]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,48 +83,71 @@ export default function CheckoutPage() {
 
         setSubmitting(true);
         try {
-            // 1. Crear el registro inicial en la DB para obtener el ID como referencia
+            const price = billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price;
+
+            // 1. Crear el registro en la DB
             const request = await membershipRequestApi.create({
                 ...formData,
                 plan_id: plan.id,
                 billing_cycle: billingCycle,
-                total_price: billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price,
-                status: 'pending'
+                total_price: price,
+                status: price === 0 ? 'completed' : 'pending'
             });
 
-            // 2. Configurar y abrir el Widget de Wompi
-            const checkout = (window as any).WidgetCheckout;
-            if (!checkout) {
-                throw new Error('El script de pagos no ha cargado completamente. Intenta en un momento.');
+            // 2. Si es gratis, finalizar
+            if (price === 0) {
+                setSubmitted(true);
+                return;
             }
 
-            const amountInCents = Math.round((billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price) * 100);
+            // 3. Abrir Wompi
+            const checkout = (window as any).WidgetCheckout;
+            if (!checkout) {
+                throw new Error('El sistema de pagos aún no está listo. Por favor espera 2 segundos y vuelve a intentar.');
+            }
 
-            const configuration = {
-                currency: 'COP',
-                amountInCents: amountInCents,
-                reference: request.id,
-                publicKey: process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY || 'pub_test_Q5yS99s5iRST1LHn9S9S6S6S6S6S6S6S',
-                redirectUrl: window.location.origin + '/checkout/success'
-            };
-
-            const handler = new checkout(configuration);
-
-            handler.open((result: any) => {
-                const transaction = result.transaction;
-                if (transaction.status === 'APPROVED') {
-                    setSubmitted(true);
-                } else if (transaction.status === 'DECLINED') {
-                    alert('El pago fue rechazado. Por favor intenta con otro medio de pago.');
-                }
-            });
-
-        } catch (err) {
-            console.error('Error processing checkout:', err);
-            alert('Hubo un error al procesar tu solicitud. Por favor intenta de nuevo.');
+            openWompi(checkout, request.id);
+        } catch (err: any) {
+            console.error('Error en checkout:', err);
+            alert(`Error: ${err.message || 'No se pudo iniciar el proceso'}`);
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const openWompi = (checkout: any, requestId: string) => {
+        const price = billingCycle === 'monthly' ? (plan?.monthly_price || 0) : (plan?.yearly_price || 0);
+        const amountInCents = Math.round(price * 100);
+
+        // Llave universal de pruebas (Sandbox)
+        const publicKey = process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY || 'pub_test_Q5yS99s5iRST1LHn9S9S6S6S6S6S6S6S';
+
+        const config = {
+            currency: 'COP',
+            amountInCents: amountInCents,
+            reference: requestId,
+            publicKey: publicKey,
+            redirectUrl: window.location.origin + '/checkout/success',
+            customerData: {
+                email: formData.client_email,
+                fullName: formData.business_name,
+                phoneNumber: formData.client_phone,
+                phoneNumberPrefix: '+57'
+            }
+        };
+
+        console.log('Parámetros Wompi:', config);
+
+        const handler = new checkout(config);
+
+        handler.open((result: any) => {
+            const transaction = result.transaction;
+            if (transaction.status === 'APPROVED') {
+                setSubmitted(true);
+            } else if (transaction.status === 'DECLINED') {
+                alert('La transacción ha sido rechazada por el medio de pago.');
+            }
+        });
     };
 
     const formatPrice = (price: number) => {
@@ -132,9 +188,9 @@ export default function CheckoutPage() {
                 <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-8">
                     <Check size={48} className="text-orange-600" />
                 </div>
-                <h1 className="text-4xl font-black text-gray-900 mb-6 tracking-tighter uppercase">¡Pago Exitoso!</h1>
+                <h1 className="text-4xl font-black text-gray-900 mb-6 tracking-tighter uppercase">¡Registro Exitoso!</h1>
                 <p className="text-gray-500 font-medium mb-10 leading-relaxed">
-                    Hemos recibido tu pago para el plan <span className="text-black font-bold">{plan.name}</span>. Tu membresía se activará automáticamente en unos minutos.
+                    Hemos procesado tu solicitud para el plan <span className="text-black font-bold">{plan.name}</span>. Tu membresía se activará automáticamente.
                 </p>
                 <Link
                     href="/"
@@ -149,148 +205,137 @@ export default function CheckoutPage() {
     const price = billingCycle === 'monthly' ? plan.monthly_price : plan.yearly_price;
 
     return (
-        <>
-            <Script
-                src="https://checkout.wompi.co/widget.js"
-                strategy="lazyOnload"
-            />
-            <div className="min-h-screen bg-gray-50 pt-32 pb-20 px-4">
-                <div className="max-w-6xl mx-auto">
-                    <Link href="/pricing" className="inline-flex items-center gap-2 text-gray-400 hover:text-black font-black uppercase tracking-widest text-xs mb-12 transition-colors">
-                        <ArrowLeft size={16} /> Volver a planes
-                    </Link>
+        <div className="min-h-screen bg-gray-50 pt-32 pb-20 px-4">
+            <div className="max-w-6xl mx-auto">
+                <Link href="/pricing" className="inline-flex items-center gap-2 text-gray-400 hover:text-black font-black uppercase tracking-widest text-xs mb-12 transition-colors">
+                    <ArrowLeft size={16} /> Volver a planes
+                </Link>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                        {/* Form Side */}
-                        <div className="bg-white rounded-[3rem] p-8 lg:p-12 border border-gray-100 shadow-2xl animate-in slide-in-from-left duration-700">
-                            <h2 className="text-4xl font-black text-gray-900 mb-2 tracking-tighter uppercase">Finalizar Registro</h2>
-                            <p className="text-gray-400 font-bold mb-10 uppercase tracking-widest text-xs">Completa tus datos para activar tu plan</p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <div className="bg-white rounded-[3rem] p-8 lg:p-12 border border-gray-100 shadow-2xl animate-in slide-in-from-left duration-700">
+                        <h2 className="text-4xl font-black text-gray-900 mb-2 tracking-tighter uppercase">Finalizar Registro</h2>
+                        <p className="text-gray-400 font-bold mb-10 uppercase tracking-widest text-xs">Completa tus datos para activar tu plan</p>
 
-                            <form onSubmit={handleSubmit} className="space-y-8">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Nombre de tu Negocio</label>
-                                    <div className="relative">
-                                        <Building className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
-                                        <input
-                                            required
-                                            name="business_name"
-                                            value={formData.business_name}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-16 pr-8 py-5 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 placeholder:text-gray-300"
-                                            placeholder="EJ: RESTAURANTE GOURMET"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Correo Electrónico</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
-                                        <input
-                                            required
-                                            type="email"
-                                            name="client_email"
-                                            value={formData.client_email}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-16 pr-8 py-5 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 placeholder:text-gray-300"
-                                            placeholder="ejemplo@correo.com"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Teléfono de Contacto</label>
-                                    <div className="relative">
-                                        <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
-                                        <input
-                                            required
-                                            type="tel"
-                                            name="client_phone"
-                                            value={formData.client_phone}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-16 pr-8 py-5 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 placeholder:text-gray-300"
-                                            placeholder="+57 300 000 0000"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="w-full py-6 bg-black text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-600 disabled:bg-gray-200 transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95"
-                                >
-                                    {submitting ? (
-                                        <Loader2 className="animate-spin" />
-                                    ) : (
-                                        <>Pagar Ahora <Zap size={20} className="text-orange-400" /></>
-                                    )}
-                                </button>
-
-                                <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                    PAGO SEGURO PROCESADO POR WOMPI
-                                </p>
-                            </form>
-                        </div>
-
-                        {/* Summary Side */}
-                        <div className="lg:sticky lg:top-32 space-y-8 animate-in slide-in-from-right duration-700">
-                            <div className="bg-black rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden">
-                                {/* Decorative background element */}
-                                <div className="absolute -top-20 -right-20 w-64 h-64 bg-orange-500 rounded-full blur-[100px] opacity-20"></div>
-
-                                <div className="relative z-10">
-                                    <div className="flex items-center gap-6 mb-10">
-                                        <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center backdrop-blur-xl border border-white/10">
-                                            {getIcon(plan.level)}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-3xl font-black uppercase tracking-tight">{plan.name}</h3>
-                                            <span className="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-full uppercase tracking-tighter">
-                                                {billingCycle === 'monthly' ? 'Pago Mensual' : 'Pago Anual (20% OFF)'}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4 mb-10">
-                                        {plan.features.map((feature, i) => (
-                                            <div key={i} className="flex items-center gap-3">
-                                                <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center shrink-0">
-                                                    <Check size={12} className="text-white" />
-                                                </div>
-                                                <span className="text-sm font-bold opacity-80">{feature}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="pt-10 border-t border-white/10 flex justify-between items-end">
-                                        <div>
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Total a pagar</p>
-                                            <div className="text-5xl font-black tracking-tighter">
-                                                {formatPrice(price)}
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className="text-xs font-black uppercase tracking-widest opacity-40">COP</span>
-                                        </div>
-                                    </div>
+                        <form onSubmit={handleSubmit} className="space-y-8">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Nombre de tu Negocio</label>
+                                <div className="relative">
+                                    <Building className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
+                                    <input
+                                        required
+                                        name="business_name"
+                                        value={formData.business_name}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-16 pr-8 py-5 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 placeholder:text-gray-300"
+                                        placeholder="EJ: MI NEGOCIO"
+                                    />
                                 </div>
                             </div>
 
-                            <div className="bg-orange-50 rounded-3xl p-8 border border-orange-100 flex items-start gap-5">
-                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                                    <ShieldCheck className="text-orange-500" size={24} />
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Correo Electrónico</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
+                                    <input
+                                        required
+                                        type="email"
+                                        name="client_email"
+                                        value={formData.client_email}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-16 pr-8 py-5 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 placeholder:text-gray-300"
+                                        placeholder="ejemplo@correo.com"
+                                    />
                                 </div>
-                                <div>
-                                    <h4 className="text-sm font-black uppercase tracking-tight mb-1 text-orange-900">Compra Segura</h4>
-                                    <p className="text-xs font-bold text-orange-700/70 leading-relaxed uppercase tracking-wide">
-                                        Tu pago es procesado de forma segura. Aceptamos tarjetas de crédito, PSE, Nequi y efectivo.
-                                    </p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-4">Teléfono de Contacto</label>
+                                <div className="relative">
+                                    <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300" size={20} />
+                                    <input
+                                        required
+                                        type="tel"
+                                        name="client_phone"
+                                        value={formData.client_phone}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-16 pr-8 py-5 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 placeholder:text-gray-300"
+                                        placeholder="+57 300 000 0000"
+                                    />
                                 </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={submitting || !scriptReady}
+                                className="w-full py-6 bg-black text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-600 disabled:bg-gray-200 transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95"
+                            >
+                                {submitting ? (
+                                    <Loader2 className="animate-spin" />
+                                ) : (
+                                    <>Pagar Ahora <Zap size={20} className="text-orange-400" /></>
+                                )}
+                            </button>
+
+                            <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                PAGO SEGURO PROCESADO POR WOMPI
+                            </p>
+                        </form>
+                    </div>
+
+                    <div className="lg:sticky lg:top-32 space-y-8 animate-in slide-in-from-right duration-700">
+                        <div className="bg-black rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden">
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-6 mb-10">
+                                    <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                                        {getIcon(plan.level)}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-3xl font-black uppercase tracking-tight">{plan.name}</h3>
+                                        <span className="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-full uppercase tracking-tighter">
+                                            {billingCycle === 'monthly' ? 'Pago Mensual' : 'Pago Anual (20% OFF)'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 mb-10">
+                                    {plan.features.map((feature, i) => (
+                                        <div key={i} className="flex items-center gap-3">
+                                            <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center shrink-0">
+                                                <Check size={12} className="text-white" />
+                                            </div>
+                                            <span className="text-sm font-bold opacity-80">{feature}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="pt-10 border-t border-white/10 flex justify-between items-end">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Total a pagar</p>
+                                        <div className="text-5xl font-black tracking-tighter">
+                                            {formatPrice(price)}
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="text-xs font-black uppercase tracking-widest opacity-40">COP</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-orange-50 rounded-3xl p-8 border border-orange-100 flex items-start gap-5">
+                            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                                <ShieldCheck className="text-orange-500" size={24} />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-black uppercase tracking-tight mb-1 text-orange-900">Compra Segura</h4>
+                                <p className="text-xs font-bold text-orange-700/70 leading-relaxed uppercase tracking-wide">
+                                    Tu pago es procesado de forma segura con Wompi.
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
