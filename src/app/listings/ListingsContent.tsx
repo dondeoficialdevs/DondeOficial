@@ -31,6 +31,7 @@ import {
 
 export default function ListingsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
@@ -189,6 +190,13 @@ export default function ListingsContent() {
     setSearchTerm(search);
     setSelectedCategory(category || '');
     setLocation(loc || '');
+
+    // Sincronizar con la URL
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (category) params.set('category', category);
+    if (loc) params.set('location', loc);
+    router.replace(`/listings?${params.toString()}`, { scroll: false });
 
     try {
       const results = await businessApi.getAll({
@@ -386,7 +394,7 @@ export default function ListingsContent() {
         {/* Top Categories Bar */}
         <div className="bg-white border-b border-gray-200 pb-4 mb-4">
           <div className="flex items-center justify-center overflow-x-auto pb-2 scrollbar-hide">
-            <div className="flex space-x-4 sm:space-x-8 px-4 py-2">
+            <div className="flex space-x-4 sm:space-x-8 px-4 py-2 animate-slide-hint lg:animate-none">
               {mainCategories.map((cat) => {
                 const backendCategoryName = getCategoryBackendName(cat);
                 const isSelected = selectedCategory.toLowerCase() === backendCategoryName.toLowerCase();
