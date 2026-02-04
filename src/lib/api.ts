@@ -8,17 +8,17 @@ export const businessApi = {
       .from('businesses')
       .select(`
         *,
-        categories!left (name),
+        categories!inner (name),
         business_images (*)
       `);
 
-    // Only apply approved status filter if not explicitly searching for all
-    if (!filters?.search && !filters?.category) {
-      query = query.eq('status', 'approved');
-    }
+    // Always apply approved status filter for public listings
+    query = query.eq('status', 'approved');
 
     if (filters?.search) {
-      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+      // Use logical OR to search in name, description, OR category name
+      // Note: we use !inner join for categories to allow filtering by category name
+      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,categories.name.ilike.%${filters.search}%`);
     }
 
     if (filters?.category) {

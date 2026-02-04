@@ -2,19 +2,26 @@
 
 import { useState } from 'react';
 import { Search, Sparkles, Navigation } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface SmartSearchProps {
-    onSearch: (search: string, location: string) => void;
+    onSearch?: (search: string, location: string) => void;
 }
 
 export default function SmartSearch({ onSearch }: SmartSearchProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [location, setLocation] = useState('');
     const [isFocused, setIsFocused] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSearch(searchTerm, location);
+        const params = new URLSearchParams();
+        if (searchTerm) params.set('search', searchTerm);
+        if (location) params.set('location', location);
+
+        router.push(`/listings?${params.toString()}`);
+        if (onSearch) onSearch(searchTerm, location);
     };
 
     return (

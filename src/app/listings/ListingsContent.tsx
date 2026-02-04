@@ -100,10 +100,18 @@ export default function ListingsContent() {
 
   useEffect(() => {
     const categoryParam = searchParams.get('category');
+    const searchParam = searchParams.get('search');
+
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    }
+
     if (categoryParam) {
       const decodedCategory = decodeURIComponent(categoryParam);
       setSelectedCategory(decodedCategory);
-      loadInitialData(decodedCategory);
+      handleSearch(searchParam || '', decodedCategory, location);
+    } else if (searchParam) {
+      handleSearch(searchParam, selectedCategory, location);
     } else {
       loadInitialData();
     }
@@ -579,6 +587,30 @@ export default function ListingsContent() {
 
               {/* Sidebar Filters */}
               <div className="p-6 space-y-8 border-t border-gray-50 bg-gray-50/10">
+                {/* Search Filter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">¿Qué buscas?</h4>
+                    <SearchIcon size={12} className="text-gray-300" />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      placeholder="Buscar negocios..."
+                      value={searchTerm}
+                      onChange={(e) => {
+                        setSearchTerm(e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSearch(searchTerm, selectedCategory, location);
+                        }
+                      }}
+                      className="w-full pl-4 pr-4 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500/50 shadow-sm transition-all"
+                    />
+                  </div>
+                </div>
+
                 {/* Location Filter */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -592,7 +624,11 @@ export default function ListingsContent() {
                       value={location}
                       onChange={(e) => {
                         setLocation(e.target.value);
-                        handleSearch(searchTerm, selectedCategory, e.target.value);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleSearch(searchTerm, selectedCategory, location);
+                        }
                       }}
                       className="w-full pl-4 pr-4 py-3 bg-white border border-gray-100 rounded-xl text-xs font-bold text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500/50 shadow-sm transition-all"
                     />
@@ -755,6 +791,26 @@ export default function ListingsContent() {
                           </button>
                         );
                       })}
+                    </div>
+                  </div>
+
+                  {/* Search Group in Mobile Drawer */}
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-8 bg-orange-600 rounded-full"></div>
+                      <h4 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">¿Qué buscas?</h4>
+                    </div>
+                    <div className="relative group">
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-600 transition-transform duration-300 group-focus-within:scale-110">
+                        <SearchIcon size={22} strokeWidth={2.5} />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Ej: Gimnasios, Comida..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-16 pr-6 py-5 bg-gray-100/50 border border-transparent rounded-[2rem] text-sm font-black text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:bg-white focus:border-orange-500/20 transition-all shadow-inner"
+                      />
                     </div>
                   </div>
 
