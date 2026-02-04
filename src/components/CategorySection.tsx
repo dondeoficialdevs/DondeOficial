@@ -3,19 +3,18 @@
 import { useRouter } from 'next/navigation';
 import { Category } from '../types';
 import {
-  Dumbbell,
-  Utensils,
-  Trophy,
-  Palmtree,
-  HeartPulse,
+  Heart,
   Briefcase,
-  ShoppingBag,
+  Package,
   MapPin,
-  Music,
   Sparkles,
+  Play,
+  UtensilsCrossed,
+  Globe,
+  Dumbbell,
+  Trophy,
   Landmark,
   CalendarDays,
-  Store,
   Pizza,
   Plane
 } from 'lucide-react';
@@ -28,23 +27,21 @@ interface CategorySectionProps {
 
 const getCategoryIcon = (name: string) => {
   const iconProps = {
-    size: 28,
+    size: 26,
     strokeWidth: 1.5,
-    color: '#FF6B35',
   };
 
   const icons: { [key: string]: React.ReactElement } = {
     'Belleza': <Sparkles {...iconProps} />,
-    'Entretenimiento': <Music {...iconProps} />,
-    'Gastronomía': <Utensils {...iconProps} />,
+    'Entretenimiento': <Play {...iconProps} />,
+    'Gastronomía': <UtensilsCrossed {...iconProps} />,
     'Restaurante': <Pizza {...iconProps} />,
-    'Viajes': <Plane {...iconProps} />,
-    'Turismo': <Palmtree {...iconProps} />,
-    'Salud': <HeartPulse {...iconProps} />,
-    'Bienestar': <HeartPulse {...iconProps} />,
+    'Viajes': <Globe {...iconProps} />,
+    'Turismo': <Globe {...iconProps} />,
+    'Salud': <Heart {...iconProps} />,
+    'Bienestar': <Heart {...iconProps} />,
     'Servicios': <Briefcase {...iconProps} />,
-    'Productos': <ShoppingBag {...iconProps} />,
-    'Tiendas': <Store {...iconProps} />,
+    'Productos': <Package {...iconProps} />,
     'Cerca': <MapPin {...iconProps} />,
     'Gimnasio': <Dumbbell {...iconProps} />,
     'Deportivo': <Trophy {...iconProps} />,
@@ -138,11 +135,10 @@ export default function CategorySection({ categories, onCategorySelect }: Catego
                   onClick={() => handleCategoryClick(cat.name)}
                   className="group relative flex flex-col items-center space-y-3 p-2 rounded-2xl transition-all duration-500 hover:bg-orange-50/50 min-w-[110px]"
                 >
-                  <div className="relative w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] group-hover:shadow-[0_10px_25px_-5px_rgba(255,107,53,0.3)] border border-gray-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-110 group-hover:border-orange-100">
-                    <div className="transition-transform duration-500 group-hover:rotate-12 group-active:scale-90">
+                  <div className="relative w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] group-hover:shadow-[0_15px_35px_-5px_rgba(255,107,53,0.25)] border border-gray-100 transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:border-orange-200">
+                    <div className="transition-all duration-500 group-hover:scale-110 text-gray-400 group-hover:text-orange-600">
                       {getCategoryIcon(cat.name)}
                     </div>
-                    <div className="absolute inset-0 rounded-2xl bg-orange-400/0 group-hover:bg-orange-400/5 transition-colors duration-500" />
                   </div>
 
                   <span className="text-[11px] font-bold text-gray-600 tracking-tight transition-colors duration-300 group-hover:text-orange-600 whitespace-nowrap px-1">
