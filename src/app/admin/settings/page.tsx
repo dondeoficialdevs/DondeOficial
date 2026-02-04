@@ -168,6 +168,29 @@ export default function SettingsPage() {
                         </div>
                     </div>
 
+                    {/* Tarjeta: Control de Favicon (Favorito vs Clásico) */}
+                    <div className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all h-full">
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3">
+                                <div className="p-3 bg-gray-50 rounded-2xl text-gray-400 group-hover:text-red-500 transition-colors">
+                                    <Globe size={20} />
+                                </div>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 italic">Identidad en Pestaña<span className="text-red-500 not-italic">.</span></h3>
+                            </div>
+                            <div className="space-y-4">
+                                <p className="text-xs font-bold text-gray-400 uppercase leading-relaxed tracking-wider">
+                                    Activa el diseño con corazón para transmitir que somos el sitio "Favorito".
+                                </p>
+                                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border-2 border-transparent hover:border-red-500/20 transition-all cursor-pointer" onClick={() => setSettings({ ...settings, use_favorite_favicon: !settings.use_favorite_favicon })}>
+                                    <span className="text-sm font-black text-gray-700 uppercase italic">Favicon con Corazón</span>
+                                    <div className={`w-12 h-6 rounded-full p-1 transition-all duration-300 ${settings.use_favorite_favicon ? 'bg-red-500' : 'bg-gray-300'}`}>
+                                        <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${settings.use_favorite_favicon ? 'translate-x-6' : 'translate-x-0'}`} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Tarjeta 2: Logo Principal (Visual Amplia) */}
                     <div className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm md:col-span-1 lg:col-span-2 group hover:shadow-xl transition-all">
                         <div className="flex flex-col md:flex-row gap-8">

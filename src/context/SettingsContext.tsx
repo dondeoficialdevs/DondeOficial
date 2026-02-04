@@ -25,7 +25,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
     facebook_url: 'https://www.facebook.com/profile.php?id=61573619618382',
     instagram_url: 'https://www.instagram.com/dondeoficial',
     tiktok_url: '#',
-    youtube_url: '#'
+    youtube_url: '#',
+    use_favorite_favicon: false
 };
 
 interface SettingsContextType {

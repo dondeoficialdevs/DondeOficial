@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/MainLayout";
+import { settingsApi } from "@/lib/api";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,34 +14,40 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "DondeOficial",
-  description: "Encuentra negocios y servicios en tu ciudad",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await settingsApi.getSettings();
+  const useFavorite = settings?.use_favorite_favicon ?? false;
+  const faviconPath = useFavorite ? '/favicons/favorite' : '/favicons/classic';
+
+  return {
     title: "DondeOficial",
-  },
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
-    ],
-  },
-  openGraph: {
-    type: "website",
-    siteName: "DondeOficial",
-  },
-  other: {
-    "apple-mobile-web-app-capable": "yes",
-    "apple-mobile-web-app-status-bar-style": "default",
-  },
-};
+    description: "Encuentra negocios y servicios en tu ciudad",
+    manifest: "/manifest.json",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: "DondeOficial",
+    },
+    icons: {
+      icon: [
+        { url: `${faviconPath}/favicon.ico`, sizes: "any" },
+        { url: `${faviconPath}/icon-192.png`, sizes: "192x192", type: "image/png" },
+        { url: `${faviconPath}/icon-512.png`, sizes: "512x512", type: "image/png" },
+      ],
+      apple: [
+        { url: `${faviconPath}/apple-icon.png`, sizes: "180x180", type: "image/png" },
+      ],
+    },
+    openGraph: {
+      type: "website",
+      siteName: "DondeOficial",
+    },
+    other: {
+      "apple-mobile-web-app-capable": "yes",
+      "apple-mobile-web-app-status-bar-style": "default",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

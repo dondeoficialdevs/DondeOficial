@@ -176,6 +176,7 @@ export interface SiteSettings {
   instagram_url?: string;
   tiktok_url?: string;
   youtube_url?: string;
+  use_favorite_favicon?: boolean;
   updated_at?: string;
 }
 
