@@ -25,6 +25,10 @@ export const businessApi = {
       query = query.eq('categories.name', filters.category);
     }
 
+    if (filters?.location) {
+      query = query.ilike('address', `%${filters.location}%`);
+    }
+
     if (filters?.limit) {
       const offset = filters.offset || 0;
       query = query.range(offset, offset + filters.limit - 1);

@@ -8,14 +8,37 @@ interface SmartSearchProps {
     onSearch?: (search: string, location: string) => void;
 }
 
+const COLOMBIAN_CITIES = [
+    { name: 'Tunja', department: 'Boyacá' },
+    { name: 'Bogotá', department: 'Cundinamarca' },
+    { name: 'Medellín', department: 'Antioquia' },
+    { name: 'Cali', department: 'Valle del Cauca' },
+    { name: 'Barranquilla', department: 'Atlántico' },
+    { name: 'Duitama', department: 'Boyacá' },
+    { name: 'Sogamoso', department: 'Boyacá' },
+    { name: 'Villa de Leyva', department: 'Boyacá' },
+    { name: 'Paipa', department: 'Boyacá' },
+    { name: 'Bucaramanga', department: 'Santander' },
+    { name: 'Cartagena', department: 'Bolívar' },
+    { name: 'Pereira', department: 'Risaralda' },
+    { name: 'Manizales', department: 'Caldas' },
+    { name: 'Ibagué', department: 'Tolima' },
+    { name: 'Villavicencio', department: 'Meta' },
+    { name: 'Santa Marta', department: 'Magdalena' },
+    { name: 'Cúcuta', department: 'Norte de Santander' },
+];
+
 export default function SmartSearch({ onSearch }: SmartSearchProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [location, setLocation] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [suggestions, setSuggestions] = useState<{ categories: Category[], businesses: Business[] }>({ categories: [], businesses: [] });
+    const [locationSuggestions, setLocationSuggestions] = useState<typeof COLOMBIAN_CITIES>([]);
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const locationRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
     // Close suggestions when clicking outside
@@ -24,10 +47,28 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
                 setShowSuggestions(false);
             }
+            if (locationRef.current && !locationRef.current.contains(event.target as Node)) {
+                setShowLocationSuggestions(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // Filter locations locally
+    useEffect(() => {
+        if (location.length >= 2) {
+            const filtered = COLOMBIAN_CITIES.filter(city =>
+                city.name.toLowerCase().includes(location.toLowerCase()) ||
+                city.department.toLowerCase().includes(location.toLowerCase())
+            );
+            setLocationSuggestions(filtered);
+            setShowLocationSuggestions(filtered.length > 0);
+        } else {
+            setLocationSuggestions([]);
+            setShowLocationSuggestions(false);
+        }
+    }, [location]);
 
     // Debounced suggestion fetch
     useEffect(() => {
@@ -74,6 +115,7 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
         router.push(`/listings?${params.toString()}`);
         if (onSearch) onSearch(term, loc);
         setShowSuggestions(false);
+        setShowLocationSuggestions(false);
     };
 
     const handleSuggestionClick = (type: 'category' | 'business', value: string) => {
@@ -87,14 +129,21 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
         setShowSuggestions(false);
     };
 
+    const handleLocationClick = (cityName: string) => {
+        setLocation(cityName);
+        setShowLocationSuggestions(false);
+        // Opcional: ejecutar búsqueda inmediata al seleccionar ciudad
+        // executeSearch(searchTerm, cityName);
+    };
+
     return (
         <div ref={searchRef} className="relative max-w-4xl mx-auto px-4 lg:px-0 -mt-6 md:-mt-8 lg:-mt-14 z-30 transition-all duration-700 animate-float">
             {/* Glow Effect */}
-            <div className={`absolute -inset-1 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 rounded-[2rem] lg:rounded-full blur-xl opacity-20 transition-opacity duration-500 ${isFocused || showSuggestions ? 'opacity-40' : 'opacity-10'}`}></div>
+            <div className={`absolute -inset-1 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 rounded-[2rem] lg:rounded-full blur-xl opacity-20 transition-opacity duration-500 ${isFocused || showSuggestions || showLocationSuggestions ? 'opacity-40' : 'opacity-10'}`}></div>
 
             <form
                 onSubmit={handleSubmit}
-                className={`relative bg-white/70 backdrop-blur-3xl p-1.5 md:p-2 lg:p-2.5 rounded-[2rem] lg:rounded-full border transition-all duration-500 flex flex-col lg:flex-row gap-1.5 lg:gap-0 ${isFocused || showSuggestions ? 'border-white/90 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] -translate-y-1' : 'border-white/30 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.15)]'
+                className={`relative bg-white/70 backdrop-blur-3xl p-1.5 md:p-2 lg:p-2.5 rounded-[2rem] lg:rounded-full border transition-all duration-500 flex flex-col lg:flex-row gap-1.5 lg:gap-0 ${isFocused || showSuggestions || showLocationSuggestions ? 'border-white/90 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] -translate-y-1' : 'border-white/30 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.15)]'
                     }`}
             >
                 {/* Input Search Group */}
@@ -129,7 +178,7 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                 <div className="hidden lg:block w-[1.5px] h-10 bg-gradient-to-b from-transparent via-gray-200 to-transparent self-center mx-3"></div>
 
                 {/* Input Location Group */}
-                <div className="relative flex-1 group">
+                <div ref={locationRef} className="relative flex-1 group">
                     <div className="absolute left-5 top-1/2 -translate-y-1/2 text-pink-600 transition-transform duration-300 group-focus-within:scale-110 pointer-events-none">
                         <Navigation className="w-[18px] h-[18px] md:w-[20px] md:h-[20px] lg:w-[22px] lg:h-[22px]" strokeWidth={2.5} />
                     </div>
@@ -138,10 +187,49 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                         placeholder="¿En dónde?"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        onFocus={() => setIsFocused(true)}
+                        onFocus={() => {
+                            setIsFocused(true);
+                            if (location.length >= 2) setShowLocationSuggestions(true);
+                        }}
                         onBlur={() => setIsFocused(false)}
-                        className="w-full bg-white/40 lg:bg-transparent pl-12 pr-4 py-3 md:py-4 lg:py-5 rounded-[1.5rem] lg:rounded-none text-gray-900 placeholder-gray-500 focus:outline-none font-bold text-sm md:text-base lg:text-lg border border-transparent focus:border-pink-500/20 lg:border-none uppercase tracking-tight"
+                        className="w-full bg-white/40 lg:bg-transparent pl-12 pr-10 py-3 md:py-4 lg:py-5 rounded-[1.5rem] lg:rounded-none text-gray-900 placeholder-gray-500 focus:outline-none font-bold text-sm md:text-base lg:text-lg border border-transparent focus:border-pink-500/20 lg:border-none uppercase tracking-tight"
                     />
+                    {location && (
+                        <button
+                            type="button"
+                            onClick={() => setLocation('')}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-pink-600 transition-colors"
+                        >
+                            <X size={14} />
+                        </button>
+                    )}
+
+                    {/* Location Suggestions Dropdown */}
+                    {showLocationSuggestions && (
+                        <div className="absolute left-0 right-0 top-full mt-6 bg-white/90 backdrop-blur-2xl rounded-3xl border border-white/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 z-50">
+                            <div className="p-2 space-y-1">
+                                <div className="px-4 py-3 border-b border-gray-50 mb-1">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ciudades Encontradas</span>
+                                </div>
+                                {locationSuggestions.map((city, idx) => (
+                                    <button
+                                        key={`${city.name}-${idx}`}
+                                        type="button"
+                                        onClick={() => handleLocationClick(city.name)}
+                                        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-pink-50 rounded-2xl group transition-all duration-300 text-left"
+                                    >
+                                        <div className="w-8 h-8 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600 transition-colors group-hover:bg-white group-hover:shadow-sm">
+                                            <MapPin size={16} strokeWidth={2.5} />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-black text-gray-800 uppercase tracking-tight">{city.name}</span>
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase">{city.department}</span>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Action Button */}

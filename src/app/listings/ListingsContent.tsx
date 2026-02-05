@@ -109,17 +109,20 @@ export default function ListingsContent() {
   useEffect(() => {
     const categoryParam = searchParams.get('category');
     const searchParam = searchParams.get('search');
+    const locationParam = searchParams.get('location');
 
     if (searchParam) {
       setSearchTerm(searchParam);
     }
 
-    if (categoryParam) {
-      const decodedCategory = decodeURIComponent(categoryParam);
-      setSelectedCategory(decodedCategory);
-      handleSearch(searchParam || '', decodedCategory, location);
-    } else if (searchParam) {
-      handleSearch(searchParam, selectedCategory, location);
+    if (locationParam) {
+      setLocation(locationParam);
+    }
+
+    if (categoryParam || searchParam || locationParam) {
+      const decodedCategory = categoryParam ? decodeURIComponent(categoryParam) : selectedCategory;
+      if (categoryParam) setSelectedCategory(decodedCategory);
+      handleSearch(searchParam || '', decodedCategory, locationParam || location);
     } else {
       loadInitialData();
     }
