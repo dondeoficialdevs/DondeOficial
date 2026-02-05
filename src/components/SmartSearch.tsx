@@ -1,8 +1,8 @@
-'use client';
-
-import { useState } from 'react';
-import { Search, Sparkles, Navigation } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Search, Sparkles, Navigation, X, Store, Tag, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { businessApi, categoryApi } from '../lib/api';
+import { Business, Category } from '../types';
 
 interface SmartSearchProps {
     onSearch?: (search: string, location: string) => void;
@@ -12,26 +12,89 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [location, setLocation] = useState('');
     const [isFocused, setIsFocused] = useState(false);
+    const [suggestions, setSuggestions] = useState<{ categories: Category[], businesses: Business[] }>({ categories: [], businesses: [] });
+    const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const searchRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
+
+    // Close suggestions when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Debounced suggestion fetch
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (searchTerm.length >= 2) {
+                setIsLoadingSuggestions(true);
+                setShowSuggestions(true);
+                try {
+                    const [cats, biz] = await Promise.all([
+                        categoryApi.getAll(),
+                        businessApi.getAll({ search: searchTerm, limit: 5 })
+                    ]);
+
+                    // Filter categories locally to avoid excessive API calls if necessary
+                    const filteredCats = cats.filter(c =>
+                        c.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).slice(0, 4);
+
+                    setSuggestions({ categories: filteredCats, businesses: biz });
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                } finally {
+                    setIsLoadingSuggestions(false);
+                }
+            } else {
+                setSuggestions({ categories: [], businesses: [] });
+                setShowSuggestions(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        executeSearch(searchTerm, location);
+    };
+
+    const executeSearch = (term: string, loc: string) => {
         const params = new URLSearchParams();
-        if (searchTerm) params.set('search', searchTerm);
-        if (location) params.set('location', location);
+        if (term) params.set('search', term);
+        if (loc) params.set('location', loc);
 
         router.push(`/listings?${params.toString()}`);
-        if (onSearch) onSearch(searchTerm, location);
+        if (onSearch) onSearch(term, loc);
+        setShowSuggestions(false);
+    };
+
+    const handleSuggestionClick = (type: 'category' | 'business', value: string) => {
+        if (type === 'category') {
+            const params = new URLSearchParams();
+            params.set('category', value);
+            router.push(`/listings?${params.toString()}`);
+        } else {
+            executeSearch(value, location);
+        }
+        setShowSuggestions(false);
     };
 
     return (
-        <div className="relative max-w-4xl mx-auto px-4 lg:px-0 -mt-6 md:-mt-8 lg:-mt-14 z-30 transition-all duration-700 animate-float">
+        <div ref={searchRef} className="relative max-w-4xl mx-auto px-4 lg:px-0 -mt-6 md:-mt-8 lg:-mt-14 z-30 transition-all duration-700 animate-float">
             {/* Glow Effect */}
-            <div className={`absolute -inset-1 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 rounded-[2rem] lg:rounded-full blur-xl opacity-20 transition-opacity duration-500 ${isFocused ? 'opacity-40' : 'opacity-10'}`}></div>
+            <div className={`absolute -inset-1 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 rounded-[2rem] lg:rounded-full blur-xl opacity-20 transition-opacity duration-500 ${isFocused || showSuggestions ? 'opacity-40' : 'opacity-10'}`}></div>
 
             <form
                 onSubmit={handleSubmit}
-                className={`relative bg-white/70 backdrop-blur-3xl p-1.5 md:p-2 lg:p-2.5 rounded-[2rem] lg:rounded-full border transition-all duration-500 flex flex-col lg:flex-row gap-1.5 lg:gap-0 ${isFocused ? 'border-white/90 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] -translate-y-1' : 'border-white/30 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.15)]'
+                className={`relative bg-white/70 backdrop-blur-3xl p-1.5 md:p-2 lg:p-2.5 rounded-[2rem] lg:rounded-full border transition-all duration-500 flex flex-col lg:flex-row gap-1.5 lg:gap-0 ${isFocused || showSuggestions ? 'border-white/90 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] -translate-y-1' : 'border-white/30 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.15)]'
                     }`}
             >
                 {/* Input Search Group */}
@@ -44,10 +107,22 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                         placeholder="¿Qué buscas?"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        onFocus={() => setIsFocused(true)}
+                        onFocus={() => {
+                            setIsFocused(true);
+                            if (searchTerm.length >= 2) setShowSuggestions(true);
+                        }}
                         onBlur={() => setIsFocused(false)}
-                        className="w-full bg-white/40 lg:bg-transparent pl-12 pr-4 py-3 md:py-4 lg:py-5 rounded-[1.5rem] lg:rounded-none text-gray-900 placeholder-gray-500 focus:outline-none font-bold text-sm md:text-base lg:text-lg border border-transparent focus:border-orange-500/20 lg:border-none uppercase tracking-tight"
+                        className="w-full bg-white/40 lg:bg-transparent pl-12 pr-12 py-3 md:py-4 lg:py-5 rounded-[1.5rem] lg:rounded-none text-gray-900 placeholder-gray-500 focus:outline-none font-bold text-sm md:text-base lg:text-lg border border-transparent focus:border-orange-500/20 lg:border-none uppercase tracking-tight"
                     />
+                    {searchTerm && (
+                        <button
+                            type="button"
+                            onClick={() => setSearchTerm('')}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-orange-600 transition-colors"
+                        >
+                            <X size={16} />
+                        </button>
+                    )}
                 </div>
 
                 {/* Separator - Hidden on tablet/mobile */}
@@ -86,6 +161,102 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                     </div>
                 </button>
             </form>
+
+            {/* Suggestions Dropdown */}
+            {showSuggestions && (
+                <div className="absolute left-0 right-0 top-full mt-4 bg-white/80 backdrop-blur-3xl rounded-[2.5rem] border border-white/40 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 z-50">
+                    <div className="p-4 md:p-6 lg:p-8 space-y-6">
+
+                        {/* Loading State */}
+                        {isLoadingSuggestions && (
+                            <div className="flex items-center justify-center py-10">
+                                <div className="w-8 h-8 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        )}
+
+                        {!isLoadingSuggestions && suggestions.categories.length === 0 && suggestions.businesses.length === 0 && (
+                            <div className="text-center py-10">
+                                <p className="text-gray-400 font-bold uppercase text-xs tracking-widest italic">No encontramos coincidencias para "{searchTerm}"</p>
+                            </div>
+                        )}
+
+                        {/* Categories Section */}
+                        {!isLoadingSuggestions && suggestions.categories.length > 0 && (
+                            <div className="space-y-3">
+                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2 px-2">
+                                    <Tag size={12} className="text-orange-500" />
+                                    <span>Categorías Sugeridas</span>
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    {suggestions.categories.map((cat) => (
+                                        <button
+                                            key={cat.id}
+                                            onClick={() => handleSuggestionClick('category', cat.name)}
+                                            className="flex items-center justify-between p-4 bg-gray-50/50 hover:bg-orange-50 rounded-2xl group transition-all duration-300"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm border border-gray-100 group-hover:border-orange-200">
+                                                    <Store size={18} />
+                                                </div>
+                                                <span className="font-bold text-gray-800 uppercase text-sm tracking-tight">{cat.name}</span>
+                                            </div>
+                                            <ArrowRight size={14} className="text-gray-300 group-hover:text-orange-600 transform group-hover:translate-x-1 transition-all" />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Businesses Section */}
+                        {!isLoadingSuggestions && suggestions.businesses.length > 0 && (
+                            <div className="space-y-3">
+                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2 px-2">
+                                    <Store size={12} className="text-pink-500" />
+                                    <span>Negocios Relacionados</span>
+                                </h4>
+                                <div className="space-y-2">
+                                    {suggestions.businesses.map((biz) => (
+                                        <button
+                                            key={biz.id}
+                                            onClick={() => handleSuggestionClick('business', biz.name)}
+                                            className="w-full flex items-center justify-between p-4 bg-gray-50/50 hover:bg-pink-50 rounded-2xl group transition-all duration-300"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white border border-gray-100 group-hover:border-pink-200">
+                                                    {biz.images && biz.images[0] ? (
+                                                        <img src={biz.images[0].image_url} alt={biz.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                            <Store size={20} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex flex-col items-start gap-0.5">
+                                                    <span className="font-black text-gray-900 uppercase text-sm tracking-tight">{biz.name}</span>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{biz.category_name}</span>
+                                                </div>
+                                            </div>
+                                            <div className="px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-100 group-hover:border-pink-200 group-hover:bg-pink-100 transition-all">
+                                                <span className="text-[9px] font-black text-pink-600 uppercase tracking-widest">Ver Perfil</span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Footer / Hint */}
+                    <div className="bg-gray-50/80 px-8 py-4 flex items-center justify-between border-t border-gray-100">
+                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Presiona ENTER para buscar "{searchTerm}"</span>
+                        <div className="flex gap-2">
+                            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                            <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse delay-75"></span>
+                            <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-150"></span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <style jsx>{`
         @keyframes float {
