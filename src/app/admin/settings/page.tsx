@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { settingsApi } from '@/lib/api';
 import { SiteSettings } from '@/types';
 import AdminImageUpload from '@/components/admin/AdminImageUpload';
-import { Palette, Globe, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Save, Layout, Shield, Type, Share2, Info, ChevronRight } from 'lucide-react';
+import { Palette, Globe, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Layout, Shield, Type, Share2, Info, ChevronRight } from 'lucide-react';
 
 type TabType = 'identity' | 'design' | 'contact' | 'social';
 
@@ -137,8 +137,8 @@ export default function SettingsPage() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all whitespace-nowrap flex-1 lg:flex-none ${activeTab === tab.id
-                            ? 'bg-white text-orange-600 shadow-md border border-orange-100 scale-105 z-10'
-                            : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
+                                ? 'bg-white text-orange-600 shadow-md border border-orange-100 scale-105 z-10'
+                                : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
                             }`}
                     >
                         <tab.icon size={16} />
@@ -151,9 +151,9 @@ export default function SettingsPage() {
 
                 {/* IDENTITY TAB */}
                 {activeTab === 'identity' && (
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-8">
                         <div className="space-y-6">
-                            <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                            <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm transition-all hover:shadow-md">
                                 <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 italic">
                                     <Type size={14} className="text-orange-500" />
                                     Nombre del Portal
@@ -163,7 +163,7 @@ export default function SettingsPage() {
                                         type="text"
                                         value={settings.site_name}
                                         onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
-                                        className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-2xl outline-none transition-all font-black text-lg text-gray-900"
+                                        className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-2xl outline-none transition-all font-bold text-lg text-gray-900"
                                         placeholder="DondeOficial"
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 opacity-0 group-focus-within:opacity-100 transition-opacity">
@@ -172,7 +172,7 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md overflow-hidden">
+                            <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm transition-all hover:shadow-md overflow-hidden">
                                 <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 italic">
                                     <Globe size={14} className="text-red-500" />
                                     Identidad en Pestaña
@@ -193,12 +193,12 @@ export default function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm flex flex-col">
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col">
                             <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
                                 <Layout size={14} className="text-orange-500" />
                                 Logo Principal
                             </label>
-                            <div className="flex-1 min-h-[180px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-orange-500/30 flex items-center justify-center overflow-hidden">
+                            <div className="flex-1 min-h-[200px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-orange-500/30 flex items-center justify-center overflow-hidden">
                                 <AdminImageUpload
                                     onUploadComplete={(url) => setSettings({ ...settings, logo_url: url })}
                                     currentImageUrl={settings.logo_url}
@@ -392,31 +392,19 @@ export default function SettingsPage() {
                     </div>
                 )}
 
-                {/* Barra de Guardado Flotante Compacta */}
+                {/* Barra de Guardado Flotante Simplificada */}
                 <div className="fixed bottom-10 left-0 right-0 lg:left-[280px] px-6 z-[100] pointer-events-none transition-all duration-500">
-                    <div className="max-w-md mx-auto pointer-events-auto">
-                        <div className="bg-white/80 backdrop-blur-xl p-2.5 rounded-3xl border border-gray-100 shadow-[0_25px_50px_rgba(0,0,0,0.15)] flex items-center justify-between gap-4 group">
-                            <div className="hidden sm:flex flex-col ml-6">
-                                <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Protocolo</span>
-                                <span className="text-[10px] font-black text-gray-900 uppercase">Sin Guardar</span>
+                    <div className="max-w-xs mx-auto pointer-events-auto">
+                        <button
+                            type="submit"
+                            disabled={saving}
+                            className="w-full h-14 bg-black text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:bg-orange-600 hover:scale-[1.05] active:scale-[0.98] transition-all duration-500 disabled:opacity-50 relative overflow-hidden group"
+                        >
+                            <div className="relative z-10 flex items-center justify-center">
+                                <span>{saving ? 'Guardando...' : 'Guardar cambios'}</span>
                             </div>
-
-                            <button
-                                type="submit"
-                                disabled={saving}
-                                className="flex-1 h-14 bg-black text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] shadow-xl hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-500 disabled:opacity-50 relative overflow-hidden group/btn"
-                            >
-                                <div className="relative z-10 flex items-center justify-center gap-3">
-                                    {saving ? (
-                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                                    ) : (
-                                        <Save size={18} className="group-hover/btn:rotate-12 transition-transform h-4 w-4" />
-                                    )}
-                                    <span>Actualizar Sistema</span>
-                                </div>
-                                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            </button>
-                        </div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </button>
                     </div>
                 </div>
             </form>
