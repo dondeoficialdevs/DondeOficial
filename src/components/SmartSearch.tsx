@@ -208,33 +208,6 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                             <X size={14} />
                         </button>
                     )}
-
-                    {/* Location Suggestions Dropdown */}
-                    {showLocationSuggestions && (
-                        <div className="absolute left-0 right-0 top-full mt-6 bg-white/90 backdrop-blur-2xl rounded-3xl border border-white/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 z-50">
-                            <div className="p-2 space-y-1">
-                                <div className="px-4 py-3 border-b border-gray-50 mb-1">
-                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ciudades Encontradas</span>
-                                </div>
-                                {locationSuggestions.map((city, idx) => (
-                                    <button
-                                        key={`${city.name}-${idx}`}
-                                        type="button"
-                                        onClick={() => handleLocationClick(city.name)}
-                                        className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-pink-50 rounded-2xl group transition-all duration-300 text-left"
-                                    >
-                                        <div className="w-8 h-8 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600 transition-colors group-hover:bg-white group-hover:shadow-sm">
-                                            <MapPin size={16} strokeWidth={2.5} />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-black text-gray-800 uppercase tracking-tight">{city.name}</span>
-                                            <span className="text-[10px] font-bold text-gray-400 uppercase">{city.department}</span>
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
 
                 {/* Action Button */}
@@ -255,11 +228,25 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                 </button>
             </form>
 
-            {/* Suggestions Dropdown */}
-            {showSuggestions && (
-                <div className="absolute left-0 right-0 top-full mt-4 bg-white/80 backdrop-blur-3xl rounded-[2.5rem] border border-white/40 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 z-50">
-                    <div className="p-4 md:p-6 lg:p-8 space-y-6">
+            {/* Unified Panel - Shown if either search or location suggestions are active */}
+            {(showSuggestions || showLocationSuggestions) && (
+                <div className="absolute left-0 right-0 top-full mt-4 bg-white/90 backdrop-blur-3xl rounded-[2.5rem] border border-white/40 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 z-50">
+                    {/* Header Context */}
+                    <div className="px-8 py-5 border-b border-gray-100 bg-gradient-to-r from-orange-50/50 to-pink-50/50 flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Buscando</span>
+                            <span className="text-xs font-black text-orange-600 uppercase tracking-tight leading-none bg-orange-100 px-2 py-1 rounded-md max-w-[150px] truncate">{searchTerm || 'Cualquier negocio'}</span>
+                        </div>
+                        <div className="hidden sm:block w-[1px] h-4 bg-gray-200"></div>
+                        <div className="flex items-center gap-2">
+                            <Navigation size={12} className="text-pink-500" />
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">En</span>
+                            <span className="text-xs font-black text-pink-600 uppercase tracking-tight leading-none bg-pink-100 px-2 py-1 rounded-md max-w-[150px] truncate">{location || 'Toda Colombia'}</span>
+                        </div>
+                    </div>
 
+                    <div className="p-4 md:p-6 lg:p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
                         {/* Loading State */}
                         {isLoadingSuggestions && (
                             <div className="flex items-center justify-center py-10">
@@ -267,28 +254,56 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                             </div>
                         )}
 
-                        {!isLoadingSuggestions && suggestions.categories.length === 0 && suggestions.businesses.length === 0 && (
+                        {!isLoadingSuggestions && !showLocationSuggestions && searchTerm.length >= 2 && suggestions.categories.length === 0 && suggestions.businesses.length === 0 && (
                             <div className="text-center py-10">
                                 <p className="text-gray-400 font-bold uppercase text-xs tracking-widest italic">No encontramos coincidencias para "{searchTerm}"</p>
                             </div>
                         )}
 
+                        {/* Locations Section (Cities) */}
+                        {showLocationSuggestions && locationSuggestions.length > 0 && (
+                            <div className="space-y-4">
+                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2 px-2">
+                                    <MapPin size={12} className="text-pink-500" />
+                                    <span>Ciudades en Colombia</span>
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                                    {locationSuggestions.map((city, idx) => (
+                                        <button
+                                            key={`${city.name}-${idx}`}
+                                            type="button"
+                                            onClick={() => handleLocationClick(city.name)}
+                                            className="flex items-center gap-4 p-4 bg-pink-50/30 hover:bg-pink-100/50 rounded-2xl group transition-all duration-300 border border-transparent hover:border-pink-200"
+                                        >
+                                            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-pink-600 shadow-sm transition-transform group-hover:scale-110">
+                                                <Navigation size={18} strokeWidth={2.5} />
+                                            </div>
+                                            <div className="flex flex-col text-left">
+                                                <span className="text-sm font-black text-gray-800 uppercase tracking-tight">{city.name}</span>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase">{city.department}</span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Categories Section */}
                         {!isLoadingSuggestions && suggestions.categories.length > 0 && (
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2 px-2">
                                     <Tag size={12} className="text-orange-500" />
                                     <span>Categorías Sugeridas</span>
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {suggestions.categories.map((cat) => (
                                         <button
                                             key={cat.id}
                                             onClick={() => handleSuggestionClick('category', cat.name)}
-                                            className="flex items-center justify-between p-4 bg-gray-50/50 hover:bg-orange-50 rounded-2xl group transition-all duration-300"
+                                            className="flex items-center justify-between p-4 bg-orange-50/30 hover:bg-orange-100/50 rounded-2xl group transition-all duration-300 border border-transparent hover:border-orange-200"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm border border-gray-100 group-hover:border-orange-200">
+                                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-orange-600 shadow-sm transition-transform group-hover:scale-110">
                                                     <Store size={18} />
                                                 </div>
                                                 <span className="font-bold text-gray-800 uppercase text-sm tracking-tight">{cat.name}</span>
@@ -302,35 +317,35 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
 
                         {/* Businesses Section */}
                         {!isLoadingSuggestions && suggestions.businesses.length > 0 && (
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2 px-2">
-                                    <Store size={12} className="text-pink-500" />
-                                    <span>Negocios Relacionados</span>
+                                    <Store size={12} className="text-purple-500" />
+                                    <span>Negocios Recomendados</span>
                                 </h4>
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     {suggestions.businesses.map((biz) => (
                                         <button
                                             key={biz.id}
                                             onClick={() => handleSuggestionClick('business', biz.name)}
-                                            className="w-full flex items-center justify-between p-4 bg-gray-50/50 hover:bg-pink-50 rounded-2xl group transition-all duration-300"
+                                            className="w-full flex items-center justify-between p-4 bg-purple-50/30 hover:bg-purple-100/50 rounded-2xl group transition-all duration-300 border border-transparent hover:border-purple-200"
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white border border-gray-100 group-hover:border-pink-200">
+                                                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-white shadow-sm border border-gray-100 transition-transform group-hover:scale-105">
                                                     {biz.images && biz.images[0] ? (
                                                         <img src={biz.images[0].image_url} alt={biz.name} className="w-full h-full object-cover" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                            <Store size={20} />
+                                                        <div className="w-full h-full flex items-center justify-center text-gray-200 bg-gray-50">
+                                                            <Store size={24} />
                                                         </div>
                                                     )}
                                                 </div>
                                                 <div className="flex flex-col items-start gap-0.5">
-                                                    <span className="font-black text-gray-900 uppercase text-sm tracking-tight">{biz.name}</span>
-                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{biz.category_name}</span>
+                                                    <span className="font-black text-gray-950 uppercase text-sm tracking-tight group-hover:text-purple-700 transition-colors">{biz.name}</span>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{biz.category_name || 'Comercio'}</span>
                                                 </div>
                                             </div>
-                                            <div className="px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-100 group-hover:border-pink-200 group-hover:bg-pink-100 transition-all">
-                                                <span className="text-[9px] font-black text-pink-600 uppercase tracking-widest">Ver Perfil</span>
+                                            <div className="px-5 py-2.5 bg-white rounded-xl shadow-sm border border-purple-100 group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-600 transition-all duration-300">
+                                                <span className="text-[10px] font-black uppercase tracking-widest">Ver Perfil</span>
                                             </div>
                                         </button>
                                     ))}
@@ -340,12 +355,16 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
                     </div>
 
                     {/* Footer / Hint */}
-                    <div className="bg-gray-50/80 px-8 py-4 flex items-center justify-between border-t border-gray-100">
-                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Presiona ENTER para buscar "{searchTerm}"</span>
-                        <div className="flex gap-2">
-                            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                            <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse delay-75"></span>
-                            <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-150"></span>
+                    <div className="bg-gray-50/80 px-8 py-5 flex items-center justify-between border-t border-gray-100">
+                        <div className="flex items-center gap-3">
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Presiona</span>
+                            <span className="px-2 py-1 bg-white border border-gray-200 rounded-md text-[10px] font-black text-gray-600 shadow-sm">ENTER</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">para una búsqueda completa</span>
+                        </div>
+                        <div className="flex gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-orange-500/50"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-pink-500/50"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500/50"></span>
                         </div>
                     </div>
                 </div>
@@ -377,6 +396,19 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
           input::placeholder {
             font-size: 0.75rem;
           }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #e2e8f0;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #cbd5e1;
         }
       `}</style>
         </div>
