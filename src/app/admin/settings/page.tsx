@@ -137,8 +137,8 @@ export default function SettingsPage() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all whitespace-nowrap flex-1 lg:flex-none ${activeTab === tab.id
-                                ? 'bg-white text-orange-600 shadow-md border border-orange-100 scale-105 z-10'
-                                : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
+                            ? 'bg-white text-orange-600 shadow-md border border-orange-100 scale-105 z-10'
+                            : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
                             }`}
                     >
                         <tab.icon size={16} />
@@ -392,13 +392,13 @@ export default function SettingsPage() {
                     </div>
                 )}
 
-                {/* Barra de Guardado Flotante Simplificada */}
-                <div className="fixed bottom-10 left-0 right-0 lg:left-[280px] px-6 z-[100] pointer-events-none transition-all duration-500">
-                    <div className="max-w-xs mx-auto pointer-events-auto">
+                {/* Botón de Guardado Estático al Final */}
+                <div className="pt-12 border-t border-gray-100 mt-12">
+                    <div className="max-w-md mx-auto">
                         <button
                             type="submit"
                             disabled={saving}
-                            className="w-full h-14 bg-black text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:bg-orange-600 hover:scale-[1.05] active:scale-[0.98] transition-all duration-500 disabled:opacity-50 relative overflow-hidden group"
+                            className="w-full h-16 bg-black text-white rounded-3xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl hover:bg-orange-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 disabled:opacity-50 relative overflow-hidden group"
                         >
                             <div className="relative z-10 flex items-center justify-center">
                                 <span>{saving ? 'Guardando...' : 'Guardar cambios'}</span>
