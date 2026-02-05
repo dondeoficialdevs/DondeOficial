@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { settingsApi } from '@/lib/api';
 import { SiteSettings } from '@/types';
-import Image from 'next/image';
 import AdminImageUpload from '@/components/admin/AdminImageUpload';
-import { Palette, Globe, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Save, Layout, Shield } from 'lucide-react';
+import { Palette, Globe, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Save, Layout, Shield, Type, Share2, Info, ChevronRight } from 'lucide-react';
+
+type TabType = 'identity' | 'design' | 'contact' | 'social';
 
 export default function SettingsPage() {
+    const [activeTab, setActiveTab] = useState<TabType>('identity');
     const [settings, setSettings] = useState<SiteSettings>({
         id: 0,
         logo_url: '/images/logo/Logo_Dondel.png',
@@ -31,10 +33,6 @@ export default function SettingsPage() {
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [logoFile, setLogoFile] = useState<File | null>(null);
-    const [footerLogoFile, setFooterLogoFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [footerPreviewUrl, setFooterPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
         loadSettings();
@@ -63,8 +61,6 @@ export default function SettingsPage() {
                     youtube_url: data.youtube_url || '',
                     use_favorite_favicon: !!data.use_favorite_favicon
                 });
-                setPreviewUrl(data.logo_url);
-                setFooterPreviewUrl(data.footer_logo_url || data.logo_url);
             }
         } catch (err) {
             console.error('Error loading settings:', err);
@@ -73,28 +69,11 @@ export default function SettingsPage() {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setLogoFile(file);
-            setPreviewUrl(URL.createObjectURL(file));
-        }
-    };
-
-    const handleFooterLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setFooterLogoFile(file);
-            setFooterPreviewUrl(URL.createObjectURL(file));
-        }
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
         try {
             const updatedSettings = await settingsApi.updateSettings(settings);
-
             setSettings(updatedSettings);
             if (typeof window !== 'undefined') {
                 localStorage.setItem('site_settings', JSON.stringify(updatedSettings));
@@ -103,8 +82,7 @@ export default function SettingsPage() {
             window.location.reload();
         } catch (err: any) {
             console.error('Error saving settings:', err);
-            const message = err.message || 'Error desconocido';
-            alert(`Error al guardar la configuración: ${message}`);
+            alert(`Error al guardar: ${err.message || 'Error desconocido'}`);
         } finally {
             setSaving(false);
         }
@@ -115,316 +93,330 @@ export default function SettingsPage() {
         return `linear-gradient(${direction}, ${settings.primary_color}, ${settings.secondary_color})`;
     };
 
+    if (loading) return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+    );
+
+    const tabs: { id: TabType; label: string; icon: any }[] = [
+        { id: 'identity', label: 'Identidad', icon: Type },
+        { id: 'design', label: 'Diseño', icon: Palette },
+        { id: 'contact', label: 'Contacto', icon: Info },
+        { id: 'social', label: 'Redes', icon: Share2 },
+    ];
+
     return (
-        <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-1000 pb-32 px-4 md:px-8">
-            {/* Cabecera Estilo Centro de Comando */}
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-gray-100 pb-12">
-                <div className="space-y-4">
-                    <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 bg-black rounded-[2.5rem] flex items-center justify-center shadow-2xl rotate-2 group-hover:rotate-0 transition-all duration-500 border border-white/10">
-                            <Shield size={32} className="text-white" />
+        <div className="max-w-5xl mx-auto pb-44 px-2 sm:px-4">
+            {/* Header Rediseñado - Más compacto y limpio */}
+            <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6 px-2">
+                <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white shadow-xl rotate-3 shrink-0">
+                            <Shield size={20} />
                         </div>
-                        <div>
-                            <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
-                                Ajustes<span className="text-orange-600 not-italic">.</span>
-                            </h1>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.5em] ml-1 mt-2">
-                                Protocolo de Gestión Global
-                            </p>
-                        </div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight uppercase italic leading-none">
+                            Ajustes <span className="text-orange-600 not-italic">Globales</span>
+                        </h1>
                     </div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] ml-1">
+                        Protocolo de Identidad y Sistema
+                    </p>
                 </div>
 
-                <div className="hidden sm:flex items-center gap-6 bg-white px-8 py-5 rounded-[2.5rem] border border-gray-100 shadow-[0_15px_35px_rgba(0,0,0,0.05)] transition-all hover:border-orange-500 group">
-                    <div className="flex flex-col items-end">
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Estado del Sistema</span>
-                        <span className="text-xs font-black text-gray-900 uppercase">Sincronizado</span>
-                    </div>
-                    <div className="w-4 h-4 bg-orange-500 rounded-full animate-pulse shadow-[0_0_15px_rgba(249,115,22,0.5)]"></div>
+                <div className="flex items-center gap-2 bg-white px-5 py-3 rounded-2xl border border-gray-100 shadow-sm transition-all hover:border-orange-500 group self-start sm:self-auto">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.4)]"></div>
+                    <span className="text-[10px] font-black text-gray-800 uppercase tracking-widest">Sistema Listo</span>
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-12 gap-12">
-                {/* Columna Izquierda: Identidad y Diseño (Dinamismo Visual) */}
-                <div className="xl:col-span-12 lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Navigation Tabs - Estilo Píldora más robusto */}
+            <div className="flex flex-nowrap overflow-x-auto pb-2 sm:pb-0 gap-2 mb-8 bg-gray-100/50 p-1.5 rounded-3xl border border-gray-100 custom-scrollbar-hide h-auto items-center">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all whitespace-nowrap flex-1 lg:flex-none ${activeTab === tab.id
+                            ? 'bg-white text-orange-600 shadow-md border border-orange-100 scale-105 z-10'
+                            : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
+                            }`}
+                    >
+                        <tab.icon size={16} />
+                        <span className="hidden sm:inline">{tab.label}</span>
+                    </button>
+                ))}
+            </div>
 
-                    {/* Tarjeta 1: Nombre de Plataforma (Enfoque Minimalista) */}
-                    <div className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all h-full">
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-3 bg-gray-50 rounded-2xl text-gray-400 group-hover:text-orange-500 transition-colors">
-                                    <Palette size={20} />
-                                </div>
-                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 italic">Nombre del Sitio<span className="text-orange-500 not-italic">.</span></h3>
-                            </div>
-                            <div className="space-y-2">
-                                <input
-                                    type="text"
-                                    value={settings.site_name}
-                                    onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
-                                    className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-black text-xl text-gray-900"
-                                    placeholder="DondeOficial"
-                                />
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Identificador Público del Portal</p>
-                            </div>
-                        </div>
-                    </div>
+            <form onSubmit={handleSubmit} className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
 
-                    {/* Tarjeta: Control de Favicon (Favorito vs Clásico) */}
-                    <div className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm flex flex-col justify-between group hover:shadow-xl transition-all h-full">
+                {/* IDENTITY TAB */}
+                {activeTab === 'identity' && (
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                         <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-3 bg-gray-50 rounded-2xl text-gray-400 group-hover:text-red-500 transition-colors">
-                                    <Globe size={20} />
+                            <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 italic">
+                                    <Type size={14} className="text-orange-500" />
+                                    Nombre del Portal
+                                </label>
+                                <div className="relative group">
+                                    <input
+                                        type="text"
+                                        value={settings.site_name}
+                                        onChange={(e) => setSettings({ ...settings, site_name: e.target.value })}
+                                        className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-2xl outline-none transition-all font-black text-lg text-gray-900"
+                                        placeholder="DondeOficial"
+                                    />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                                        <ChevronRight size={20} />
+                                    </div>
                                 </div>
-                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 italic">Identidad en Pestaña<span className="text-red-500 not-italic">.</span></h3>
                             </div>
-                            <div className="space-y-4">
-                                <p className="text-xs font-bold text-gray-400 uppercase leading-relaxed tracking-wider">
-                                    Activa el diseño con corazón para transmitir que somos el sitio "Favorito".
-                                </p>
-                                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border-2 border-transparent hover:border-red-500/20 transition-all cursor-pointer" onClick={() => setSettings({ ...settings, use_favorite_favicon: !settings.use_favorite_favicon })}>
-                                    <span className="text-sm font-black text-gray-700 uppercase italic">Favicon con Corazón</span>
-                                    <div className={`w-12 h-6 rounded-full p-1 transition-all duration-300 ${settings.use_favorite_favicon ? 'bg-red-500' : 'bg-gray-300'}`}>
-                                        <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 ${settings.use_favorite_favicon ? 'translate-x-6' : 'translate-x-0'}`} />
+
+                            <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md overflow-hidden">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 italic">
+                                    <Globe size={14} className="text-red-500" />
+                                    Identidad en Pestaña
+                                </label>
+                                <div
+                                    className={`flex items-center justify-between p-5 rounded-2xl border-2 transition-all cursor-pointer ${settings.use_favorite_favicon ? 'bg-red-50 border-red-100' : 'bg-gray-50 border-transparent hover:border-gray-200'
+                                        }`}
+                                    onClick={() => setSettings(prev => ({ ...prev, use_favorite_favicon: !prev.use_favorite_favicon }))}
+                                >
+                                    <div className="space-y-0.5">
+                                        <p className="text-xs font-black text-gray-900 uppercase italic">Favicon con Corazón</p>
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Modo "Sitio Favorito"</p>
+                                    </div>
+                                    <div className={`w-12 h-6 rounded-full p-1 transition-all duration-300 ${settings.use_favorite_favicon ? 'bg-red-500 shadow-lg shadow-red-200' : 'bg-gray-300'}`}>
+                                        <div className={`w-4 h-4 bg-white rounded-full transition-all duration-300 transform ${settings.use_favorite_favicon ? 'translate-x-6' : 'translate-x-0'}`} />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Tarjeta 2: Logo Principal (Visual Amplia) */}
-                    <div className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm md:col-span-1 lg:col-span-2 group hover:shadow-xl transition-all">
-                        <div className="flex flex-col md:flex-row gap-8">
-                            <div className="flex-1 space-y-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-gray-50 rounded-2xl text-gray-400 group-hover:text-orange-500 transition-colors">
-                                        <Layout size={20} />
-                                    </div>
-                                    <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 italic">Identidad Visual Primaria<span className="text-orange-500 not-italic">.</span></h3>
-                                </div>
-                                <p className="text-xs font-bold text-gray-400 uppercase leading-relaxed tracking-wider max-w-xs">
-                                    Carga el logo oficial que se mostrará en la navegación y secciones principales del sistema.
-                                </p>
-                            </div>
-                            <div className="flex-1 min-h-[160px] bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 p-2 overflow-hidden">
+                        <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm flex flex-col">
+                            <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
+                                <Layout size={14} className="text-orange-500" />
+                                Logo Principal
+                            </label>
+                            <div className="flex-1 min-h-[180px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-orange-500/30 flex items-center justify-center overflow-hidden">
                                 <AdminImageUpload
                                     onUploadComplete={(url) => setSettings({ ...settings, logo_url: url })}
                                     currentImageUrl={settings.logo_url}
                                     folder="settings"
-                                    label="Subir Logo Principal"
+                                    label="Subir Logo"
                                 />
                             </div>
                         </div>
                     </div>
+                )}
 
-                    {/* Tarjeta 3: Logo Secundario (Vertical/Compacta) */}
-                    <div className="bg-white rounded-[3rem] p-8 border border-gray-100 shadow-sm flex flex-col gap-6 group hover:shadow-xl transition-all">
-                        <div className="flex items-center gap-3">
-                            <div className="p-3 bg-gray-50 rounded-2xl text-gray-400 group-hover:text-orange-500 transition-colors">
-                                <Shield size={20} />
-                            </div>
-                            <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 italic">Logo del Pie de Página<span className="text-orange-500 not-italic">.</span></h3>
-                        </div>
-                        <div className="flex-1 min-h-[220px] bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 p-2">
-                            <AdminImageUpload
-                                onUploadComplete={(url) => setSettings({ ...settings, footer_logo_url: url })}
-                                currentImageUrl={settings.footer_logo_url}
-                                folder="settings"
-                                label="Subir Logo Secundario"
-                            />
-                        </div>
-                        <p className="text-[9px] font-black text-orange-600/60 uppercase tracking-widest text-center px-4 italic">
-                            Sugerencia: Usar versiones en negativo o monocromáticas para el pie de página.
-                        </p>
-                    </div>
-
-                    {/* Tarjeta 4: Motor de Colores (Diseño Innovador) */}
-                    <div className="bg-[#0A0A0B] rounded-[3rem] p-8 md:col-span-1 lg:col-span-2 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/5 blur-[80px] -mr-16 -mt-16 rounded-full" />
-                        <div className="relative z-10 flex flex-col md:flex-row gap-10">
-                            <div className="flex-1 space-y-8">
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white italic">Motor Cromático<span className="text-orange-500 not-italic">.</span></h3>
-                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Gestión del Sistema de Diseño Global</p>
+                {/* DESIGN TAB */}
+                {activeTab === 'design' && (
+                    <div className="bg-white rounded-[2.5rem] p-6 sm:p-10 border border-gray-100 shadow-sm relative overflow-hidden">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                            <div className="lg:col-span-5 space-y-5">
+                                <div className="mb-4">
+                                    <h3 className="text-lg font-black text-gray-900 uppercase italic leading-none flex items-center gap-2">
+                                        <Palette size={18} className="text-orange-500" />
+                                        Paleta Premium
+                                    </h3>
+                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-2 ml-7">Identidad Cromática</p>
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    {[
-                                        { label: 'Color Primario', key: 'primary_color' },
-                                        { label: 'Color Secundario', key: 'secondary_color' },
-                                        { label: 'Fondo Cabecera', key: 'header_color' },
-                                        { label: 'Fondo Pie de Pág.', key: 'footer_color' },
-                                    ].map((item) => (
-                                        <div key={item.key} className="space-y-2">
-                                            <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-1">{item.label}</label>
-                                            <div className="flex items-center gap-2 p-2 bg-white/5 rounded-xl border border-white/5 group-hover:border-white/10 transition-all">
-                                                <div className="relative w-7 h-7 rounded-lg overflow-hidden flex-shrink-0 border border-white/10 shadow-lg">
-                                                    <input
-                                                        type="color"
-                                                        value={(settings as any)[item.key]}
-                                                        onChange={(e) => setSettings({ ...settings, [item.key]: e.target.value })}
-                                                        className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
-                                                    />
-                                                </div>
-                                                <span className="text-[10px] font-mono text-white/50 uppercase">{(settings as any)[item.key]}</span>
-                                            </div>
+                                {[
+                                    { label: 'Color Primario', key: 'primary_color' },
+                                    { label: 'Color Secundario', key: 'secondary_color' },
+                                    { label: 'Fondo Footer', key: 'footer_color' },
+                                ].map((item) => (
+                                    <div key={item.key} className="p-4 bg-gray-50 rounded-2xl border border-gray-100 group transition-all hover:border-orange-200">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{item.label}</span>
+                                            <span className="text-[10px] font-mono font-bold text-gray-300 uppercase">{(settings as any)[item.key]}</span>
                                         </div>
-                                    ))}
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-1">Eje de Degradado</label>
-                                    <div className="flex gap-2 p-1 bg-white/5 rounded-2xl border border-white/5">
-                                        <button
-                                            type="button"
-                                            onClick={() => setSettings({ ...settings, gradient_direction: 'horizontal' })}
-                                            className={`flex-1 py-3 px-4 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${settings.gradient_direction === 'horizontal' ? 'bg-orange-600 text-white shadow-[0_10px_20px_rgba(249,115,22,0.3)]' : 'text-white/40 hover:text-white'}`}
-                                        >
-                                            Horizontal
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setSettings({ ...settings, gradient_direction: 'vertical' })}
-                                            className={`flex-1 py-3 px-4 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${settings.gradient_direction === 'vertical' ? 'bg-orange-600 text-white shadow-[0_10px_20px_rgba(249,115,22,0.3)]' : 'text-white/40 hover:text-white'}`}
-                                        >
-                                            Vertical
-                                        </button>
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-white shadow-sm ring-2 ring-gray-100 shrink-0">
+                                                <input
+                                                    type="color"
+                                                    value={(settings as any)[item.key]}
+                                                    onChange={(e) => setSettings({ ...settings, [item.key]: e.target.value })}
+                                                    className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer"
+                                                />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={(settings as any)[item.key]}
+                                                onChange={(e) => setSettings({ ...settings, [item.key]: e.target.value })}
+                                                className="bg-transparent border-none outline-none font-black text-gray-700 uppercase text-xs w-full"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
 
-                            <div className="flex-1 flex flex-col justify-end gap-6 h-full min-h-[250px] p-8 bg-black/40 rounded-[2.5rem] border border-white/5 backdrop-blur-sm self-center">
-                                <div className="flex flex-col gap-4">
-                                    <div
-                                        className="h-14 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] text-white shadow-2xl transition-transform hover:scale-105"
-                                        style={{ background: getGradientStyle() }}
-                                    >
-                                        Acción Principal
+                            <div className="lg:col-span-7 flex flex-col">
+                                <div className="p-6 sm:p-8 bg-[#0a0a0b] rounded-[2rem] space-y-6 shadow-2xl relative overflow-hidden group flex-1">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-orange-600/10 blur-[60px] rounded-full"></div>
+                                    <h4 className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] text-center mb-4">Simulador Visual</h4>
+
+                                    <div className="space-y-3">
+                                        <div
+                                            className="h-14 rounded-xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.4em] text-white shadow-lg transform transition-transform hover:scale-[1.02]"
+                                            style={{ background: getGradientStyle() }}
+                                        >
+                                            Botón Pro
+                                        </div>
+                                        <div
+                                            className="h-14 rounded-xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.4em] border-2 transition-all hover:bg-white/5"
+                                            style={{ borderColor: settings.primary_color, color: settings.primary_color }}
+                                        >
+                                            Esquema B
+                                        </div>
                                     </div>
-                                    <div
-                                        className="h-14 rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-[0.3em] border-2 transition-transform hover:scale-105"
-                                        style={{ borderColor: settings.primary_color, color: settings.primary_color }}
-                                    >
-                                        Boton Secundario
+
+                                    <div className="mt-8 space-y-4">
+                                        <div className="flex gap-2 p-1.5 bg-white/5 rounded-xl border border-white/10">
+                                            <button
+                                                type="button"
+                                                onClick={() => setSettings({ ...settings, gradient_direction: 'horizontal' })}
+                                                className={`flex-1 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${settings.gradient_direction === 'horizontal' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                                            >
+                                                Horizontal
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setSettings({ ...settings, gradient_direction: 'vertical' })}
+                                                className={`flex-1 py-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${settings.gradient_direction === 'vertical' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                                            >
+                                                Vertical
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-white/20 italic text-center">Motor de Previsualización</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
 
-                {/* Sección de Registro Global y Contacto (Diseño Integrado) */}
-                <div className="xl:col-span-12 space-y-12 mt-4">
-                    {/* Titulo de Seccion */}
-                    <div className="flex items-center gap-4 px-4">
-                        <span className="w-12 h-[2px] bg-orange-600/20"></span>
-                        <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tighter italic">Información Institucional & Redes<span className="text-blue-600 not-italic">.</span></h2>
-                        <span className="flex-1 h-[1px] bg-gray-100"></span>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        {/* Bloque Izquierdo: Manifesto y Descripción */}
-                        <div className="lg:col-span-2 bg-white rounded-[3rem] p-10 border border-gray-100 shadow-sm space-y-8">
-                            <div className="space-y-4">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2 block italic">Descripción Institucional / Manifesto del Portal<span className="text-orange-500 not-italic">.</span></label>
+                {/* CONTACT TAB */}
+                {activeTab === 'contact' && (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm space-y-8">
+                            <div className="space-y-3">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest italic ml-1">
+                                    <Info size={14} className="text-orange-500" />
+                                    Manifiesto Institucional
+                                </label>
                                 <textarea
                                     value={settings.footer_description}
                                     onChange={(e) => setSettings({ ...settings, footer_description: e.target.value })}
-                                    className="w-full px-8 py-7 bg-gray-50 border-2 border-transparent focus:border-black rounded-[2.5rem] outline-none transition-all font-bold text-gray-700 min-h-[200px] resize-none text-lg leading-relaxed shadow-inner"
-                                    placeholder="Describe la misión y visión que aparecerá en el pie de página..."
+                                    className="w-full px-6 py-5 bg-gray-50 border-2 border-transparent focus:border-orange-500 rounded-3xl outline-none transition-all font-bold text-gray-700 min-h-[140px] resize-none text-base leading-relaxed shadow-inner"
+                                    placeholder="Describe la misión del portal..."
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                                 {[
-                                    { label: 'E-mail Principal', key: 'footer_email', icon: Mail },
-                                    { label: 'Teléfono de Contacto', key: 'footer_phone', icon: Phone },
-                                    { label: 'Sede Principal', key: 'footer_address', icon: MapPin },
+                                    { label: 'E-mail', key: 'footer_email', icon: Mail, type: 'email' },
+                                    { label: 'Teléfono', key: 'footer_phone', icon: Phone, type: 'tel' },
+                                    { label: 'Ubicación', key: 'footer_address', icon: MapPin, type: 'text' },
                                 ].map((field) => (
-                                    <div key={field.key} className="space-y-3">
-                                        <label className="text-[9px] font-black font-bold text-gray-400 uppercase tracking-widest ml-4 flex items-center gap-2">
+                                    <div key={field.key} className="p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-orange-200 transition-all">
+                                        <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-2">
                                             <field.icon size={12} className="text-orange-500" />
                                             {field.label}
                                         </label>
                                         <input
-                                            type="text"
+                                            type={field.type}
                                             value={(settings as any)[field.key]}
                                             onChange={(e) => setSettings({ ...settings, [field.key]: e.target.value })}
-                                            className="w-full px-5 py-4 bg-gray-50 border-2 border-transparent focus:border-black rounded-2xl outline-none transition-all font-bold text-gray-800 text-sm italic"
+                                            className="w-full bg-transparent border-none outline-none font-black text-gray-800 text-xs italic"
                                         />
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Bloque Derecho: Redes Sociales (Malla de Seguridad) */}
-                        <div className="bg-[#020617] rounded-[3.5rem] p-10 border border-white/5 relative overflow-hidden flex flex-col justify-between">
-                            <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/10 blur-[80px] -mr-10 -mt-10 rounded-full" />
-                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-600/5 blur-[60px] -ml-10 -mb-10 rounded-full" />
-
-                            <div className="space-y-8 relative z-10">
-                                <div className="space-y-2">
-                                    <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white italic">Protocolo Social<span className="text-blue-500 not-italic">.</span></h3>
-                                    <p className="text-[9px] font-bold text-white/30 uppercase tracking-[0.3em]">Enlaces a redes verificadas</p>
-                                </div>
-
-                                <div className="space-y-5">
-                                    {[
-                                        { label: 'Perfil de Facebook', key: 'facebook_url', icon: Facebook, color: 'text-blue-500', border: 'border-blue-500/10' },
-                                        { label: 'Perfil de Instagram', key: 'instagram_url', icon: Instagram, color: 'text-pink-500', border: 'border-pink-500/10' },
-                                        { label: 'Cuenta de TikTok', key: 'tiktok_url', icon: Globe, color: 'text-white', border: 'border-white/5' },
-                                        { label: 'Canal de YouTube', key: 'youtube_url', icon: Youtube, color: 'text-red-500', border: 'border-red-500/10' },
-                                    ].map((net) => (
-                                        <div key={net.key} className="space-y-2">
-                                            <div className="flex items-center gap-3 ml-2">
-                                                <net.icon size={11} className={net.color} />
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-white/40">{net.label}</span>
-                                            </div>
-                                            <input
-                                                type="url"
-                                                value={(settings as any)[net.key]}
-                                                onChange={(e) => setSettings({ ...settings, [net.key]: e.target.value })}
-                                                className={`w-full px-6 py-4 bg-white/[0.03] border ${net.border} focus:border-white/40 rounded-2xl outline-none transition-all font-bold text-white text-[12px] placeholder:text-white/5 italic`}
-                                                placeholder="https://plataforma.com/oficial"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="mt-12 flex items-center gap-3 px-2 relative z-10">
-                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
-                                <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Cifrado de Extremo a Extremo</span>
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm">
+                            <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
+                                <Shield size={14} className="text-orange-500" />
+                                Logo del Pie de Página
+                            </label>
+                            <div className="max-w-md bg-gray-50 rounded-2xl p-2 border-2 border-dashed border-gray-100">
+                                <AdminImageUpload
+                                    onUploadComplete={(url) => setSettings({ ...settings, footer_logo_url: url })}
+                                    currentImageUrl={settings.footer_logo_url}
+                                    folder="settings"
+                                    label="Cambiar Logo Footer"
+                                />
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
 
-                {/* Accion Flotante de Guardado (Refinada y Centrada) */}
-                <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg px-6">
-                    <div className="p-3 bg-white/50 backdrop-blur-3xl rounded-[3.5rem] border border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.1)] group">
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            className="w-full h-20 bg-black text-white rounded-[3rem] font-black text-[13px] uppercase tracking-[0.5em] shadow-2xl hover:bg-orange-600 hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 disabled:opacity-50 relative overflow-hidden group/btn"
-                        >
-                            <div className="relative z-10 flex items-center justify-center gap-6">
-                                {saving ? (
-                                    <>
-                                        <div className="w-6 h-6 border-3 border-white/20 border-t-white rounded-full animate-spin" />
-                                        <span>Sincronizando...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Save size={24} className="group-hover/btn:rotate-12 transition-transform duration-500" />
-                                        <span>Actualizar Protocolo Global</span>
-                                    </>
-                                )}
+                {/* SOCIAL TAB */}
+                {activeTab === 'social' && (
+                    <div className="bg-[#020617] rounded-[2.5rem] p-8 sm:p-12 border border-white/5 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-60 h-60 bg-blue-600/10 blur-[80px] rounded-full pointer-events-none" />
+
+                        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                            <div className="space-y-3">
+                                <h3 className="text-2xl font-black text-white uppercase italic flex items-center gap-3 leading-none">
+                                    <Share2 size={24} className="text-blue-500" />
+                                    Presencia <span className="text-blue-500">Social</span>
+                                </h3>
+                                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] ml-1">Enlaces verificados</p>
                             </div>
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                        </button>
+
+                            <div className="grid grid-cols-1 gap-5">
+                                {[
+                                    { label: 'Facebook', key: 'facebook_url', icon: Facebook, color: 'text-blue-500', border: 'border-blue-500/10' },
+                                    { label: 'Instagram', key: 'instagram_url', icon: Instagram, color: 'text-pink-500', border: 'border-pink-500/10' },
+                                    { label: 'TikTok', key: 'tiktok_url', icon: Globe, color: 'text-white', border: 'border-white/5' },
+                                    { label: 'YouTube', key: 'youtube_url', icon: Youtube, color: 'text-red-500', border: 'border-red-500/10' },
+                                ].map((net) => (
+                                    <div key={net.key} className="space-y-1.5 p-4 bg-white/[0.03] rounded-2xl border border-white/[0.05] group transition-all hover:border-white/20">
+                                        <div className="flex items-center gap-2 mb-1 ml-1">
+                                            <net.icon size={12} className={net.color} />
+                                            <span className="text-[8px] font-black uppercase tracking-widest text-white/40">{net.label}</span>
+                                        </div>
+                                        <input
+                                            type="url"
+                                            value={(settings as any)[net.key]}
+                                            onChange={(e) => setSettings({ ...settings, [net.key]: e.target.value })}
+                                            className="w-full bg-transparent border-none outline-none font-bold text-white text-xs placeholder:text-white/5 italic focus:ring-0"
+                                            placeholder="https://su-enlace.com"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Barra de Guardado Flotante Compacta */}
+                <div className="fixed bottom-10 left-0 right-0 lg:left-[280px] px-6 z-[100] pointer-events-none transition-all duration-500">
+                    <div className="max-w-md mx-auto pointer-events-auto">
+                        <div className="bg-white/80 backdrop-blur-xl p-2.5 rounded-3xl border border-gray-100 shadow-[0_25px_50px_rgba(0,0,0,0.15)] flex items-center justify-between gap-4 group">
+                            <div className="hidden sm:flex flex-col ml-6">
+                                <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Protocolo</span>
+                                <span className="text-[10px] font-black text-gray-900 uppercase">Sin Guardar</span>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                className="flex-1 h-14 bg-black text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.3em] shadow-xl hover:bg-orange-600 hover:scale-[1.03] active:scale-[0.98] transition-all duration-500 disabled:opacity-50 relative overflow-hidden group/btn"
+                            >
+                                <div className="relative z-10 flex items-center justify-center gap-3">
+                                    {saving ? (
+                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <Save size={18} className="group-hover/btn:rotate-12 transition-transform h-4 w-4" />
+                                    )}
+                                    <span>Actualizar Sistema</span>
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>
