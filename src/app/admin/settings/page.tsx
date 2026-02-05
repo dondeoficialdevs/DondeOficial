@@ -26,7 +26,8 @@ export default function SettingsPage() {
         facebook_url: '',
         instagram_url: '',
         tiktok_url: '',
-        youtube_url: ''
+        youtube_url: '',
+        use_favorite_favicon: false
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -59,7 +60,8 @@ export default function SettingsPage() {
                     facebook_url: data.facebook_url || '',
                     instagram_url: data.instagram_url || '',
                     tiktok_url: data.tiktok_url || '',
-                    youtube_url: data.youtube_url || ''
+                    youtube_url: data.youtube_url || '',
+                    use_favorite_favicon: !!data.use_favorite_favicon
                 });
                 setPreviewUrl(data.logo_url);
                 setFooterPreviewUrl(data.footer_logo_url || data.logo_url);

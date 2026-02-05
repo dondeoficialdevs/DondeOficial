@@ -14,10 +14,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await settingsApi.getSettings();
   const useFavorite = settings?.use_favorite_favicon ?? false;
   const faviconPath = useFavorite ? '/favicons/favorite' : '/favicons/classic';
+  // Cache busting query param
+  const v = settings?.updated_at ? new Date(settings.updated_at).getTime() : Date.now();
 
   return {
     title: "DondeOficial",
@@ -30,12 +34,12 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     icons: {
       icon: [
-        { url: `${faviconPath}/favicon.ico`, sizes: "any" },
-        { url: `${faviconPath}/icon-192.png`, sizes: "192x192", type: "image/png" },
-        { url: `${faviconPath}/icon-512.png`, sizes: "512x512", type: "image/png" },
+        { url: `${faviconPath}/favicon.ico?v=${v}`, sizes: "any" },
+        { url: `${faviconPath}/icon-192.png?v=${v}`, sizes: "192x192", type: "image/png" },
+        { url: `${faviconPath}/icon-512.png?v=${v}`, sizes: "512x512", type: "image/png" },
       ],
       apple: [
-        { url: `${faviconPath}/apple-icon.png`, sizes: "180x180", type: "image/png" },
+        { url: `${faviconPath}/apple-icon.png?v=${v}`, sizes: "180x180", type: "image/png" },
       ],
     },
     openGraph: {
