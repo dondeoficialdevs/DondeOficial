@@ -16,9 +16,13 @@ export const businessApi = {
     query = query.eq('status', 'approved');
 
     if (filters?.search) {
-      // Use logical OR to search in name, description, OR category name
-      // Note: we use !inner join for categories to allow filtering by category name
-      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,categories.name.ilike.%${filters.search}%`);
+      // Clean and prepare search pattern: replace spaces with % to be more flexible
+      const searchTerm = filters.search.trim().replace(/\s+/g, '%');
+      const searchPattern = `%${searchTerm}%`;
+
+      // We search in business name and description
+      // We also try to match category names if businesses have them
+      query = query.or(`name.ilike.${searchPattern},description.ilike.${searchPattern}`);
     }
 
     if (filters?.category) {
