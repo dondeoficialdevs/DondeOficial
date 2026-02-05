@@ -36,9 +36,18 @@
 }
 
 body {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   background: var(--site-bg);
   color: var(--foreground);
 }
+
+pre,
+code,
+kbd,
+samp {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
 
 /* Utility classes */
 .line-clamp-2 {
@@ -319,12 +328,29 @@ body {
 
 /* Slide Hint Animation for Category Bar */
 @keyframes slide-hint {
-  0% { transform: translateX(0); }
-  15% { transform: translateX(-15px); }
-  30% { transform: translateX(10px); }
-  45% { transform: translateX(-5px); }
-  60% { transform: translateX(0); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  15% {
+    transform: translateX(-15px);
+  }
+
+  30% {
+    transform: translateX(10px);
+  }
+
+  45% {
+    transform: translateX(-5px);
+  }
+
+  60% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .animate-slide-hint {

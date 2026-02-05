@@ -5,7 +5,7 @@ import { SiteSettings } from '@/types';
 import { settingsApi } from '@/lib/api';
 
 // Fallback values
-const DEFAULT_LOGO = '/images/logo/Logo_Dondel.png'; // No lo cambio aquí pero me aseguro de que el estado inicial no lo fuerce si hay cache.
+const DEFAULT_LOGO = '/images/logo/Logo_Donde1.png'; // Cambiado de Dondel a Donde1 para coincidir con el servidor y eliminar advertencias.
 
 const DEFAULT_SETTINGS: SiteSettings = {
     id: 0,

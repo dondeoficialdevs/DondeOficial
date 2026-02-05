@@ -12,8 +12,8 @@ export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState<TabType>('identity');
     const [settings, setSettings] = useState<SiteSettings>({
         id: 0,
-        logo_url: '/images/logo/Logo_Dondel.png',
-        footer_logo_url: '/images/logo/Logo_Dondel.png',
+        logo_url: '/images/logo/Logo_Donde1.png',
+        footer_logo_url: '/images/logo/Logo_Donde1.png',
         site_name: 'DondeOficial',
         primary_color: '#f97316',
         secondary_color: '#ea580c',
