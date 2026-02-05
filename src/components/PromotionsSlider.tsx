@@ -70,7 +70,6 @@ export default function PromotionsSlider() {
         const fetchPromotions = async () => {
             try {
                 const data = await promotionApi.getActive();
-                console.log('API getActive response:', data);
                 if (data && Array.isArray(data)) {
                     setPromotions(data);
                 }

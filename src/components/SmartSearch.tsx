@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
-import { Search, Sparkles, Navigation, X, Store, Tag, ArrowRight } from 'lucide-react';
+import { Search, Sparkles, Navigation, X, Store, Tag, ArrowRight, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { businessApi, categoryApi } from '../lib/api';
 import { Business, Category } from '../types';

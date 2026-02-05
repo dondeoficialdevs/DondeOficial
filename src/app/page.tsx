@@ -32,7 +32,7 @@ export default function Home() {
   const loadInitialData = async () => {
     try {
       setError(null);
-      console.log('🔍 Cargando datos iniciales desde Supabase...');
+      // Cargar datos sin logs excesivos en producción
 
       const [businessesData, categoriesData] = await Promise.all([
         businessApi.getAll({ limit: 12 }).catch((err) => {
@@ -47,10 +47,7 @@ export default function Home() {
         })
       ]);
 
-      console.log('✅ Datos cargados:', {
-        businesses: businessesData.length,
-        categories: categoriesData.length
-      });
+      setBusinesses(businessesData);
 
       setBusinesses(businessesData);
       setCategories(categoriesData);
