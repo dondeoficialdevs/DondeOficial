@@ -75,18 +75,19 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
     // Debounced suggestion fetch
     useEffect(() => {
         const timer = setTimeout(async () => {
-            if (searchTerm.length >= 2) {
+            const trimmedTerm = searchTerm.trim();
+            if (trimmedTerm.length >= 2) {
                 setIsLoadingSuggestions(true);
                 setShowSuggestions(true);
                 try {
                     const [cats, biz] = await Promise.all([
                         categoryApi.getAll(),
-                        businessApi.getAll({ search: searchTerm, limit: 5 })
+                        businessApi.getAll({ search: trimmedTerm, limit: 5 })
                     ]);
 
                     // Filter categories locally to avoid excessive API calls if necessary
                     const filteredCats = cats.filter(c =>
-                        c.name.toLowerCase().includes(searchTerm.toLowerCase())
+                        c.name.toLowerCase().includes(trimmedTerm.toLowerCase())
                     ).slice(0, 4);
 
                     setSuggestions({ categories: filteredCats, businesses: biz });
@@ -110,12 +111,14 @@ export default function SmartSearch({ onSearch }: SmartSearchProps) {
     };
 
     const executeSearch = (term: string, loc: string) => {
+        const trimmedTerm = term.trim();
+        const trimmedLoc = loc.trim();
         const params = new URLSearchParams();
-        if (term) params.set('search', term);
-        if (loc) params.set('location', loc);
+        if (trimmedTerm) params.set('search', trimmedTerm);
+        if (trimmedLoc) params.set('location', trimmedLoc);
 
         router.push(`/listings?${params.toString()}`);
-        if (onSearch) onSearch(term, loc);
+        if (onSearch) onSearch(trimmedTerm, trimmedLoc);
         setShowSuggestions(false);
         setShowLocationSuggestions(false);
     };

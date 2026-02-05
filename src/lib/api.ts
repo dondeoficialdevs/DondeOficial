@@ -8,7 +8,7 @@ export const businessApi = {
       .from('businesses')
       .select(`
         *,
-        categories!inner (name),
+        categories (name),
         business_images (*)
       `);
 
