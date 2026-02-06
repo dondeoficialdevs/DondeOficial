@@ -177,6 +177,7 @@ export interface SiteSettings {
   tiktok_url?: string;
   youtube_url?: string;
   use_favorite_favicon?: boolean;
+  pwa_icon_url?: string;
   updated_at?: string;
 }
 

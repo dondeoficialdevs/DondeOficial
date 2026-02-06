@@ -29,7 +29,8 @@ export default function SettingsPage() {
         instagram_url: '',
         tiktok_url: '',
         youtube_url: '',
-        use_favorite_favicon: false
+        use_favorite_favicon: false,
+        pwa_icon_url: '/icon-192.png'
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -59,7 +60,8 @@ export default function SettingsPage() {
                     instagram_url: data.instagram_url || '',
                     tiktok_url: data.tiktok_url || '',
                     youtube_url: data.youtube_url || '',
-                    use_favorite_favicon: !!data.use_favorite_favicon
+                    use_favorite_favicon: !!data.use_favorite_favicon,
+                    pwa_icon_url: data.pwa_icon_url || '/icon-192.png'
                 });
             }
         } catch (err) {
@@ -204,6 +206,21 @@ export default function SettingsPage() {
                                     currentImageUrl={settings.logo_url}
                                     folder="settings"
                                     label="Subir Logo"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col">
+                            <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
+                                <Globe size={14} className="text-blue-500" />
+                                Icono de App (PWA)
+                            </label>
+                            <div className="flex-1 min-h-[200px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-blue-500/30 flex items-center justify-center overflow-hidden">
+                                <AdminImageUpload
+                                    onUploadComplete={(url) => setSettings({ ...settings, pwa_icon_url: url })}
+                                    currentImageUrl={settings.pwa_icon_url}
+                                    folder="settings"
+                                    label="Subir Icono PWA"
                                 />
                             </div>
                         </div>

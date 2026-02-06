@@ -18,33 +18,35 @@ export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await settingsApi.getSettings();
+  const siteName = settings?.site_name || "DondeOficial";
   const useFavorite = settings?.use_favorite_favicon ?? false;
   const faviconPath = useFavorite ? '/favicons/favorite' : '/favicons/classic';
-  // Cache busting query param
   const v = settings?.updated_at ? new Date(settings.updated_at).getTime() : Date.now();
 
+  const icons: any = {
+    icon: [
+      { url: `${faviconPath}/favicon.ico?v=${v}`, sizes: "any" },
+      { url: settings?.pwa_icon_url || `${faviconPath}/icon-192.png?v=${v}`, sizes: "192x192", type: "image/png" },
+      { url: settings?.pwa_icon_url || `${faviconPath}/icon-512.png?v=${v}`, sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: settings?.pwa_icon_url || `${faviconPath}/apple-icon.png?v=${v}`, sizes: "180x180", type: "image/png" },
+    ],
+  };
+
   return {
-    title: "DondeOficial",
+    title: siteName,
     description: "Encuentra negocios y servicios en tu ciudad",
     manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title: "DondeOficial",
+      title: siteName,
     },
-    icons: {
-      icon: [
-        { url: `${faviconPath}/favicon.ico?v=${v}`, sizes: "any" },
-        { url: `${faviconPath}/icon-192.png?v=${v}`, sizes: "192x192", type: "image/png" },
-        { url: `${faviconPath}/icon-512.png?v=${v}`, sizes: "512x512", type: "image/png" },
-      ],
-      apple: [
-        { url: `${faviconPath}/apple-icon.png?v=${v}`, sizes: "180x180", type: "image/png" },
-      ],
-    },
+    icons,
     openGraph: {
       type: "website",
-      siteName: "DondeOficial",
+      siteName: siteName,
     },
     other: {
       "apple-mobile-web-app-capable": "yes",

@@ -104,7 +104,9 @@ export default function Home() {
             onCategorySelect={(categoryName) => handleSearch('', categoryName)}
           />
 
-          <ActionCards />
+          <div className="hidden md:block">
+            <ActionCards />
+          </div>
 
           {error && (
             <div className="container mx-auto px-4 py-8">
