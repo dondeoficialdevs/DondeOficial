@@ -68,11 +68,11 @@ export default function FeaturedListings({ businesses, loading, onBusinessClick 
                           maxImages={3}
                           className="w-full h-full"
                         />
-                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent pointer-events-none"></div>
                       </>
                     ) : (
                       <div className="h-full bg-linear-to-br from-blue-100 to-blue-200 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
+                        <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent"></div>
                       </div>
                     )}
 

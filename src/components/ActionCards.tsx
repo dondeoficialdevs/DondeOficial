@@ -79,9 +79,9 @@ function CardItem({ card }: { card: ActionCard }) {
         style={{ backgroundImage: `url(${card.image_url})` }}
       />
 
-      {/* Premium Overlays */}
-      <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/60 to-black/20 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/10 transition-all duration-500"></div>
-      <div className={`absolute inset-0 bg-linear-to-r ${isWhatsApp ? 'from-green-600/40' : 'from-orange-600/40 via-red-600/20'
+      {/* Premium Overlays - Significantly reduced opacity to see images clearly */}
+      <div className="absolute inset-0 bg-linear-to-r from-black/40 via-black/10 to-transparent group-hover:from-black/30 group-hover:via-black/5 to-transparent transition-all duration-500"></div>
+      <div className={`absolute inset-0 bg-linear-to-r ${isWhatsApp ? 'from-green-600/10' : 'from-orange-600/15 via-red-600/5'
         } via-transparent to-transparent`}></div>
 
       {/* Shine Effect */}
@@ -113,10 +113,10 @@ function CardItem({ card }: { card: ActionCard }) {
                   {card.badge_text}
                 </span>
               </div>
-              <h3 className="text-2xl md:text-3xl font-black text-white leading-tight tracking-tight uppercase">
+              <h3 className="text-2xl md:text-3xl font-black text-white leading-tight tracking-tight uppercase [text-shadow:0_2px_4px_rgba(0,0,0,0.5)]">
                 {card.title}
               </h3>
-              <p className="text-base text-white/80 mt-2 font-medium max-w-sm line-clamp-2 leading-relaxed">
+              <p className="text-base text-white mt-2 font-medium max-w-sm line-clamp-2 leading-relaxed [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
                 {card.description}
               </p>
             </div>
