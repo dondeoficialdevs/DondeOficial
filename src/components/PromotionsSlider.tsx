@@ -134,8 +134,8 @@ export default function PromotionsSlider() {
                         )}
                     </div>
 
-                    <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/95 via-black/40 to-transparent"></div>
-                    <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
 
                     <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-20">
                         <div className={`max-w-3xl transition-all duration-1000 transform ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
@@ -161,7 +161,7 @@ export default function PromotionsSlider() {
                                 {promo.title}
                             </h2>
 
-                            <p className="text-sm sm:text-lg md:text-2xl text-white/90 mb-6 sm:mb-12 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
+                            <p className="text-sm sm:text-lg md:text-2xl text-white mb-6 sm:mb-12 max-w-2xl leading-relaxed font-medium [text-shadow:0_2px_4px_rgba(0,0,0,0.8)]">
                                 {promo.description}
                             </p>
 

@@ -1,6 +1,6 @@
 # Frontend - DirectorioComercial
 
-Aplicación frontend construida con Next.js 15, React 19, TypeScript y Tailwind CSS. Para documentación completa del proyecto, consultar [README.md](../README.md) y [DOCUMENTACION_TECNICA.md](../DOCUMENTACION_TECNICA.md).
+Aplicación frontend construida con Next.js 15, React 19, TypeScript y Tailwind CSS.
 
 ## Tecnologías Utilizadas
 
