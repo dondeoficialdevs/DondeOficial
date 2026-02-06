@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import HealthCheck from '@/components/HealthCheck';
 import { authApi } from '@/lib/api';
 import { User } from '@/types';
 import {
@@ -215,8 +214,6 @@ export default function AdminLayout({
           </div>
 
           <div className="flex items-center gap-6">
-            <HealthCheck />
-            <div className="h-8 w-[1px] bg-gray-100 hidden sm:block"></div>
             <div className="hidden sm:flex items-center gap-3">
               <span className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-400">Estado del Sistema</span>
               <div className="flex items-center gap-2 bg-black/[0.03] px-4 py-2 rounded-xl border border-black/5 shadow-sm">
