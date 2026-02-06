@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { promotionApi } from '@/lib/api';
+import { promotionApi, businessApi } from '@/lib/api';
 import { Promotion } from '@/types';
 
 export default function AnnouncementPopup() {
