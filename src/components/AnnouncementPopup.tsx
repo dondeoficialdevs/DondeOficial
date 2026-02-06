@@ -39,19 +39,40 @@ export default function AnnouncementPopup() {
     useEffect(() => {
         const fetchPopups = async () => {
             try {
+                // 1. Obtener promociones de tipo popup
                 const activePopups = await promotionApi.getActivePopups();
-                if (activePopups && activePopups.length > 0) {
-                    // Filtrar los que ya se han visto en esta sesión
-                    const unseenPopups = activePopups.filter(p => !sessionStorage.getItem(`hasSeenAnnouncement_${p.id}`));
-                    
-                    if (unseenPopups.length > 0) {
-                        setPromotions(unseenPopups);
-                        // Mostrar después de 3 segundos de carga inicial
-                        const timer = setTimeout(() => {
-                            setIsOpen(true);
-                        }, 3000);
-                        return () => clearTimeout(timer);
-                    }
+                let combinedItems: Promotion[] = activePopups || [];
+
+                // 2. Si hay menos de 5 elementos, rellenar con negocios destacados
+                if (combinedItems.length < 5) {
+                    const businesses = await businessApi.getAll({ limit: 10 });
+                    const featuredBusinesses = businesses
+                        .filter(b => !combinedItems.some(p => p.business_id === b.id)) // Evitar duplicados
+                        .slice(0, 5 - combinedItems.length)
+                        .map(b => ({
+                            id: b.id * -100, // IDs negativos para evitar colisiones con promociones reales
+                            title: b.name,
+                            description: b.description,
+                            image_url: b.images?.[0]?.image_url || '',
+                            button_text: 'Ver Negocio',
+                            button_link: `/businesses/${b.id}`,
+                            badge_text: 'DESTACADO',
+                            active: true,
+                            priority: 10,
+                            business_id: b.id,
+                            created_at: new Date().toISOString()
+                        } as Promotion));
+
+                    combinedItems = [...combinedItems, ...featuredBusinesses];
+                }
+
+                if (combinedItems.length > 0) {
+                    setPromotions(combinedItems);
+                    // Mostrar después de 3 segundos de carga inicial
+                    const timer = setTimeout(() => {
+                        setIsOpen(true);
+                    }, 3000);
+                    return () => clearTimeout(timer);
                 }
             } catch (error) {
                 console.error('Error fetching announcement popups:', error);
@@ -65,9 +86,11 @@ export default function AnnouncementPopup() {
 
     const closePopup = () => {
         setIsOpen(false);
-        // Marcar todos los de esta tanda como vistos para no molestar más en esta sesión
+        // Solo marcar como vistos los que son promociones reales (id > 0)
         promotions.forEach(p => {
-            sessionStorage.setItem(`hasSeenAnnouncement_${p.id}`, 'true');
+            if (p.id > 0) {
+                sessionStorage.setItem(`hasSeenAnnouncement_${p.id}`, 'true');
+            }
         });
     };
 
@@ -77,12 +100,12 @@ export default function AnnouncementPopup() {
 
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-sm animate-fade-in">
-            <div 
+            <div
                 className="relative w-full max-w-lg bg-white rounded-[2.5rem] overflow-hidden shadow-2xl transform transition-all animate-bounce-in border border-white/10"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                
+
                 {/* Botón de Cerrar */}
                 <button
                     onClick={closePopup}
@@ -139,7 +162,7 @@ export default function AnnouncementPopup() {
                         ) : (
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-700"></div>
                         )}
-                        
+
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10"></div>
 
                         <div className="absolute bottom-8 left-8 right-8 z-20 text-left">
@@ -157,8 +180,8 @@ export default function AnnouncementPopup() {
                         {promotions.length > 1 && (
                             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 flex gap-1.5 px-3 py-1.5 rounded-full bg-black/20 backdrop-blur-md">
                                 {promotions.map((_, i) => (
-                                    <div 
-                                        key={i} 
+                                    <div
+                                        key={i}
                                         className={`h-1.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`}
                                     />
                                 ))}
@@ -171,7 +194,7 @@ export default function AnnouncementPopup() {
                         <p className="text-gray-600 mb-8 font-medium leading-relaxed text-sm sm:text-base">
                             {currentPromo.description}
                         </p>
-                        
+
                         <div className="flex flex-col space-y-4">
                             {currentPromo.button_link && (
                                 <Link
@@ -182,7 +205,7 @@ export default function AnnouncementPopup() {
                                     {currentPromo.button_text || 'Aprovechar Ahora'}
                                 </Link>
                             )}
-                            
+
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={closePopup}
