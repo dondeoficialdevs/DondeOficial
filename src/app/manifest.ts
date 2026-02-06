@@ -1,11 +1,15 @@
 import { MetadataRoute } from 'next';
 import { settingsApi } from '@/lib/api';
 
+export const dynamic = 'force-dynamic';
+
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
     const settings = await settingsApi.getSettings();
 
     const siteName = settings?.site_name || 'DondeOficial';
-    const pwaIcon = settings?.pwa_icon_url || '/icon-192.png';
+    const v = settings?.updated_at ? new Date(settings.updated_at).getTime() : Date.now();
+    const pwaIcon = settings?.pwa_icon_url ? `${settings.pwa_icon_url}?v=${v}` : `/icon-192.png?v=${v}`;
+    const pwaIconLarge = settings?.pwa_icon_url ? `${settings.pwa_icon_url}?v=${v}` : `/icon-512.png?v=${v}`;
 
     return {
         name: `${siteName} - Directorio de Negocios`,
@@ -24,10 +28,10 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
                 purpose: 'any',
             },
             {
-                src: pwaIcon,
+                src: pwaIconLarge,
                 sizes: '512x512',
                 type: 'image/png',
-                purpose: 'any maskable',
+                purpose: 'maskable',
             },
         ],
         categories: ['business', 'shopping', 'utilities'],

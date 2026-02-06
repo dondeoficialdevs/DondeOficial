@@ -26,18 +26,18 @@ export async function generateMetadata(): Promise<Metadata> {
   const icons: any = {
     icon: [
       { url: `${faviconPath}/favicon.ico?v=${v}`, sizes: "any" },
-      { url: settings?.pwa_icon_url || `${faviconPath}/icon-192.png?v=${v}`, sizes: "192x192", type: "image/png" },
-      { url: settings?.pwa_icon_url || `${faviconPath}/icon-512.png?v=${v}`, sizes: "512x512", type: "image/png" },
+      { url: settings?.pwa_icon_url ? `${settings.pwa_icon_url}?v=${v}` : `${faviconPath}/icon-192.png?v=${v}`, sizes: "192x192", type: "image/png" },
+      { url: settings?.pwa_icon_url ? `${settings.pwa_icon_url}?v=${v}` : `${faviconPath}/icon-512.png?v=${v}`, sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: settings?.pwa_icon_url || `${faviconPath}/apple-icon.png?v=${v}`, sizes: "180x180", type: "image/png" },
+      { url: settings?.pwa_icon_url ? `${settings.pwa_icon_url}?v=${v}` : `${faviconPath}/apple-icon.png?v=${v}`, sizes: "180x180", type: "image/png" },
     ],
   };
 
   return {
     title: siteName,
     description: "Encuentra negocios y servicios en tu ciudad",
-    manifest: "/manifest.json",
+    manifest: "/manifest.webmanifest",
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
