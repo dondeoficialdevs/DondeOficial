@@ -334,17 +334,17 @@ export default function AddListingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 md:p-10 border border-gray-100">
+          <div className="text-center mb-10 sm:mb-12">
+            <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 mb-6 transform rotate-3 hover:rotate-0 transition-transform duration-300">
+              <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Añade Tu Negocio</h1>
-            <p className="text-xl text-gray-600">
-              Promociona tu negocio en DondeOficial y llega a más clientes
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Añade Tu Negocio</h1>
+            <p className="text-lg text-gray-600 max-w-xl mx-auto leading-relaxed">
+              Promociona tu negocio en <span className="text-blue-600 font-bold">DondeOficial</span> y llega a más clientes potenciales hoy mismo.
             </p>
           </div>
 

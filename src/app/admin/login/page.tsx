@@ -56,20 +56,20 @@ export default function LoginPage() {
       </div>
 
       {/* Main Glass Container */}
-      <main className="relative z-10 w-full max-w-lg px-4 sm:px-6">
-        <div className="bg-white/[0.02] backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[3.5rem] p-8 sm:p-10 md:p-14 border border-white/10 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden group">
+      <main className="relative z-10 w-full max-w-md px-4 sm:px-6">
+        <div className="bg-white/[0.02] backdrop-blur-3xl rounded-[2.5rem] sm:rounded-[3rem] p-7 sm:p-9 md:p-11 border border-white/10 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden group">
           {/* Subtle Inner Glow */}
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent"></div>
           <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-white/5 to-transparent"></div>
 
           {/* Header Section */}
-          <div className="text-center mb-10 sm:mb-12 relative">
-            <div className="inline-block relative mb-8 sm:mb-10">
+          <div className="text-center mb-8 relative">
+            <div className="inline-block relative mb-6">
               {/* Pro Animated Rings */}
-              <div className="absolute inset-[-12px] sm:inset-[-15px] border border-orange-500/10 rounded-[2.5rem] sm:rounded-[2.8rem] animate-[spin_15s_linear_infinite]"></div>
-              <div className="absolute inset-[-6px] sm:inset-[-8px] border border-white/5 rounded-[2.2rem] sm:rounded-[2.5rem] animate-[spin_10s_linear_infinite_reverse]"></div>
+              <div className="absolute inset-[-10px] sm:inset-[-12px] border border-orange-500/10 rounded-[2.2rem] sm:rounded-[2.4rem] animate-[spin_15s_linear_infinite]"></div>
+              <div className="absolute inset-[-5px] sm:inset-[-6px] border border-white/5 rounded-[2rem] sm:rounded-[2.2rem] animate-[spin_10s_linear_infinite_reverse]"></div>
 
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-orange-500 to-amber-600 rounded-[2.2rem] sm:rounded-[2.5rem] flex items-center justify-center p-4 sm:p-5 shadow-[0_20px_40px_rgba(249,115,22,0.3)] transform transition-all duration-700 group-hover:scale-105 group-hover:rotate-3">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-orange-500 to-amber-600 rounded-[2rem] sm:rounded-[2.2rem] flex items-center justify-center p-4 sm:p-5 shadow-[0_20px_40px_rgba(249,115,22,0.3)] transform transition-all duration-700 group-hover:scale-105 group-hover:rotate-3">
                 <div className="relative w-full h-full">
                   <Image
                     src={logoUrl}
@@ -120,7 +120,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-white/[0.01] border-2 border-white/5 focus:border-orange-500/30 focus:bg-white/[0.03] rounded-2xl py-4 sm:py-5 pl-14 pr-6 outline-none text-white text-base font-bold transition-all placeholder:text-white/5"
+                  className="w-full bg-white/[0.01] border-2 border-white/5 focus:border-orange-500/30 focus:bg-white/[0.03] rounded-2xl py-3.5 sm:py-4 pl-14 pr-6 outline-none text-white text-base font-bold transition-all placeholder:text-white/5"
                   placeholder="name@official.com"
                   disabled={loading}
                 />
@@ -140,7 +140,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-white/[0.01] border-2 border-white/5 focus:border-orange-500/30 focus:bg-white/[0.03] rounded-2xl py-4 sm:py-5 pl-14 pr-14 outline-none text-white text-base font-bold transition-all placeholder:text-white/5"
+                  className="w-full bg-white/[0.01] border-2 border-white/5 focus:border-orange-500/30 focus:bg-white/[0.03] rounded-2xl py-3.5 sm:py-4 pl-14 pr-14 outline-none text-white text-base font-bold transition-all placeholder:text-white/5"
                   placeholder="••••••••••••"
                   disabled={loading}
                 />
@@ -160,9 +160,9 @@ export default function LoginPage() {
               className="w-full relative group/btn pt-4"
             >
               <div className="absolute inset-0 bg-orange-600 rounded-2xl blur-xl opacity-20 group-hover/btn:opacity-40 transition-opacity duration-500"></div>
-              <div className="relative flex items-center justify-center gap-4 bg-white text-black py-5 sm:py-6 rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] transition-all duration-500 group-hover/btn:bg-orange-500 group-hover/btn:text-white group-hover/btn:shadow-[0_20px_40px_rgba(249,115,22,0.4)] group-active/btn:scale-[0.98]">
+              <div className="relative flex items-center justify-center gap-4 bg-white text-black py-4.5 sm:py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] transition-all duration-500 group-hover/btn:bg-orange-500 group-hover/btn:text-white group-hover/btn:shadow-[0_20px_40px_rgba(249,115,22,0.4)] group-active/btn:scale-[0.98]">
                 {loading ? (
-                  <Loader2 className="w-6 h-6 animate-spin text-orange-500 group-hover/btn:text-white" />
+                  <Loader2 className="w-5 h-5 animate-spin text-orange-500 group-hover/btn:text-white" />
                 ) : (
                   <>
                     <span>Acceder</span>
