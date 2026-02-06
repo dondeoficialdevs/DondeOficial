@@ -79,11 +79,6 @@ function CardItem({ card }: { card: ActionCard }) {
         style={{ backgroundImage: `url(${card.image_url})` }}
       />
 
-      {/* Premium Overlays - Significantly reduced opacity to see images clearly */}
-      <div className="absolute inset-0 bg-linear-to-r from-black/40 via-black/10 to-transparent group-hover:from-black/30 group-hover:via-black/5 to-transparent transition-all duration-500"></div>
-      <div className={`absolute inset-0 bg-linear-to-r ${isWhatsApp ? 'from-green-600/10' : 'from-orange-600/15 via-red-600/5'
-        } via-transparent to-transparent`}></div>
-
       {/* Shine Effect */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[1500ms]"></div>

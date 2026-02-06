@@ -163,8 +163,6 @@ export default function AnnouncementPopup() {
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-700"></div>
                         )}
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10"></div>
-
                         <div className="absolute bottom-8 left-8 right-8 z-20 text-left">
                             {(currentPromo.badge_text || currentPromo.is_discount) && (
                                 <span className="bg-orange-600 backdrop-blur-md text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest mb-3 inline-block shadow-lg border border-orange-400/30">
