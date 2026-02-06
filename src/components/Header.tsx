@@ -18,12 +18,12 @@ export default function Header() {
       className="shadow-lg sticky top-0 z-50 border-b border-gray-100"
       style={{ backgroundColor: 'var(--header-bg)' }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+      <div className="max-w-6xl mx-auto px-4 lg:px-6">
+        <div className="flex justify-between items-center py-2.5">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center group">
-              <div className="relative w-32 h-10 sm:w-40 sm:h-12 md:w-48 md:h-16 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+              <div className="relative w-28 h-8 sm:w-36 sm:h-10 md:w-44 h-14 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
                 {logoUrl && (
                   <Image
                     src={logoUrl}
@@ -137,7 +137,7 @@ export default function Header() {
           <div className={`relative h-full flex flex-col p-8 transition-transform duration-500 ease-out ${isMobileMenuOpen ? 'translate-y-0' : 'translate-y-12'
             }`}>
             <div className="flex justify-between items-center mb-12">
-              <div className="w-40 h-10 relative">
+              <div className="w-36 h-8 relative">
                 <Image
                   src={logoUrl}
                   alt="Logo"
