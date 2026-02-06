@@ -48,8 +48,6 @@ export default function Home() {
       ]);
 
       setBusinesses(businessesData);
-
-      setBusinesses(businessesData);
       setCategories(categoriesData);
 
       // Si ambos arrays están vacíos, podría ser un error de conexión
