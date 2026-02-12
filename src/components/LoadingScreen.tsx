@@ -89,11 +89,14 @@ export default function LoadingScreen() {
         if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
         if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
 
-        // Draw node
+        // Draw node with glow
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = '#ff7300';
+        ctx.fillStyle = '#ff7300'; // Orange
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'rgba(255, 115, 0, 0.6)';
         ctx.fill();
+        ctx.shadowBlur = 0; // Reset for performance
 
         // Draw connections
         for (let j = i + 1; j < nodes.length; j++) {
@@ -107,8 +110,8 @@ export default function LoadingScreen() {
             ctx.moveTo(node.x, node.y);
             ctx.lineTo(other.x, other.y);
             const opacity = 1 - distance / connectionDistance;
-            ctx.strokeStyle = `rgba(255, 115, 0, ${opacity * 0.4})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `rgba(255, 115, 0, ${opacity * 0.3})`;
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
@@ -182,7 +185,7 @@ export default function LoadingScreen() {
           </div>
 
           <p className="text-center text-[9px] font-bold text-gray-600 uppercase tracking-widest mt-4 animate-pulse">
-            Establishing Secure Connection
+            INICIANDO SISTEMAS...
           </p>
         </div>
       </div>
