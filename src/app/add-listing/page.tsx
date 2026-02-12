@@ -141,8 +141,36 @@ export default function AddListingPage() {
 
     // Esperar a que todas las previews estén listas
     Promise.all(previewPromises).then((previews) => {
-      setImages(prev => [...prev, ...validFiles]);
-      setImagePreviews(prev => [...prev, ...previews]);
+      // Validate dimensions for each new image
+      const validatedImages: File[] = [];
+      const validatedPreviews: string[] = [];
+      let rejectedCount = 0;
+
+      const dimensionPromises = previews.map((preview, index) => {
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+             // Requisito: Mínimo 800px de ancho y no muy vertical para evitar cortes feos
+             // Idealmente paisaje (landscape)
+             if (img.width < 800) {
+                rejectedCount++;
+             } else {
+                validatedImages.push(validFiles[index]);
+                validatedPreviews.push(preview);
+             }
+             resolve();
+          };
+          img.src = preview;
+        });
+      });
+
+      Promise.all(dimensionPromises).then(() => {
+        if (rejectedCount > 0) {
+           alert(`Se rechazaron ${rejectedCount} imágenes por ser demasiado pequeñas. El ancho mínimo es de 800px para garantizar la calidad.`);
+        }
+        setImages(prev => [...prev, ...validatedImages]);
+        setImagePreviews(prev => [...prev, ...validatedPreviews]);
+      });
     });
   };
 

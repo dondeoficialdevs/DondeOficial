@@ -136,24 +136,9 @@ export default function PromotionsSlider() {
 
 
                     <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-20">
-                        <div className={`max-w-3xl transition-all duration-1000 transform ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
+                        <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 transform ${index === currentSlide ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
                             }`}>
-                            <div className="flex flex-wrap items-center gap-4 mb-8">
-                                <div
-                                    className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border border-white/20 ${promo.is_discount ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' : 'bg-white/10 text-white'}`}
-                                >
-                                    {promo.badge_text || (promo.is_discount ? 'OFERTA' : 'DESTACADO')}
-                                </div>
-                                {promo.is_discount && (
-                                    <div className="flex items-center gap-2">
-                                        <span className="flex h-2 w-2 relative">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                        </span>
-                                        <span className="text-[10px] font-black text-emerald-400 tracking-wider uppercase">En Vivo</span>
-                                    </div>
-                                )}
-                            </div>
+                            {/* Badges eliminated as requested */}
 
                             <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-8 leading-[0.9] tracking-tighter [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
                                 {promo.title}
@@ -164,7 +149,7 @@ export default function PromotionsSlider() {
                             </p>
 
                             {promo.button_link && (
-                                <div className="flex items-center gap-6">
+                                <div className="flex items-center justify-center gap-6">
                                     <Link
                                         href={promo.button_link}
                                         className="group relative inline-flex items-center justify-center px-8 sm:px-12 py-3 sm:py-5 font-black text-white transition-all duration-500 rounded-xl sm:rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden bg-orange-600"

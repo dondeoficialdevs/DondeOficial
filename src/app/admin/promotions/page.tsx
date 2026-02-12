@@ -139,6 +139,13 @@ export default function VitrinaAdminPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Nueva Validacion: Bloquear si la imagen no cumple con los estandares
+        if (imageMetrics.status === 'low' || imageMetrics.status === 'idle') {
+            const confirmUpload = window.confirm('ADVERTENCIA: La imagen seleccionada tiene baja resolución o un formato vertical que NO es apto para el slider panorámico.\n\n¿Estás seguro de que deseas publicarla de todos modos? Se verá borrosa o cortada.');
+            if (!confirmUpload) return;
+        }
+
         setSaving(true);
         try {
             console.log('Saving promotion data:', formData);
