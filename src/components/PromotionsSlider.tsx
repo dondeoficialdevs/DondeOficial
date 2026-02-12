@@ -115,18 +115,21 @@ export default function PromotionsSlider() {
                         {promo.image_url ? (
                             <div className="relative w-full h-full bg-gray-950">
                                 <div
-                                    className="absolute inset-0 bg-cover bg-center blur-3xl opacity-50 scale-125"
+                                    className="absolute inset-0 bg-cover bg-center blur-xl opacity-30 scale-110"
                                     style={{ backgroundImage: `url(${promo.image_url})` }}
                                 />
-                                <div className="relative w-full h-full flex items-center justify-center p-4 md:p-12">
+                                <div className="relative w-full h-full">
                                     <Image
                                         src={promo.image_url}
                                         alt={promo.title || 'Promoción'}
                                         fill
-                                        className="object-contain transition-transform duration-[10s] group-hover:scale-105 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                                        className="object-cover sm:object-contain object-right"
                                         priority={index === 0}
                                         unoptimized
                                     />
+                                    {/* Professional Gradient Overlay for Text Readability */}
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent sm:w-[70%]"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent sm:hidden"></div>
                                 </div>
                             </div>
                         ) : (
@@ -135,32 +138,34 @@ export default function PromotionsSlider() {
                     </div>
 
 
+                    {/* Content Container - Left Aligned */}
                     <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center z-20">
-                        <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 transform ${index === currentSlide ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+                        <div className={`max-w-2xl transition-all duration-1000 transform ${index === currentSlide ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
                             }`}>
-                            {/* Badges eliminated as requested */}
 
-                            <h2 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-8 leading-[0.9] tracking-tighter [text-shadow:0_4px_12px_rgba(0,0,0,0.8)]">
+                            <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[0.9] tracking-tighter drop-shadow-2xl">
                                 {promo.title}
                             </h2>
 
-                            <p className="text-sm sm:text-lg md:text-2xl text-white mb-6 sm:mb-12 max-w-2xl leading-relaxed font-medium [text-shadow:0_2px_4px_rgba(0,0,0,0.8)]">
+                            <p className="text-base sm:text-lg md:text-xl text-gray-200 mb-8 sm:mb-12 max-w-lg leading-relaxed font-medium drop-shadow-lg [text-wrap:balance]">
                                 {promo.description}
                             </p>
 
                             {promo.button_link && (
-                                <div className="flex items-center justify-center gap-6">
+                                <div className="flex flex-wrap gap-4">
                                     <Link
                                         href={promo.button_link}
-                                        className="group relative inline-flex items-center justify-center px-8 sm:px-12 py-3 sm:py-5 font-black text-white transition-all duration-500 rounded-xl sm:rounded-2xl hover:scale-105 active:scale-95 shadow-2xl overflow-hidden bg-orange-600"
+                                        className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-orange-600 rounded-full overflow-hidden hover:bg-orange-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(249,115,22,0.6)] active:scale-95"
                                     >
-                                        <span className="relative z-10 flex items-center text-sm sm:text-lg uppercase tracking-wider">
+                                        <span className="relative z-10 flex items-center uppercase tracking-widest text-xs sm:text-sm">
                                             {promo.button_text || 'Explorar'}
-                                            <svg className="w-5 h-5 sm:w-6 h-6 ml-2 sm:ml-3 transition-transform duration-500 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            <svg className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                             </svg>
                                         </span>
-                                        <div className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+
+                                        {/* Button Shine Effect Animation */}
+                                        <div className="absolute top-0 -left-[100%] w-[120%] h-full bg-gradient-to-r from-transparent via-white/40 to-transparent transformSkew-x-12 animate-shine-slow"></div>
                                     </Link>
                                 </div>
                             )}
@@ -211,6 +216,17 @@ export default function PromotionsSlider() {
                     </button>
                 ))}
             </div>
-        </section>
+
+            <style jsx global>{`
+                @keyframes shine-slow {
+                    0% { left: -100%; }
+                    20% { left: 100%; }
+                    100% { left: 100%; }
+                }
+                .animate-shine-slow {
+                    animation: shine-slow 3s infinite;
+                }
+            `}</style>
+        </section >
     );
 }
