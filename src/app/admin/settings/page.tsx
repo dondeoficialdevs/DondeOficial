@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { settingsApi } from '@/lib/api';
 import { SiteSettings } from '@/types';
 import AdminImageUpload from '@/components/admin/AdminImageUpload';
-import { Palette, Globe, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Layout, Shield, Type, Share2, Info, ChevronRight } from 'lucide-react';
+import { Palette, Globe, Mail, Phone, MapPin, Facebook, Instagram, Youtube, Layout, Shield, Type, Share2, Info, ChevronRight, Loader2 } from 'lucide-react';
 
 type TabType = 'identity' | 'design' | 'contact' | 'social';
 
@@ -260,6 +260,39 @@ export default function SettingsPage() {
                                     currentImageUrl={settings.pwa_icon_url}
                                     folder="settings"
                                     label="Subir Icono PWA"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                            <div className="mb-6 relative z-10">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">
+                                    <Loader2 size={14} className="text-purple-500 animate-spin" />
+                                    Logo de Carga
+                                </label>
+                                <h3 className="text-lg font-black text-gray-900 leading-tight">Preloader / Pantalla de Carga</h3>
+                                <p className="text-xs text-gray-500 mt-2 font-medium leading-relaxed">
+                                    Logo que aparece durante la animación de carga inicial "Neural".
+                                </p>
+
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-[10px] font-bold border border-purple-100">
+                                        Formato: PNG (Transparente)
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100">
+                                        Medidas: 200px (Ancho aprox)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 min-h-[200px] bg-gray-900 rounded-2xl border-2 border-dashed border-gray-700 p-2 transform transition-all hover:border-purple-500/50 flex items-center justify-center overflow-hidden relative z-10">
+                                <AdminImageUpload
+                                    onUploadComplete={(url) => setSettings({ ...settings, preloader_logo_url: url })}
+                                    currentImageUrl={settings.preloader_logo_url}
+                                    folder="settings"
+                                    label="Subir Logo Preloader"
                                 />
                             </div>
                         </div>
