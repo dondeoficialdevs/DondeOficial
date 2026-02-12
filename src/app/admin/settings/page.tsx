@@ -195,27 +195,66 @@ export default function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col">
-                            <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
-                                <Layout size={14} className="text-orange-500" />
-                                Logo Principal
-                            </label>
-                            <div className="flex-1 min-h-[200px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-orange-500/30 flex items-center justify-center overflow-hidden">
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                            <div className="mb-6 relative z-10">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">
+                                    <Layout size={14} className="text-orange-500" />
+                                    Logo Principal
+                                </label>
+                                <h3 className="text-lg font-black text-gray-900 leading-tight">Identidad Visual (Header & Login)</h3>
+                                <p className="text-xs text-gray-500 mt-2 font-medium leading-relaxed">
+                                    Este logo se utiliza en la cabecera del sitio y en la pantalla de acceso administrativo.
+                                </p>
+
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-orange-50 text-orange-700 text-[10px] font-bold border border-orange-100">
+                                        Formato: PNG (Transparente)
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100">
+                                        Medidas: 200px x 60px
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-[10px] font-bold border border-gray-200">
+                                        Peso Máx: 2MB
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 min-h-[200px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-orange-500/30 flex items-center justify-center overflow-hidden relative z-10">
                                 <AdminImageUpload
                                     onUploadComplete={(url) => setSettings({ ...settings, logo_url: url })}
                                     currentImageUrl={settings.logo_url}
                                     folder="settings"
-                                    label="Subir Logo"
+                                    label="Subir Logo Principal"
                                 />
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col">
-                            <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
-                                <Globe size={14} className="text-blue-500" />
-                                Icono de App (PWA)
-                            </label>
-                            <div className="flex-1 min-h-[200px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-blue-500/30 flex items-center justify-center overflow-hidden">
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm flex flex-col relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                            <div className="mb-6 relative z-10">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">
+                                    <Globe size={14} className="text-blue-500" />
+                                    Icono de App (PWA)
+                                </label>
+                                <h3 className="text-lg font-black text-gray-900 leading-tight">Icono para Móviles</h3>
+                                <p className="text-xs text-gray-500 mt-2 font-medium leading-relaxed">
+                                    Icono que aparecerá cuando los usuarios instalen la app en su teléfono.
+                                </p>
+
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-orange-50 text-orange-700 text-[10px] font-bold border border-orange-100">
+                                        Formato: PNG (Cuadrado)
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100">
+                                        Medidas: 512px x 512px
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 min-h-[200px] bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 p-2 transform transition-all hover:bg-white hover:border-blue-500/30 flex items-center justify-center overflow-hidden relative z-10">
                                 <AdminImageUpload
                                     onUploadComplete={(url) => setSettings({ ...settings, pwa_icon_url: url })}
                                     currentImageUrl={settings.pwa_icon_url}
@@ -352,17 +391,35 @@ export default function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm">
-                            <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 italic">
-                                <Shield size={14} className="text-orange-500" />
-                                Logo del Pie de Página
-                            </label>
-                            <div className="max-w-md bg-gray-50 rounded-2xl p-2 border-2 border-dashed border-gray-100">
+                        <div className="bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-sm relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                            <div className="mb-6 relative z-10">
+                                <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">
+                                    <Shield size={14} className="text-orange-500" />
+                                    Logo del Pie de Página
+                                </label>
+                                <h3 className="text-lg font-black text-gray-900 leading-tight">Versión Oscura/Negativa</h3>
+                                <p className="text-xs text-gray-500 mt-2 font-medium leading-relaxed">
+                                    Este logo debe ser legible sobre fondos oscuros (generalmente blanco o monocromático).
+                                </p>
+
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-gray-900 text-white text-[10px] font-bold border border-gray-700">
+                                        Formato: PNG (Blanco)
+                                    </span>
+                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100">
+                                        Medidas: 200px x 60px
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="max-w-md bg-gray-900 rounded-2xl p-4 border-2 border-dashed border-gray-800 relative z-10">
                                 <AdminImageUpload
                                     onUploadComplete={(url) => setSettings({ ...settings, footer_logo_url: url })}
                                     currentImageUrl={settings.footer_logo_url}
                                     folder="settings"
-                                    label="Cambiar Logo Footer"
+                                    label="Subir Logo Footer (Versión Blanca)"
                                 />
                             </div>
                         </div>
